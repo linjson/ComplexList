@@ -428,15 +428,18 @@ public class ItemTouchHelperExtension extends RecyclerView.ItemDecoration
         objectAnimator.start();
     }
 
+
     private void doChildClickEvent(float x, float y) {
         if (mSelected == null) return;
-        View view = mSelected.itemView;
+        View view = ((Extension) mSelected).getFrontView();
         View consumeEventView = null;
-        if (view instanceof ViewGroup) {
-            consumeEventView = findConsumeView((ViewGroup) view, x, y);
-        } else if (isInBoundsClickable((int) x, (int) y, view)) {
+
+        if (isInBoundsClickable((int) x, (int) y, view)) {
             consumeEventView = view;
+        } else if (mSelected.itemView instanceof ViewGroup) {
+            consumeEventView = findConsumeView((ViewGroup) mSelected.itemView, x, y);
         }
+
         if (consumeEventView != null) {
             consumeEventView.performClick();
         }
