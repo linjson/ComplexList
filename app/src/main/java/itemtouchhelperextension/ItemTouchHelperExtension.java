@@ -634,7 +634,7 @@ public class ItemTouchHelperExtension extends RecyclerView.ItemDecoration
             // child but that should perform good enough as it is very hard to start dragging a
             // new child before the previous one settles.
             mOverdrawChild = selected.itemView;
-//            addChildDrawingOrderCallback();
+            addChildDrawingOrderCallback();
         }
         int actionStateMask = (1 << (DIRECTION_FLAG_COUNT + DIRECTION_FLAG_COUNT * actionState))
                 - 1;
@@ -2425,10 +2425,12 @@ public class ItemTouchHelperExtension extends RecyclerView.ItemDecoration
                         }
 
 
-                        if (mPreOpened != null && mPreOpened != vh && vh != null) {
+                        if (mPreOpened != null && vh != null) {
                             closeOpenedPreItem();
-                        } else if (mPreOpened == vh) {
-                        } else if (mCallback.isLongPressDragEnabled()) {
+
+                        }
+
+                        if (mPreOpened != vh && mCallback.isLongPressDragEnabled()) {
                             select(vh, ACTION_STATE_DRAG);
                         }
 
