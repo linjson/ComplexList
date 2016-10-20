@@ -296,7 +296,6 @@ public class ItemTouchHelperExtension extends RecyclerView.ItemDecoration
                         if (mPendingCleanup.remove(animation.mViewHolder.itemView)) {
                             mCallback.clearView(mRecyclerView, animation.mViewHolder);
                         }
-                        System.out.printf("==>RecoverAnimation \n");
                         select(animation.mViewHolder, animation.mActionState);
                         updateDxDy(event, mSelectedFlags, 0);
                     }
@@ -603,16 +602,7 @@ public class ItemTouchHelperExtension extends RecyclerView.ItemDecoration
             getSelectedDxDy(mTmpPosition);
             dx = mTmpPosition[0];
             dy = mTmpPosition[1];
-
-
-//            System.out.printf("==>%s \n", mSelected.itemView.getTag());
-
-
         }
-//        if (mActionState == ACTION_STATE_SWIPE && getSwipeWidth() == 0) {
-//            return;
-//        }
-
         mCallback.onDraw(c, parent, mSelected,
                 mRecoverAnimations, mActionState, dx, dy);
 
@@ -663,7 +653,7 @@ public class ItemTouchHelperExtension extends RecyclerView.ItemDecoration
                     case START:
                     case END:
                         targetTranslateY = 0;
-                        targetTranslateX = Math.signum(mDx) * getSwipeWidth(mSelected);
+                        targetTranslateX = Math.signum(mDx) * getSwipeWidth(prevSelected);
                         break;
                     case UP:
                     case DOWN:
@@ -1331,9 +1321,17 @@ public class ItemTouchHelperExtension extends RecyclerView.ItemDecoration
                     return velDirFlag;
                 }
             }
-
             final float threshold = getSwipeWidth(mSelected) * mCallback
                     .getSwipeThreshold(viewHolder);
+
+//            final float threshold = mRecyclerView.getWidth() * mCallback
+//                    .getSwipeThreshold(viewHolder);
+
+
+            //开的状态时需要关闭
+            if (mPreOpened != null) {
+                return 0;
+            }
 
             if ((flags & dirFlag) != 0 && Math.abs(mDx) > threshold) {
                 return dirFlag;
@@ -2168,12 +2166,9 @@ public class ItemTouchHelperExtension extends RecyclerView.ItemDecoration
 
 
             View view = ((Extension) viewHolder).getFrontView();
-
-            System.out.printf("==> \n");
             if (view == null || mActionState == ACTION_STATE_DRAG) {
                 view = viewHolder.itemView;
             }
-
 
             sUICallback.onDraw(c, recyclerView, view, dX, dY, actionState,
                     isCurrentlyActive);
