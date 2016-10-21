@@ -8,7 +8,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import itemtouchhelperextension.BaseAdapter;
@@ -197,8 +196,15 @@ public class MainRecyclerAdapter extends BaseAdapter<BaseViewHolder> {
     }
 
     public void move(int from, int to) {
-        Collections.swap(mDatas, from, to);
-        notifyItemMoved(from, to);
+        TestModel m = mDatas.remove(from);
+        mDatas.add(to, m);
+//        notifyDataSetChanged();
+
+        int min = Math.min(from, to);
+        int max = Math.max(from, to);
+
+        notifyItemRangeChanged(min, max - min + 1);
+//        notifyItemMoved(from, to);
     }
 
 }
