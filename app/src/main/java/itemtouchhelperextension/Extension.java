@@ -7,4 +7,6 @@ public interface Extension {
     float getActionWidth();
 
     View getFrontView();
+
+    boolean isFixed();
 }

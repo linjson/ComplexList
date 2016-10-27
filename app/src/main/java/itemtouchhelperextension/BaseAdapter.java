@@ -59,12 +59,15 @@ public abstract class BaseAdapter<T extends BaseViewHolder> extends RecyclerView
         if (headers.get(viewType) != null) {
             View v = headers.get(viewType);
             setWrapViewLayoutParams(v);
-            return new BaseViewHolder(v);
-
+            BaseViewHolder vh = new BaseViewHolder(v);
+            vh.setFixed(true);
+            return vh;
         } else if (footers.get(viewType) != null) {
             View v = footers.get(viewType);
             setWrapViewLayoutParams(v);
-            return new BaseViewHolder(v);
+            BaseViewHolder vh = new BaseViewHolder(v);
+            vh.setFixed(true);
+            return vh;
 
         } else {
             return onCreateChildrenViewHolder(parent, viewType);

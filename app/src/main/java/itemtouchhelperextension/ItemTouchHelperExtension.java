@@ -302,9 +302,9 @@ public class ItemTouchHelperExtension extends RecyclerView.ItemDecoration
                 }
             } else if (action == MotionEvent.ACTION_CANCEL || action == MotionEvent.ACTION_UP) {
                 mActivePointerId = ACTIVE_POINTER_ID_NONE;
-                if (mClick) {
-                    doChildClickEvent(event.getRawX(), event.getRawY());
-                }
+//                if (mClick) {
+//                    doChildClickEvent(event.getRawX(), event.getRawY());
+//                }
                 select(null, ACTION_STATE_IDLE);
             } else if (mActivePointerId != ACTIVE_POINTER_ID_NONE) {
                 // in a non scroll orientation, if distance change is above threshold, we
@@ -367,7 +367,7 @@ public class ItemTouchHelperExtension extends RecyclerView.ItemDecoration
                     }
                     // fall through
                 case MotionEvent.ACTION_UP:
-                    if (mClick) {
+                    if (mClick && mActionState == ACTION_STATE_IDLE) {
                         doChildClickEvent(event.getRawX(), event.getRawY());
                     }
                     mClick = false;
@@ -431,7 +431,10 @@ public class ItemTouchHelperExtension extends RecyclerView.ItemDecoration
 
     private void doChildClickEvent(float x, float y) {
         if (mSelected == null) return;
-        View view = ((Extension) mSelected).getFrontView();
+        View view = getExtension(mSelected).getFrontView();
+        if (view == null) {
+            view = mSelected.itemView;
+        }
         View consumeEventView = null;
 
         if (isInBoundsClickable((int) x, (int) y, view)) {
@@ -609,6 +612,7 @@ public class ItemTouchHelperExtension extends RecyclerView.ItemDecoration
             dy = mTmpPosition[1];
         }
 //        testLine();
+
         mCallback.onDraw(c, parent, mSelected,
                 mRecoverAnimations, mActionState, dx, dy);
 
@@ -756,7 +760,7 @@ public class ItemTouchHelperExtension extends RecyclerView.ItemDecoration
 
     private float getSwipeWidth(RecyclerView.ViewHolder vh) {
         if (vh instanceof Extension) {
-            return ((Extension) vh).getActionWidth();
+            return getExtension(vh).getActionWidth();
         }
         return mRecyclerView.getWidth();
     }
@@ -920,6 +924,10 @@ public class ItemTouchHelperExtension extends RecyclerView.ItemDecoration
             return;
         }
 
+        if (getExtension(viewHolder).isFixed()) {
+            return;
+        }
+
         final float threshold = mCallback.getMoveThreshold(viewHolder);
         final int x = (int) (mSelectedStartX + mDx);
         final int y = (int) (mSelectedStartY + mDy);
@@ -939,6 +947,12 @@ public class ItemTouchHelperExtension extends RecyclerView.ItemDecoration
             mDistances.clear();
             return;
         }
+
+        if (getExtension(target).isFixed()) {
+            return;
+        }
+
+
         final int toPosition = target.getAdapterPosition();
         final int fromPosition = viewHolder.getAdapterPosition();
         if (mCallback.onMove(mRecyclerView, viewHolder, target)) {
@@ -1172,6 +1186,9 @@ public class ItemTouchHelperExtension extends RecyclerView.ItemDecoration
         if (viewHolder.itemView.getParent() != mRecyclerView) {
             Log.e(TAG, "Start drag has been called with a view holder which is not a child of "
                     + "the RecyclerView which is controlled by this ItemTouchHelper.");
+            return;
+        }
+        if (getExtension(viewHolder).isFixed()) {
             return;
         }
         obtainVelocityTracker();
@@ -1978,7 +1995,7 @@ public class ItemTouchHelperExtension extends RecyclerView.ItemDecoration
          */
         public View getItemFrontView(ViewHolder viewHolder) {
             if (viewHolder == null) return null;
-            View frontView = ((Extension) viewHolder).getFrontView();
+            View frontView = getExtension(viewHolder).getFrontView();
             if (mActionState == ACTION_STATE_DRAG || frontView == null) {
                 return viewHolder.itemView;
             } else {
@@ -2177,7 +2194,7 @@ public class ItemTouchHelperExtension extends RecyclerView.ItemDecoration
                                 float dX, float dY, int actionState, boolean isCurrentlyActive) {
 
 
-            View view = ((Extension) viewHolder).getFrontView();
+            View view = getExtension(viewHolder).getFrontView();
             if (view == null || mActionState == ACTION_STATE_DRAG) {
                 view = viewHolder.itemView;
             }
@@ -2439,7 +2456,7 @@ public class ItemTouchHelperExtension extends RecyclerView.ItemDecoration
 
                         }
 
-                        if (mPreOpened != vh && mCallback.isLongPressDragEnabled()) {
+                        if (mPreOpened != vh && mCallback.isLongPressDragEnabled() && !getExtension(vh).isFixed()) {
                             select(vh, ACTION_STATE_DRAG);
                         }
 
@@ -2565,5 +2582,12 @@ public class ItemTouchHelperExtension extends RecyclerView.ItemDecoration
         public void onAnimationRepeat(ValueAnimatorCompat animation) {
 
         }
+    }
+
+    private static Extension getExtension(ViewHolder vh) {
+        if (vh instanceof Extension) {
+            return (Extension) vh;
+        }
+        return null;
     }
 }
