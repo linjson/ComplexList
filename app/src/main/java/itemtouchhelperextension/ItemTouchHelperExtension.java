@@ -371,7 +371,6 @@ public class ItemTouchHelperExtension extends RecyclerView.ItemDecoration
 //                        doChildClickEvent(event.getRawX(), event.getRawY());
 //                    }
                     mClick = false;
-                    moveChildren();
 
                     select(null, ACTION_STATE_IDLE);
                     mActivePointerId = ACTIVE_POINTER_ID_NONE;
@@ -403,23 +402,6 @@ public class ItemTouchHelperExtension extends RecyclerView.ItemDecoration
             select(null, ACTION_STATE_IDLE);
         }
     };
-    private ViewHolder mMoveSrc;
-    private ViewHolder mMoveTarget;
-
-    private void moveChildren() {
-        if (mActionState == ACTION_STATE_DRAG && mMoveSrc != null && mMoveTarget != null) {
-            final int x = (int) (mSelectedStartX + mDx);
-            final int y = (int) (mSelectedStartY + mDy);
-            if (mCallback.onMove(mRecyclerView, mMoveSrc, mMoveTarget)) {
-                // keep target visible
-                mCallback.onMoved(mRecyclerView, mMoveSrc, mMoveSrc.getAdapterPosition(),
-                        mMoveTarget, mMoveTarget.getAdapterPosition(), x, y);
-                mMoveSrc = null;
-                mMoveTarget = null;
-
-            }
-        }
-    }
 
 
     private void closeOpenedPreItem() {
