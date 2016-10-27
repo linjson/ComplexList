@@ -367,9 +367,9 @@ public class ItemTouchHelperExtension extends RecyclerView.ItemDecoration
                     }
                     // fall through
                 case MotionEvent.ACTION_UP:
-                    if (mClick) {
-                        doChildClickEvent(event.getRawX(), event.getRawY());
-                    }
+//                    if (mClick) {
+//                        doChildClickEvent(event.getRawX(), event.getRawY());
+//                    }
                     mClick = false;
 
                     select(null, ACTION_STATE_IDLE);
@@ -606,10 +606,17 @@ public class ItemTouchHelperExtension extends RecyclerView.ItemDecoration
             dx = mTmpPosition[0];
             dy = mTmpPosition[1];
         }
+//        testLine();
         mCallback.onDraw(c, parent, mSelected,
                 mRecoverAnimations, mActionState, dx, dy);
 
     }
+
+//    private void testLine() {
+//        RecyclerViewEx view = (RecyclerViewEx) mRecyclerView;
+//        view.dx = mSelectedStartX + mDx;
+//        view.dy = mSelectedStartY + mDy;
+//    }
 
     /**
      * Starts dragging or swiping the given View. Call with null if you want to clear it.
