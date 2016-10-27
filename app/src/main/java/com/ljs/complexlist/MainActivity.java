@@ -1,6 +1,5 @@
 package com.ljs.complexlist;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -8,10 +7,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import itemtouchhelperextension.ItemTouchHelperExtension;
 import itemtouchhelperextension.RecyclerViewEx;
@@ -39,8 +41,10 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new MainRecyclerAdapter(this);
 
-//        mAdapter.addHeaderView(createTestView("header1"));
-//        mAdapter.addHeaderView(createTestView("header2"));
+        mAdapter.addHeaderView(createTestView("header1"));
+        mAdapter.addHeaderView(createTestView("header2"));
+        mAdapter.addFooterView(createTestView("footer2"));
+        mAdapter.addFooterView(createTestView("footer1"));
         mAdapter.setDatas(createTestDatas());
         mRecyclerView.setAdapter(mAdapter);
 //        mRecyclerView.addItemDecoration(new DividerItemDecoration(this));
@@ -87,13 +91,31 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private TextView createTestView(String text) {
+    private TextView createTestView(final String text) {
         TextView a = (TextView) getLayoutInflater().inflate(android.R.layout.simple_list_item_1, null);
-        a.setBackgroundColor(Color.BLUE);
+        a.setBackgroundColor(getRandColorCode());
         a.setText(text);
         a.setTag(text);
+        a.setClickable(true);
+        a.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
+            }
+        });
         return a;
     }
+
+    private int getRandColorCode() {
+        int r, g, b;
+        Random random = new Random();
+        r = random.nextInt(256);
+        g = random.nextInt(256);
+        b = random.nextInt(256);
+
+        return (0xFF << 24) | (r << 16) | (g << 8) | b;
+    }
+
 
     private List<TestModel> createTestDatas() {
         List<TestModel> result = new ArrayList<>();
