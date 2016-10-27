@@ -955,26 +955,14 @@ public class ItemTouchHelperExtension extends RecyclerView.ItemDecoration
             mDistances.clear();
             return;
         }
-
-        mMoveTarget = target;
-        mMoveSrc = viewHolder;
-
-
         final int toPosition = target.getAdapterPosition();
         final int fromPosition = viewHolder.getAdapterPosition();
-
-        System.out.printf("==>%s,%s \n", toPosition, fromPosition);
-//
-//        mMoveFromPosition=fromPosition;
-//        mMoveToPosition=toPosition;
-//        System.out.printf("==>%s,%s \n",fromPosition,toPosition);
-//        if (mCallback.onMove(mRecyclerView, viewHolder, target)) {
-//            // keep target visible
-//            mCallback.onMoved(mRecyclerView, viewHolder, fromPosition,
-//                    target, toPosition, x, y);
-//        }
+        if (mCallback.onMove(mRecyclerView, viewHolder, target)) {
+            // keep target visible
+            mCallback.onMoved(mRecyclerView, viewHolder, fromPosition,
+                    target, toPosition, x, y);
+        }
     }
-
 
     @Override
     public void onChildViewAttachedToWindow(View view) {
