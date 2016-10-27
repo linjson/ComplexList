@@ -17,19 +17,19 @@ public abstract class BaseAdapter<T extends BaseViewHolder> extends RecyclerView
     private SparseArrayCompat<View> footers = new SparseArrayCompat<>();
 
     public void addHeaderView(View header) {
-        headers.put(HEADERVIEW + headers.size(), header);
+        headers.put(HEADERVIEW + getHeaderViewCount(), header);
     }
 
     public void addFooterView(View footer) {
-        footers.put(FOOTERVIEW + footers.size(), footer);
+        footers.put(FOOTERVIEW + getFooterViewCount(), footer);
     }
 
     private boolean isHeaderView(int position) {
-        return position < headers.size();
+        return position < getHeaderViewCount();
     }
 
     private boolean isFooterView(int position) {
-        return position >= headers.size() + getChildrenCount();
+        return position >= getHeaderViewCount() + getChildrenCount();
     }
 
     public abstract int getChildrenCount();
@@ -48,9 +48,9 @@ public abstract class BaseAdapter<T extends BaseViewHolder> extends RecyclerView
         if (isHeaderView(position)) {
             return headers.keyAt(position);
         } else if (isFooterView(position)) {
-            return footers.keyAt(position - getChildrenCount() - headers.size());
+            return footers.keyAt(position - getChildrenCount() - getHeaderViewCount());
         } else {
-            return getChildrenViewType(position - headers.size());
+            return getChildrenViewType(position - getHeaderViewCount());
         }
     }
 
@@ -86,14 +86,22 @@ public abstract class BaseAdapter<T extends BaseViewHolder> extends RecyclerView
         } else if (isFooterView(position)) {
             return;
         } else {
-            onBindChildrenViewHolder((T) holder, position - headers.size());
+            onBindChildrenViewHolder((T) holder, position - getHeaderViewCount());
         }
 
     }
 
+    public final int getHeaderViewCount() {
+        return headers.size();
+    }
+
+    public final int getFooterViewCount() {
+        return footers.size();
+    }
 
     @Override
     public final int getItemCount() {
-        return getChildrenCount() + headers.size() + footers.size();
+        return getChildrenCount() + getHeaderViewCount() + getFooterViewCount();
     }
+
 }
