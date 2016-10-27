@@ -367,9 +367,9 @@ public class ItemTouchHelperExtension extends RecyclerView.ItemDecoration
                     }
                     // fall through
                 case MotionEvent.ACTION_UP:
-//                    if (mClick) {
-//                        doChildClickEvent(event.getRawX(), event.getRawY());
-//                    }
+                    if (mClick) {
+                        doChildClickEvent(event.getRawX(), event.getRawY());
+                    }
                     mClick = false;
 
                     select(null, ACTION_STATE_IDLE);
@@ -435,7 +435,9 @@ public class ItemTouchHelperExtension extends RecyclerView.ItemDecoration
         View consumeEventView = null;
 
         if (isInBoundsClickable((int) x, (int) y, view)) {
-            consumeEventView = view;
+            if (mPreOpened == null) {
+                consumeEventView = view;
+            }
         } else if (mSelected.itemView instanceof ViewGroup) {
             consumeEventView = findConsumeView((ViewGroup) mSelected.itemView, x, y);
         }
