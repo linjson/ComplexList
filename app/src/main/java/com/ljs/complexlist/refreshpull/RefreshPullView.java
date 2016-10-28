@@ -1,4 +1,4 @@
-package com.ljs.complexlist;
+package com.ljs.complexlist.refreshpull;
 
 import android.content.Context;
 import android.support.v4.view.NestedScrollingChild;
@@ -16,7 +16,7 @@ import android.view.animation.Transformation;
 /**
  * Created by ljs on 16/9/20.
  */
-public class NestView extends ViewGroup implements NestedScrollingParent, NestedScrollingChild {
+public class RefreshPullView extends ViewGroup implements NestedScrollingParent, NestedScrollingChild {
     private NestedScrollingParentHelper nestedScrollingParentHelper;
     private NestedScrollingChildHelper nestedScrollingChildHelper;
     private View childBody;
@@ -66,18 +66,18 @@ public class NestView extends ViewGroup implements NestedScrollingParent, Nested
     private boolean loadingMore;
 
 
-    public NestView(Context context) {
+    public RefreshPullView(Context context) {
         super(context);
         init(context);
     }
 
 
-    public NestView(Context context, AttributeSet attrs) {
+    public RefreshPullView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
-    public NestView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public RefreshPullView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
     }

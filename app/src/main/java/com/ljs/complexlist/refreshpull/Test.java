@@ -1,4 +1,4 @@
-package com.ljs.complexlist;
+package com.ljs.complexlist.refreshpull;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -6,11 +6,13 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.ljs.complexlist.R;
+
 /**
  * Created by ljs on 16/9/26.
  */
 
-public class NestTest extends Activity {
+public class Test extends Activity {
 
     private boolean refreshing = false;
     private boolean loading = false;
@@ -21,7 +23,7 @@ public class NestTest extends Activity {
 
         setContentView(R.layout.nesttest);
 
-        final NestView nv = (NestView) findViewById(R.id.sv);
+        final RefreshPullView nv = (RefreshPullView) findViewById(R.id.sv);
 
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.ll);
 
