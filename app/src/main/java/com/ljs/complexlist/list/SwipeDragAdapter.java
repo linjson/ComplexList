@@ -51,7 +51,7 @@ public class SwipeDragAdapter extends BaseAdapter<BaseViewHolder> {
 
 
     private void doDelete(int adapterPosition) {
-        mDatas.remove(adapterPosition);
+        mDatas.remove(adapterPosition - getHeaderViewCount());
         notifyItemRemoved(adapterPosition);
     }
 
@@ -117,20 +117,19 @@ public class SwipeDragAdapter extends BaseAdapter<BaseViewHolder> {
                             doDelete(holder.getAdapterPosition());
                         }
                     }
-
             );
         }
     }
 
     @Override
     public int getChildrenViewType(int position) {
-//        if (mDatas.get(position).position == 1) {
-        return ITEM_TYPE_ACTION_WIDTH_NO_SPRING;
-//        }
-//        if (mDatas.get(position).position == 2) {
-//            return ITEM_TYPE_RECYCLER_WIDTH;
-//        }
-//        return ITEM_TYPE_ACTION_WIDTH;
+        if (mDatas.get(position).position == 1) {
+            return ITEM_TYPE_ACTION_WIDTH_NO_SPRING;
+        }
+        if (mDatas.get(position).position == 2) {
+            return ITEM_TYPE_RECYCLER_WIDTH;
+        }
+        return ITEM_TYPE_ACTION_WIDTH;
     }
 
     public void setItemTouchHelper(ItemTouchHelperExtension itemTouchHelper) {
