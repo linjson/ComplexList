@@ -303,9 +303,9 @@ public class ItemTouchHelperExtension extends RecyclerView.ItemDecoration
                 }
             } else if (action == MotionEvent.ACTION_CANCEL || action == MotionEvent.ACTION_UP) {
                 mActivePointerId = ACTIVE_POINTER_ID_NONE;
-//                if (mClick) {
-//                    doChildClickEvent(event.getRawX(), event.getRawY());
-//                }
+                if (mClick) {
+                    doChildClickEvent(event.getRawX(), event.getRawY());
+                }
                 select(null, ACTION_STATE_IDLE);
             } else if (mActivePointerId != ACTIVE_POINTER_ID_NONE) {
                 // in a non scroll orientation, if distance change is above threshold, we
