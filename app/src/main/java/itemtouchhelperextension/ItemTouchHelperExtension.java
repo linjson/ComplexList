@@ -290,6 +290,7 @@ public class ItemTouchHelperExtension extends RecyclerView.ItemDecoration
                 if (mSelected == null) {
                     final RecoverAnimation animation = findAnimation(event);
                     if (animation != null) {
+                        System.out.printf("==>%s \n", animation.mViewHolder.itemView.getTag());
                         mInitialTouchX -= animation.mX;
                         mInitialTouchY -= animation.mY;
                         endRecoverAnimation(animation.mViewHolder, true);
@@ -501,6 +502,7 @@ public class ItemTouchHelperExtension extends RecyclerView.ItemDecoration
     }
 
     private static boolean hitTest(View child, float x, float y, float left, float top) {
+        top = child.getTop();
         return x >= left &&
                 x <= left + child.getWidth() &&
                 y >= top &&
