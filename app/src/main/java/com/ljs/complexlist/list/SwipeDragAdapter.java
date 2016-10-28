@@ -1,11 +1,15 @@
-package com.ljs.complexlist;
+package com.ljs.complexlist.list;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.ljs.complexlist.R;
+import com.ljs.complexlist.TestModel;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,16 +17,20 @@ import java.util.List;
 
 import itemtouchhelperextension.BaseAdapter;
 import itemtouchhelperextension.BaseViewHolder;
+import itemtouchhelperextension.ItemTouchHelperExtension;
 
-public class MainRecyclerAdapter extends BaseAdapter<BaseViewHolder> {
+import static com.ljs.complexlist.R.id.text_list_main_index;
+
+public class SwipeDragAdapter extends BaseAdapter<BaseViewHolder> {
 
     public static final int ITEM_TYPE_RECYCLER_WIDTH = 1000;
     public static final int ITEM_TYPE_ACTION_WIDTH = 1001;
     public static final int ITEM_TYPE_ACTION_WIDTH_NO_SPRING = 1002;
     private List<TestModel> mDatas;
     private Context mContext;
+    private ItemTouchHelperExtension mItemTouchHelper;
 
-    public MainRecyclerAdapter(Context context) {
+    public SwipeDragAdapter(Context context) {
         mDatas = new ArrayList<>();
         mContext = context;
     }
@@ -69,6 +77,13 @@ public class MainRecyclerAdapter extends BaseAdapter<BaseViewHolder> {
     public void onBindChildrenViewHolder(final BaseViewHolder holder, int position) {
         ItemBaseViewHolder baseViewHolder = (ItemBaseViewHolder) holder;
         baseViewHolder.bind(mDatas.get(position));
+        baseViewHolder.mTextIndex.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                mItemTouchHelper.startDrag(holder);
+                return false;
+            }
+        });
         baseViewHolder.mViewContent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -118,6 +133,10 @@ public class MainRecyclerAdapter extends BaseAdapter<BaseViewHolder> {
 //        return ITEM_TYPE_ACTION_WIDTH;
     }
 
+    public void setItemTouchHelper(ItemTouchHelperExtension itemTouchHelper) {
+        mItemTouchHelper = itemTouchHelper;
+    }
+
 
     class ItemBaseViewHolder extends BaseViewHolder {
         TextView mTextTitle;
@@ -128,7 +147,8 @@ public class MainRecyclerAdapter extends BaseAdapter<BaseViewHolder> {
         public ItemBaseViewHolder(View itemView) {
             super(itemView);
             mTextTitle = (TextView) itemView.findViewById(R.id.text_list_main_title);
-            mTextIndex = (TextView) itemView.findViewById(R.id.text_list_main_index);
+            mTextIndex = (TextView) itemView.findViewById(text_list_main_index);
+            mTextIndex.setClickable(true);
             mViewContent = itemView.findViewById(R.id.view_list_main_content);
             mActionContainer = itemView.findViewById(R.id.view_list_repo_action_container);
         }

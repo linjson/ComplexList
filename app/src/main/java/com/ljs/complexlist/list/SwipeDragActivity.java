@@ -1,4 +1,4 @@
-package com.ljs.complexlist;
+package com.ljs.complexlist.list;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,6 +11,11 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ljs.complexlist.ItemTouchHelperCallback;
+import com.ljs.complexlist.ItemTouchHelperCallback2;
+import com.ljs.complexlist.R;
+import com.ljs.complexlist.TestModel;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -19,10 +24,10 @@ import itemtouchhelperextension.ItemTouchHelperExtension;
 import itemtouchhelperextension.RecyclerViewEx;
 import itemtouchhelperextension.SwipeRefreshLayoutEx;
 
-public class MainActivity extends AppCompatActivity {
+public class SwipeDragActivity extends AppCompatActivity {
 
     private RecyclerViewEx mRecyclerView;
-    private MainRecyclerAdapter mAdapter;
+    private SwipeDragAdapter mAdapter;
     public ItemTouchHelperExtension mItemTouchHelper;
     public ItemTouchHelperExtension.Callback mCallback;
     public ItemTouchHelperCallback2 mCallback2;
@@ -39,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         swipe = (SwipeRefreshLayoutEx) findViewById(R.id.swipe);
         swipe.setEnabled(false);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new MainRecyclerAdapter(this);
+        mAdapter = new SwipeDragAdapter(this);
 
         mAdapter.addHeaderView(createTestView("header1"));
         mAdapter.addHeaderView(createTestView("header2"));
@@ -53,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
         mCallback2 = new ItemTouchHelperCallback2();
         mItemTouchHelper = new ItemTouchHelperExtension(mCallback);
         mItemTouchHelper.attachToRecyclerView(mRecyclerView);
+        mAdapter.setItemTouchHelper(mItemTouchHelper);
 
 
 //        mItemTouchHelper2=new ItemTouchHelper(mCallback2);
@@ -93,27 +99,29 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView createTestView(final String text) {
         TextView a = (TextView) getLayoutInflater().inflate(android.R.layout.simple_list_item_1, null);
-        a.setBackgroundColor(getRandColorCode());
+        int[] c = getRandColorCode();
+        a.setBackgroundColor(c[0]);
+        a.setTextColor(c[1]);
         a.setText(text);
         a.setTag(text);
         a.setClickable(true);
         a.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
+                Toast.makeText(SwipeDragActivity.this, text, Toast.LENGTH_SHORT).show();
             }
         });
         return a;
     }
 
-    private int getRandColorCode() {
+    private int[] getRandColorCode() {
         int r, g, b;
         Random random = new Random();
         r = random.nextInt(256);
         g = random.nextInt(256);
         b = random.nextInt(256);
 
-        return (0xFF << 24) | (r << 16) | (g << 8) | b;
+        return new int[]{(0xFF << 24) | (r << 16) | (g << 8) | b, (0xFF << 24) | ((256 - r) << 16) | ((256 - g) << 8) | (256 - b)};
     }
 
 
