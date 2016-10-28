@@ -1115,12 +1115,16 @@ public class ItemTouchHelperExtension extends RecyclerView.ItemDecoration
         }
         mDx = mDy = 0f;
         mActivePointerId = MotionEventCompat.getPointerId(motionEvent, 0);
-        select(vh, ACTION_STATE_SWIPE);
+
+
         if (mPreOpened != null && mPreOpened != vh && vh != null) {
             closeOpenedPreItem();
+
+
 //            select(null, ACTION_STATE_IDLE);
 //            return false;
         }
+        select(vh, ACTION_STATE_SWIPE);
         return true;
     }
 
