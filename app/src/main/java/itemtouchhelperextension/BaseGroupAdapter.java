@@ -77,4 +77,12 @@ public abstract class BaseGroupAdapter<T extends BaseGroupViewHolder> extends Ba
     public void onBindSonViewHolder(T holder, int position, List<Object> payloads) {
         onBindSonViewHolder(holder, position);
     }
+
+    public int getGroupSize(){
+        return 0;
+    }
+
+    public int getChildrenSize(int groupid){
+        return 0;
+    }
 }

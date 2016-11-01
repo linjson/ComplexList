@@ -949,7 +949,7 @@ public class ItemTouchHelperExtension extends RecyclerView.ItemDecoration
         if (getExtension(target).isFixed() || getExtension(target).isGroup()) {
             return;
         }
-        System.out.printf("==>%s,%s \n", getExtension(viewHolder).getGroupId(), getExtension(target).getGroupId());
+//        System.out.printf("==>%s,%s \n", getExtension(viewHolder).getGroupId(), getExtension(target).getGroupId());
         if (getExtension(viewHolder).getGroupId() != getExtension(target).getGroupId()) {
             return;
         }
