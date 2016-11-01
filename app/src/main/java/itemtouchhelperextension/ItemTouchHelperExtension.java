@@ -926,10 +926,6 @@ public class ItemTouchHelperExtension extends RecyclerView.ItemDecoration
             return;
         }
 
-        if (getExtension(viewHolder).isFixed()) {
-            return;
-        }
-
         final float threshold = mCallback.getMoveThreshold(viewHolder);
         final int x = (int) (mSelectedStartX + mDx);
         final int y = (int) (mSelectedStartY + mDy);
@@ -950,7 +946,11 @@ public class ItemTouchHelperExtension extends RecyclerView.ItemDecoration
             return;
         }
 
-        if (getExtension(target).isFixed()) {
+        if (getExtension(target).isFixed() || getExtension(target).isGroup()) {
+            return;
+        }
+        System.out.printf("==>%s,%s \n", getExtension(viewHolder).getGroupId(), getExtension(target).getGroupId());
+        if (getExtension(viewHolder).getGroupId() != getExtension(target).getGroupId()) {
             return;
         }
 
@@ -1194,7 +1194,7 @@ public class ItemTouchHelperExtension extends RecyclerView.ItemDecoration
                     + "the RecyclerView which is controlled by this ItemTouchHelper.");
             return;
         }
-        if (getExtension(viewHolder).isFixed()) {
+        if (getExtension(viewHolder).isFixed() || getExtension(viewHolder).isGroup()) {
             return;
         }
         obtainVelocityTracker();
@@ -2463,7 +2463,9 @@ public class ItemTouchHelperExtension extends RecyclerView.ItemDecoration
                         }
 
                         if (mPreOpened != vh && mCallback.isLongPressDragEnabled() && !getExtension(vh).isFixed()) {
-                            select(vh, ACTION_STATE_DRAG);
+                            if (!getExtension(vh).isGroup()) {
+                                select(vh, ACTION_STATE_DRAG);
+                            }
                         }
 
 

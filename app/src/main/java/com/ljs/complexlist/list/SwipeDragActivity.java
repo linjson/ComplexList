@@ -12,7 +12,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ljs.complexlist.ItemTouchHelperCallback;
-import com.ljs.complexlist.ItemTouchHelperCallback2;
 import com.ljs.complexlist.R;
 import com.ljs.complexlist.TestModel;
 
@@ -41,8 +40,8 @@ public class SwipeDragActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mRecyclerView = (RecyclerViewEx) findViewById(R.id.recycler_main);
-        swipe = (SwipeRefreshLayoutEx) findViewById(R.id.swipe);
-        swipe.setEnabled(false);
+//        swipe = (SwipeRefreshLayoutEx) findViewById(R.id.swipe);
+//        swipe.setEnabled(false);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new SwipeDragAdapter(this);
 

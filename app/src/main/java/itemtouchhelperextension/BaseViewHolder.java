@@ -29,6 +29,16 @@ public class BaseViewHolder extends RecyclerView.ViewHolder implements Extension
         return fixed;
     }
 
+    @Override
+    public int getGroupId() {
+        return -1;
+    }
+
+    @Override
+    public boolean isGroup() {
+        return false;
+    }
+
     public void setFixed(boolean fixed) {
         this.fixed = fixed;
     }

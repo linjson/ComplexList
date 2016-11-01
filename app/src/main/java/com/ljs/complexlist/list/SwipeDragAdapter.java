@@ -215,11 +215,9 @@ public class SwipeDragAdapter extends BaseAdapter<BaseViewHolder> {
 
     }
 
-    public void move(int from, int to) {
 
-        Collections.swap(mDatas, from - getHeaderViewCount(), to - getHeaderViewCount());
-        notifyItemMoved(from, to);
-
+    @Override
+    public void onDataMove(int from, int to) {
+        Collections.swap(mDatas, from, to);
     }
-
 }

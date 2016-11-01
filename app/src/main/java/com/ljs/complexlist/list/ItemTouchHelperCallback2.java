@@ -1,10 +1,8 @@
 
-package com.ljs.complexlist;
+package com.ljs.complexlist.list;
 
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-
-import com.ljs.complexlist.list.SwipeDragAdapter;
 
 public class ItemTouchHelperCallback2 extends ItemTouchHelper.Callback {
 
@@ -16,7 +14,7 @@ public class ItemTouchHelperCallback2 extends ItemTouchHelper.Callback {
     @Override
     public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
         SwipeDragAdapter adapter = (SwipeDragAdapter) recyclerView.getAdapter();
-        adapter.move(viewHolder.getAdapterPosition(), target.getAdapterPosition());
+        adapter.onMove(viewHolder.getAdapterPosition(), target.getAdapterPosition());
         return true;
     }
 

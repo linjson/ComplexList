@@ -9,4 +9,8 @@ public interface Extension {
     View getFrontView();
 
     boolean isFixed();
+
+    int getGroupId();
+
+    boolean isGroup();
 }
