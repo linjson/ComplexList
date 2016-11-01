@@ -12,7 +12,6 @@ import com.ljs.complexlist.R;
 import com.ljs.complexlist.TestModel;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import itemtouchhelperextension.BaseGroupAdapter;
@@ -32,38 +31,27 @@ public class MainRecyclerAdapter extends BaseGroupAdapter<MainRecyclerAdapter.Te
         mContext = context;
     }
 
-
     public List<TestModel> getDatas() {
         return mDatas;
     }
 
-    public void setDatas(List<TestModel> datas) {
-        mDatas = new ArrayList<>(datas);
+    public void setDatas(ArrayList<TestModel> datas) {
+        mDatas = (List<TestModel>) datas.clone();
     }
 
-    public void updateData(List<TestModel> datas) {
+    public void updateData(ArrayList<TestModel> datas) {
         setDatas(datas);
         notifyDataSetChanged();
     }
+
 
     private LayoutInflater getLayoutInflater() {
         return LayoutInflater.from(mContext);
     }
 
-
-    private void doDelete(int adapterPosition) {
-        mDatas.remove(adapterPosition);
-        notifyItemRemoved(adapterPosition);
-    }
-
     @Override
-    public int getChildrenCount() {
-        return mDatas.size();
-    }
-
-    @Override
-    protected void onBindSonViewHolder(final Test holder, int position) {
-        holder.bind(mDatas.get(position));
+    protected void onBindSonViewHolder(final Test holder, int groupPos, int sonPos) {
+        holder.bind(mDatas.get(groupPos).list.get(sonPos));
         holder.mTextIndex.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -90,15 +78,25 @@ public class MainRecyclerAdapter extends BaseGroupAdapter<MainRecyclerAdapter.Te
         return new Test(getLayoutInflater().inflate(R.layout.list_item_group, parent, false), true);
     }
 
-    @Override
-    public boolean isGroupView(int position) {
-        return mDatas.get(position).group;
-    }
-
     public void setItemTouchHelper(ItemTouchHelperExtension itemTouchHelper) {
         mItemTouchHelper = itemTouchHelper;
     }
 
+    @Override
+    public boolean onGroupSonDataMove(int fromGroup, int fromSon, int toGroup, int toSon) {
+
+        TestModel m = mDatas.get(fromGroup).list.remove(fromSon);
+
+        m.pid = mDatas.get(toGroup).position;
+        if (toSon == -1) {
+            mDatas.get(toGroup).list.add(m);
+        } else {
+            mDatas.get(toGroup).list.add(toSon, m);
+        }
+        return true;
+//        System.out.printf("==>%s,%s,%s,%s \n", fromGroup, fromSon, toGroup, toSon);
+
+    }
 
     public static class Test extends BaseGroupViewHolder {
         TextView mTextTitle;
@@ -131,17 +129,27 @@ public class MainRecyclerAdapter extends BaseGroupAdapter<MainRecyclerAdapter.Te
     }
 
 
+//    @Override
+//    public void onDataMove(int from, int to) {
+////        Collections.swap(mDatas, from, to);
+//    }
+
+
+//    @Override
+//    public void onBindSonViewHolder(Test v, int position, List<Object> payloads) {
+//        v.bind(mDatas.get(position));
+//        Bundle args = (Bundle) payloads.get(0);
+//        v.mTextTitle.setText(args.getString("test"));
+//    }
+
     @Override
-    public void onDataMove(int from, int to) {
-        Collections.swap(mDatas, from, to);
+    public int getGroupSize() {
+        return mDatas.size();
     }
 
-
     @Override
-    public void onBindSonViewHolder(Test v, int position, List<Object> payloads) {
-        v.bind(mDatas.get(position));
-        Bundle args = (Bundle) payloads.get(0);
-        v.mTextTitle.setText(args.getString("test"));
+    public int getSonSize(int groupIndex) {
+        return mDatas.get(groupIndex).list.size();
     }
 
     @Override

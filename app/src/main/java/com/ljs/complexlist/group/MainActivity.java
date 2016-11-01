@@ -48,8 +48,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new MainRecyclerAdapter(this);
 
-        mAdapter.addHeaderView(createTestView("header1"));
-        mAdapter.addHeaderView(createTestView("header2"));
+//        mAdapter.addHeaderView(createTestView("header1"));
+//        mAdapter.addHeaderView(createTestView("header2"));
         mAdapter.addFooterView(createTestView("footer2"));
         mAdapter.addFooterView(createTestView("footer1"));
         testDatas = createTestDatas();
@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mCallback2 = new ItemTouchHelperCallback2();
         mItemTouchHelper = new ItemTouchHelperExtension(mCallback);
         mItemTouchHelper.attachToRecyclerView(mRecyclerView);
+        mItemTouchHelper.setMoveDiffGroup(true);
         mAdapter.setItemTouchHelper(mItemTouchHelper);
 
 
@@ -99,15 +100,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ArrayList<TestModel> createTestDatas() {
         ArrayList<TestModel> result = new ArrayList<>();
         int pid = -1;
-        for (int i = 0; i < 20; i++) {
-            TestModel testModel;
-            if (i == 0 || i == 10) {
-                testModel = new TestModel(i, "group" + i, true);
-                pid = i;
-            } else {
-                testModel = new TestModel(i, "item" + i);
+        for (int i = 0; i < 2; i++) {
+            TestModel testModel = new TestModel(i, "group" + i);
+
+
+            for (int j = 0; j < 3; j++) {
+                TestModel e = new TestModel(j, "item" + j);
+                e.pid = testModel.position;
+                testModel.list.add(e);
             }
-            testModel.pid = pid;
             result.add(testModel);
         }
         return result;
@@ -131,18 +132,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
 
-        TestModel testModel = testDatas.remove(0);
-        TestModel test = new TestModel(testModel.position, testModel.title, testModel.group);
-        test.pid = testModel.pid;
-        test.title = "change-group";
-        testDatas.add(0, test);
+
+//        testDatas.remove(0);
 
 
-//        testDatas.remove(1);
+        TestModel p = testDatas.get(0).clone();
+
+        testDatas.remove(0);
+        testDatas.add(0, p);
+
+        TestModel m = testDatas.get(0).list.remove(1);
+        TestModel n = new TestModel(m.position, m.title);
+        n.title = "change";
+        n.pid = m.pid;
+        testDatas.get(0).list.add(1, n);
 
         DiffUtil.DiffResult result = DiffUtil.calculateDiff(new Diff(mAdapter, mAdapter.getDatas(), testDatas), false);
         result.dispatchUpdatesTo(mAdapter);
         mAdapter.setDatas(testDatas);
+
 
     }
 
@@ -161,34 +169,93 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         @Override
         protected Object getDataChangePayload(int oldItemPosition, int newItemPosition) {
-            System.out.printf("==>getDataChangePayload:%s,%s \n",oldItemPosition,newItemPosition);
-            Bundle bundle=new Bundle();
-            bundle.putString("test",news.get(newItemPosition).title);
+//            System.out.printf("==>getDataChangePayload:%s,%s \n", oldItemPosition, newItemPosition);
+//            Bundle bundle = new Bundle();
+//            bundle.putString("test", news.get(newItemPosition).title);
 
-            return bundle;
+            return null;
+        }
+
+        private int getSize(List<TestModel> test) {
+            int size = test.size();
+            int t = size;
+
+            for (int i = 0; i < size; i++) {
+                t += test.get(i).list.size();
+            }
+
+            return t;
         }
 
         @Override
         public int getOldDataSize() {
-            return olds.size();
+            return getSize(olds);
         }
 
 
         @Override
         public int getNewDataSize() {
-            return news.size();
+            return getSize(news);
+        }
+
+        private int[] getGroupSonPosition(List<TestModel> list, int pos) {
+
+            int groupSize = list.size();
+            int[] index = new int[2];
+            int p = pos;
+            for (int i = 0; i < groupSize; i++) {
+                int temp = p - list.get(i).list.size() - 1;
+                if (temp < 0) {
+                    index[0] = i;
+                    index[1] = p - 1;
+                    return index;
+                } else {
+                    p = temp;
+                }
+            }
+            return index;
         }
 
         @Override
         public boolean areDataTheSame(int oldItemPosition, int newItemPosition) {
-            return olds.get(oldItemPosition).position == news.get(newItemPosition).position;
+
+            int[] oldPos = getGroupSonPosition(olds, oldItemPosition);
+            int[] newPos = getGroupSonPosition(news, newItemPosition);
+
+            String o = "", n = "";
+
+            if (oldPos[1] == -1) {
+                o = "p" + olds.get(oldPos[0]).position;
+            } else {
+                o = "s" + olds.get(oldPos[0]).list.get(oldPos[1]).position;
+            }
+            if (newPos[1] == -1) {
+                n = "p" + news.get(newPos[0]).position;
+            } else {
+                n = "s" + news.get(newPos[0]).list.get(newPos[1]).position;
+            }
+            return o.equals(n);
         }
 
         @Override
         public boolean areDataContentsTheSame(int oldItemPosition, int newItemPosition) {
-            return olds.get(oldItemPosition).title.equals(news.get(newItemPosition).title);
-        }
 
+            int[] oldPos = getGroupSonPosition(olds, oldItemPosition);
+            int[] newPos = getGroupSonPosition(news, newItemPosition);
+            String o = "", n = "";
+
+            if (oldPos[1] == -1) {
+                o = "p" + olds.get(oldPos[0]).title;
+            } else {
+                o = "s" + olds.get(oldPos[0]).list.get(oldPos[1]).title;
+            }
+            if (newPos[1] == -1) {
+                n = "p" + news.get(newPos[0]).title;
+            } else {
+                n = "s" + news.get(newPos[0]).list.get(newPos[1]).title;
+            }
+            return o.equals(n);
+        }
 
 
     }
