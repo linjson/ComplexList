@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-
+apply plugin: "android-apt"
 android {
     compileSdkVersion 25
     buildToolsVersion "24.0.3"
@@ -23,5 +23,6 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:25.0.0'
     compile 'com.android.support:recyclerview-v7:25.0.0'
-    compile 'com.android.support:support-v13:25.0.0'
+    apt "org.immutables:value:2.3.8"
+    provided "org.immutables:value:2.3.8"
 }

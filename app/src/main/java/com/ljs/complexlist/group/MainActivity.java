@@ -5,7 +5,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,10 +13,8 @@ import android.widget.Toast;
 
 import com.ljs.complexlist.ItemTouchHelperCallback;
 import com.ljs.complexlist.R;
-import com.ljs.complexlist.TestModel;
 import com.ljs.complexlist.list.ItemTouchHelperCallback2;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -34,8 +31,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public ItemTouchHelperExtension.Callback mCallback;
     public ItemTouchHelperCallback2 mCallback2;
     private SwipeRefreshLayoutEx swipe;
-    private ItemTouchHelper mItemTouchHelper2;
-    private ArrayList<TestModel> testDatas;
+    private School testDatas;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,12 +44,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new MainRecyclerAdapter(this);
 
-//        mAdapter.addHeaderView(createTestView("header1"));
-//        mAdapter.addHeaderView(createTestView("header2"));
+        mAdapter.addHeaderView(createTestView("header1"));
+        mAdapter.addHeaderView(createTestView("header2"));
         mAdapter.addFooterView(createTestView("footer2"));
         mAdapter.addFooterView(createTestView("footer1"));
         testDatas = createTestDatas();
-        mAdapter.setDatas(testDatas);
+        mAdapter.setDatas(ImmutableSchool.copyOf(testDatas));
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
 //        mAdapter.updateData(createTestDatas());
@@ -97,21 +93,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    private ArrayList<TestModel> createTestDatas() {
-        ArrayList<TestModel> result = new ArrayList<>();
-        int pid = -1;
+    private School createTestDatas() {
+
+        ImmutableSchool.Builder builder = ImmutableSchool.builder();
+
+
         for (int i = 0; i < 2; i++) {
-            TestModel testModel = new TestModel(i, "group" + i);
+            ImmutableClazz.Builder classBuilder = ImmutableClazz.builder().name("class" + i).index(i);
 
 
-            for (int j = 0; j < 3; j++) {
-                TestModel e = new TestModel(j, "item" + j);
-                e.pid = testModel.position;
-                testModel.list.add(e);
+            for (int j = 0; j < 5; j++) {
+                Student stu = ImmutableStudent.builder().name("test" + j).age(j).clazz(i).build();
+                classBuilder.addStudent(stu);
             }
-            result.add(testModel);
+
+            builder.addClazz(classBuilder.build());
         }
-        return result;
+        return builder.build();
     }
 
     @Override
@@ -133,20 +131,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
 
 
-//        testDatas.remove(0);
+        //update
+        ModifiableSchool m = ModifiableSchool.create().from(testDatas);
+        ModifiableClazz c = (ModifiableClazz) m.clazz().get(0);
+        c.setName("change");
+
+        ModifiableStudent s = (ModifiableStudent) m.clazz().get(0).student().get(2);
+        s.setName("change-stu");
+
+        //delete
+        m.clazz().get(0).student().remove(1);
+
+        //add
+        m.clazz().get(0).student().add(0, ImmutableStudent.builder().age(0).name("adsd").clazz(0).build());
 
 
-        TestModel p = testDatas.get(0).clone();
-
-        testDatas.remove(0);
-        testDatas.add(0, p);
-
-        TestModel m = testDatas.get(0).list.remove(1);
-        TestModel n = new TestModel(m.position, m.title);
-        n.title = "change";
-        n.pid = m.pid;
-        testDatas.get(0).list.add(1, n);
-
+        testDatas = m.toImmutable();
         DiffUtil.DiffResult result = DiffUtil.calculateDiff(new Diff(mAdapter, mAdapter.getDatas(), testDatas), false);
         result.dispatchUpdatesTo(mAdapter);
         mAdapter.setDatas(testDatas);
@@ -157,10 +157,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     static class Diff extends DiffCallBackEx {
 
-        private final List<TestModel> news;
-        private final List<TestModel> olds;
+        private final School news;
+        private final School olds;
 
-        public Diff(MainRecyclerAdapter adapter, List<TestModel> olds, List<TestModel> news) {
+        public Diff(MainRecyclerAdapter adapter, School olds, School news) {
             super(adapter);
             this.olds = olds;
             this.news = news;
@@ -169,19 +169,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         @Override
         protected Object getDataChangePayload(int oldItemPosition, int newItemPosition) {
-//            System.out.printf("==>getDataChangePayload:%s,%s \n", oldItemPosition, newItemPosition);
-//            Bundle bundle = new Bundle();
-//            bundle.putString("test", news.get(newItemPosition).title);
 
-            return null;
+            int[] newPos = getGroupSonPosition(news.clazz(), newItemPosition);
+
+            Bundle bundle = new Bundle();
+            if (newPos[1] == -1) {
+                bundle.putString("test", news.clazz().get(newPos[0]).name());
+            } else {
+                bundle.putString("test", news.clazz().get(newPos[0]).student().get(newPos[1]).name());
+            }
+            return bundle;
         }
 
-        private int getSize(List<TestModel> test) {
-            int size = test.size();
+        private int getSize(School test) {
+            int size = test.clazz().size();
             int t = size;
 
             for (int i = 0; i < size; i++) {
-                t += test.get(i).list.size();
+                t += test.clazz().get(i).student().size();
             }
 
             return t;
@@ -198,13 +203,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return getSize(news);
         }
 
-        private int[] getGroupSonPosition(List<TestModel> list, int pos) {
+        private int[] getGroupSonPosition(List<Clazz> list, int pos) {
 
             int groupSize = list.size();
             int[] index = new int[2];
             int p = pos;
             for (int i = 0; i < groupSize; i++) {
-                int temp = p - list.get(i).list.size() - 1;
+                int temp = p - list.get(i).student().size() - 1;
                 if (temp < 0) {
                     index[0] = i;
                     index[1] = p - 1;
@@ -219,41 +224,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public boolean areDataTheSame(int oldItemPosition, int newItemPosition) {
 
-            int[] oldPos = getGroupSonPosition(olds, oldItemPosition);
-            int[] newPos = getGroupSonPosition(news, newItemPosition);
-
-            String o = "", n = "";
-
-            if (oldPos[1] == -1) {
-                o = "p" + olds.get(oldPos[0]).position;
-            } else {
-                o = "s" + olds.get(oldPos[0]).list.get(oldPos[1]).position;
-            }
-            if (newPos[1] == -1) {
-                n = "p" + news.get(newPos[0]).position;
-            } else {
-                n = "s" + news.get(newPos[0]).list.get(newPos[1]).position;
-            }
-            return o.equals(n);
+            return oldItemPosition==newItemPosition;
         }
 
         @Override
         public boolean areDataContentsTheSame(int oldItemPosition, int newItemPosition) {
 
-            int[] oldPos = getGroupSonPosition(olds, oldItemPosition);
-            int[] newPos = getGroupSonPosition(news, newItemPosition);
-            String o = "", n = "";
-
+            int[] oldPos = getGroupSonPosition(olds.clazz(), oldItemPosition);
+            int[] newPos = getGroupSonPosition(news.clazz(), newItemPosition);
+//            String o = "", n = "";
+            Object o = null, n = null;
             if (oldPos[1] == -1) {
-                o = "p" + olds.get(oldPos[0]).title;
+                o = olds.clazz().get(oldPos[0]);
             } else {
-                o = "s" + olds.get(oldPos[0]).list.get(oldPos[1]).title;
+                o = olds.clazz().get(oldPos[0]).student().get(oldPos[1]);
             }
             if (newPos[1] == -1) {
-                n = "p" + news.get(newPos[0]).title;
+                n = news.clazz().get(newPos[0]);
             } else {
-                n = "s" + news.get(newPos[0]).list.get(newPos[1]).title;
+                n = news.clazz().get(newPos[0]).student().get(newPos[1]);
             }
+
             return o.equals(n);
         }
 
