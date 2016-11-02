@@ -34,7 +34,7 @@ public abstract class BaseGroupAdapter<T extends BaseGroupViewHolder> extends Ba
 
     @Override
     public final T onCreateChildrenViewHolder(ViewGroup parent, int viewType) {
-        if (viewType == GROUP) {
+        if ((viewType & GROUP) == GROUP) {
             return onCreateGroupViewHolder(parent, viewType);
         }
         return onCreateSonViewHolder(parent, viewType);
@@ -47,14 +47,14 @@ public abstract class BaseGroupAdapter<T extends BaseGroupViewHolder> extends Ba
         int[] ix = getGroupSonPosition(position);
 
         if (ix[1] == -1) {
-            return getGroupViewType(ix[0]);
+            return getGroupViewType(ix[0]) | GROUP;
         } else {
             return getSonViewType(ix[0], ix[1]);
         }
     }
 
     private int getGroupViewType(int position) {
-        return GROUP;
+        return 0;
     }
 
     public int getSonViewType(int groupPos, int sonPos) {
