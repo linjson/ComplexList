@@ -29,4 +29,5 @@ public class RecyclerViewEx extends RecyclerView {
 
 
     }
+
 }
