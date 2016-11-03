@@ -53,7 +53,7 @@ public abstract class BaseGroupAdapter<T extends BaseGroupViewHolder> extends Ba
         }
     }
 
-    private int getGroupViewType(int position) {
+    public int getGroupViewType(int position) {
         return 0;
     }
 
@@ -87,10 +87,10 @@ public abstract class BaseGroupAdapter<T extends BaseGroupViewHolder> extends Ba
         onBindSonViewHolder(holder, groupPos, sonPos);
     }
 
-    private int[] getGroupSonPosition(int pos) {
+    public int[] getGroupSonPosition(int pos) {
 
         int groupSize = getGroupSize();
-        int[] index = new int[2];
+        int[] index = {-1, -1};
         int p = pos;
         for (int i = 0; i < groupSize; i++) {
             int temp = p - getSonSize(i) - 1;

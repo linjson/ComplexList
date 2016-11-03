@@ -7,6 +7,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ljs.complexlist.R;
 
@@ -59,9 +60,15 @@ public class GroupRecyclerAdapter extends BaseGroupAdapter<GroupRecyclerAdapter.
     }
 
     @Override
-    protected void onBindGroupViewHolder(Test holder, int position) {
+    protected void onBindGroupViewHolder(final Test holder, final int position) {
         holder.bind(mDatas.clazz().get(position));
-
+        holder.mTextTitle.setClickable(true);
+        holder.mTextTitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(v.getContext(),"group"+position,Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
 
