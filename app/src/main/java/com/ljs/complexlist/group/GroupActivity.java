@@ -3,7 +3,6 @@ package com.ljs.complexlist.group;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.util.DiffUtil;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,6 +10,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ljs.complexlist.DividerItemDecoration;
 import com.ljs.complexlist.ItemTouchHelperCallback;
 import com.ljs.complexlist.R;
 
@@ -22,10 +22,10 @@ import itemtouchhelperextension.ItemTouchHelperExtension;
 import itemtouchhelperextension.RecyclerViewEx;
 import itemtouchhelperextension.SwipeRefreshLayoutEx;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class GroupActivity extends AppCompatActivity implements View.OnClickListener {
 
     private RecyclerViewEx mRecyclerView;
-    private MainRecyclerAdapter mAdapter;
+    private GroupRecyclerAdapter mAdapter;
     public ItemTouchHelperExtension mItemTouchHelper;
     public ItemTouchHelperExtension.Callback mCallback;
     private SwipeRefreshLayoutEx swipe;
@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         swipe = (SwipeRefreshLayoutEx) findViewById(R.id.swipe);
         swipe.setEnabled(false);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new MainRecyclerAdapter(this);
+        mAdapter = new GroupRecyclerAdapter(this);
 
         mAdapter.addHeaderView(createTestView("header1"));
         mAdapter.addHeaderView(createTestView("header2"));
@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         testDatas = createTestDatas();
         mAdapter.setDatas(ImmutableSchool.copyOf(testDatas));
         mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(this));
 //        mAdapter.updateData(createTestDatas());
         mCallback = new ItemTouchHelperCallback();
         mItemTouchHelper = new ItemTouchHelperExtension(mCallback);
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         a.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
+                Toast.makeText(GroupActivity.this, text, Toast.LENGTH_SHORT).show();
             }
         });
         return a;
@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         private final School news;
         private final School olds;
 
-        public Diff(MainRecyclerAdapter adapter, School olds, School news) {
+        public Diff(GroupRecyclerAdapter adapter, School olds, School news) {
             super(adapter);
             this.olds = olds;
             this.news = news;

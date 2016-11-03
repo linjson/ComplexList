@@ -18,13 +18,13 @@ import itemtouchhelperextension.ItemTouchHelperExtension;
 
 import static com.ljs.complexlist.R.id.text_list_main_index;
 
-public class MainRecyclerAdapter extends BaseGroupAdapter<MainRecyclerAdapter.Test> {
+public class GroupRecyclerAdapter extends BaseGroupAdapter<GroupRecyclerAdapter.Test> {
 
     private School mDatas;
     private Context mContext;
     private ItemTouchHelperExtension mItemTouchHelper;
 
-    public MainRecyclerAdapter(Context context) {
+    public GroupRecyclerAdapter(Context context) {
         mContext = context;
     }
 
