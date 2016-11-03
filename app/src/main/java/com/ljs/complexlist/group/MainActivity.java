@@ -13,7 +13,6 @@ import android.widget.Toast;
 
 import com.ljs.complexlist.ItemTouchHelperCallback;
 import com.ljs.complexlist.R;
-import com.ljs.complexlist.list.ItemTouchHelperCallback2;
 
 import java.util.List;
 import java.util.Random;
@@ -29,7 +28,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private MainRecyclerAdapter mAdapter;
     public ItemTouchHelperExtension mItemTouchHelper;
     public ItemTouchHelperExtension.Callback mCallback;
-    public ItemTouchHelperCallback2 mCallback2;
     private SwipeRefreshLayoutEx swipe;
     private School testDatas;
 
@@ -54,7 +52,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mRecyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
 //        mAdapter.updateData(createTestDatas());
         mCallback = new ItemTouchHelperCallback();
-        mCallback2 = new ItemTouchHelperCallback2();
         mItemTouchHelper = new ItemTouchHelperExtension(mCallback);
         mItemTouchHelper.attachToRecyclerView(mRecyclerView);
         mItemTouchHelper.setMoveDiffGroup(true);

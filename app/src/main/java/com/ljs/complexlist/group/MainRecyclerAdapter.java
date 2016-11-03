@@ -141,20 +141,6 @@ public class MainRecyclerAdapter extends BaseGroupAdapter<MainRecyclerAdapter.Te
         }
     }
 
-
-//    @Override
-//    public void onDataMove(int from, int to) {
-////        Collections.swap(mDatas, from, to);
-//    }
-
-
-//    @Override
-//    public void onBindSonViewHolder(Test v, int position, List<Object> payloads) {
-//        v.bind(mDatas.get(position));
-//        Bundle args = (Bundle) payloads.get(0);
-//        v.mTextTitle.setText(args.getString("test"));
-//    }
-
     @Override
     public int getGroupSize() {
         return mDatas == null ? 0 : mDatas.clazz().size();
