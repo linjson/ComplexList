@@ -264,6 +264,12 @@ public class ItemTouchHelperExtension extends RecyclerView.ItemDecoration
      */
     private GestureDetectorCompat mGestureDetector;
 
+
+    /**
+     * 是否允许sonview在不同的组中移动
+     */
+    private boolean moveDiffGroup;
+
     private final RecyclerView.OnItemTouchListener mOnItemTouchListener
             = new RecyclerView.OnItemTouchListener() {
 
@@ -946,14 +952,13 @@ public class ItemTouchHelperExtension extends RecyclerView.ItemDecoration
             return;
         }
 
-        if (getExtension(target).isFixed() || getExtension(target).isGroup()) {
+        if (getExtension(target).isFixed()) {
             return;
         }
 //        System.out.printf("==>%s,%s \n", getExtension(viewHolder).getGroupId(), getExtension(target).getGroupId());
-        if (getExtension(viewHolder).getGroupId() != getExtension(target).getGroupId()) {
+        if (getExtension(viewHolder).getGroupId() != getExtension(target).getGroupId() && !moveDiffGroup) {
             return;
         }
-
 
         final int toPosition = target.getAdapterPosition();
         final int fromPosition = viewHolder.getAdapterPosition();
@@ -2597,5 +2602,9 @@ public class ItemTouchHelperExtension extends RecyclerView.ItemDecoration
             return (Extension) vh;
         }
         return null;
+    }
+
+    public void setMoveDiffGroup(boolean enabled) {
+        moveDiffGroup = enabled;
     }
 }

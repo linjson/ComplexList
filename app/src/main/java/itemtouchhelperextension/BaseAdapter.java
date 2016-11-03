@@ -103,12 +103,14 @@ public abstract class BaseAdapter<T extends BaseViewHolder> extends RecyclerView
 
     @Override
     public final void onMove(int listFrom, int listTo) {
-        onDataMove(listFrom - getHeaderViewCount(), listTo - getHeaderViewCount());
-        notifyItemMoved(listFrom, listTo);
+        boolean move = onDataMove(listFrom - getHeaderViewCount(), listTo - getHeaderViewCount());
+        if (move) {
+            notifyItemMoved(listFrom, listTo);
+        }
 
     }
 
-    public abstract void onDataMove(int from, int to);
+    public abstract boolean onDataMove(int from, int to);
 
     @Override
     public void onBindViewHolder(BaseViewHolder holder, int position, List<Object> payloads) {

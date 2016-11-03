@@ -1,18 +1,18 @@
 package com.ljs.complexlist;
 
+import java.util.ArrayList;
+
 public class TestModel {
-    public boolean group;
     public int position;
     public String title;
+
+    public ArrayList<TestModel> list = new ArrayList<>();
     public int pid;
-    public TestModel(int position, String title, boolean group) {
-        this.position = position;
-        this.title = title;
-        this.group = group;
-    }
 
     public TestModel(int position, String title) {
-        this(position, title, false);
-
+        this.position = position;
+        this.title = title;
     }
+
+
 }

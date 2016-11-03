@@ -217,7 +217,8 @@ public class SwipeDragAdapter extends BaseAdapter<BaseViewHolder> {
 
 
     @Override
-    public void onDataMove(int from, int to) {
+    public boolean onDataMove(int from, int to) {
         Collections.swap(mDatas, from, to);
+        return true;
     }
 }

@@ -9,10 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.ljs.complexlist.R;
-import com.ljs.complexlist.TestModel;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import itemtouchhelperextension.BaseGroupAdapter;
@@ -21,49 +18,37 @@ import itemtouchhelperextension.ItemTouchHelperExtension;
 
 import static com.ljs.complexlist.R.id.text_list_main_index;
 
-public class MainRecyclerAdapter extends BaseGroupAdapter<MainRecyclerAdapter.Test> {
+public class GroupRecyclerAdapter extends BaseGroupAdapter<GroupRecyclerAdapter.Test> {
 
-    private List<TestModel> mDatas;
+    private School mDatas;
     private Context mContext;
     private ItemTouchHelperExtension mItemTouchHelper;
 
-    public MainRecyclerAdapter(Context context) {
-        mDatas = new ArrayList<>();
+    public GroupRecyclerAdapter(Context context) {
         mContext = context;
     }
 
-
-    public List<TestModel> getDatas() {
+    public School getDatas() {
         return mDatas;
     }
 
-    public void setDatas(List<TestModel> datas) {
-        mDatas = new ArrayList<>(datas);
+    public void setDatas(School datas) {
+        mDatas = datas;
     }
 
-    public void updateData(List<TestModel> datas) {
+    public void updateData(School datas) {
         setDatas(datas);
         notifyDataSetChanged();
     }
+
 
     private LayoutInflater getLayoutInflater() {
         return LayoutInflater.from(mContext);
     }
 
-
-    private void doDelete(int adapterPosition) {
-        mDatas.remove(adapterPosition);
-        notifyItemRemoved(adapterPosition);
-    }
-
     @Override
-    public int getChildrenCount() {
-        return mDatas.size();
-    }
-
-    @Override
-    protected void onBindSonViewHolder(final Test holder, int position) {
-        holder.bind(mDatas.get(position));
+    protected void onBindSonViewHolder(final Test holder, int groupPos, int sonPos) {
+        holder.bind(mDatas.clazz().get(groupPos).student().get(sonPos));
         holder.mTextIndex.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -75,7 +60,7 @@ public class MainRecyclerAdapter extends BaseGroupAdapter<MainRecyclerAdapter.Te
 
     @Override
     protected void onBindGroupViewHolder(Test holder, int position) {
-        holder.bind(mDatas.get(position));
+        holder.bind(mDatas.clazz().get(position));
 
 
     }
@@ -90,22 +75,35 @@ public class MainRecyclerAdapter extends BaseGroupAdapter<MainRecyclerAdapter.Te
         return new Test(getLayoutInflater().inflate(R.layout.list_item_group, parent, false), true);
     }
 
-    @Override
-    public boolean isGroupView(int position) {
-        return mDatas.get(position).group;
-    }
-
     public void setItemTouchHelper(ItemTouchHelperExtension itemTouchHelper) {
         mItemTouchHelper = itemTouchHelper;
     }
 
+    @Override
+    public boolean onGroupSonDataMove(int fromGroup, int fromSon, int toGroup, int toSon) {
+
+        ModifiableSchool modifiableSchool = ModifiableSchool.create().from(mDatas);
+
+        ModifiableStudent m = (ModifiableStudent) modifiableSchool.clazz().get(fromGroup).student().remove(fromSon);
+
+        m.setClazz(mDatas.clazz().get(toGroup).index());
+
+        if (toSon == -1) {
+            modifiableSchool.clazz().get(toGroup).student().add(m);
+        } else {
+            modifiableSchool.clazz().get(toGroup).student().add(toSon, m);
+        }
+        setDatas(modifiableSchool.toImmutable());
+        return true;
+    }
 
     public static class Test extends BaseGroupViewHolder {
         TextView mTextTitle;
         TextView mTextIndex;
         View mViewContent;
         View mActionContainer;
-        TestModel mData;
+        Clazz mDataClass;
+        Student mDataStudent;
 
         public Test(View itemView, boolean group) {
             super(itemView, group);
@@ -116,37 +114,53 @@ public class MainRecyclerAdapter extends BaseGroupAdapter<MainRecyclerAdapter.Te
             mActionContainer = itemView.findViewById(R.id.view_list_repo_action_container);
         }
 
-        public void bind(TestModel testModel) {
-            mData = testModel;
-            mTextTitle.setText(testModel.title);
+        public void bind(Clazz testModel) {
+            mDataClass = testModel;
+            mTextTitle.setText(testModel.name());
             if (mTextIndex != null) {
-                mTextIndex.setText("#" + testModel.position);
+                mTextIndex.setText("#" + testModel.index());
             }
         }
 
+        public void bind(Student testModel) {
+            mDataStudent = testModel;
+            mTextTitle.setText(testModel.name());
+            if (mTextIndex != null) {
+                mTextIndex.setText("#" + testModel.age());
+            }
+        }
+
+
         @Override
         public int getGroupId() {
-            return mData.pid;
+            if (mDataClass != null) {
+                return mDataClass.index();
+            } else {
+                return mDataStudent.clazz();
+            }
         }
     }
 
-
     @Override
-    public void onDataMove(int from, int to) {
-        Collections.swap(mDatas, from, to);
+    public int getGroupSize() {
+        return mDatas == null ? 0 : mDatas.clazz().size();
     }
 
+    @Override
+    public int getSonSize(int groupIndex) {
+        return mDatas == null ? 0 : mDatas.clazz().get(groupIndex).student().size();
+    }
 
     @Override
-    public void onBindSonViewHolder(Test v, int position, List<Object> payloads) {
-        v.bind(mDatas.get(position));
+    public void onBindGroupViewHolder(Test v, int position, List<Object> payloads) {
+        v.bind(mDatas.clazz().get(position));
         Bundle args = (Bundle) payloads.get(0);
         v.mTextTitle.setText(args.getString("test"));
     }
 
     @Override
-    public void onBindGroupViewHolder(Test v, int position, List<Object> payloads) {
-        v.bind(mDatas.get(position));
+    public void onBindSonViewHolder(Test v, int groupPos, int sonPos, List<Object> payloads) {
+        v.bind(mDatas.clazz().get(groupPos).student().get(sonPos));
         Bundle args = (Bundle) payloads.get(0);
         v.mTextTitle.setText(args.getString("test"));
     }
