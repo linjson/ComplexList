@@ -57,7 +57,7 @@ public abstract class DiffCallBackEx extends DiffUtil.Callback {
         return getDataChangePayload(oldItemPosition - mAdapter.getHeaderViewCount(), newItemPosition - mAdapter.getHeaderViewCount());
     }
 
-    protected Object getDataChangePayload(int oldItemPosition, int newItemPosition){
+    protected Object getDataChangePayload(int oldItemPosition, int newItemPosition) {
         return null;
     }
 
@@ -65,7 +65,9 @@ public abstract class DiffCallBackEx extends DiffUtil.Callback {
 
     protected abstract int getNewDataSize();
 
-    protected abstract boolean areDataTheSame(int oldItemPosition, int newItemPosition);
+    protected boolean areDataTheSame(int oldItemPosition, int newItemPosition) {
+        return oldItemPosition == newItemPosition;
+    }
 
     protected abstract boolean areDataContentsTheSame(int oldItemPosition, int newItemPosition);
 }
