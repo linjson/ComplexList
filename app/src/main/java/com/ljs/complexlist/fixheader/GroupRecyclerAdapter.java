@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.ljs.complexlist.R;
 import com.ljs.complexlist.group.Clazz;
 import com.ljs.complexlist.group.ImmutableSchool;
+import com.ljs.complexlist.group.ModifiableClazz;
 import com.ljs.complexlist.group.ModifiableSchool;
 import com.ljs.complexlist.group.ModifiableStudent;
 import com.ljs.complexlist.group.School;
@@ -35,6 +36,7 @@ public class GroupRecyclerAdapter extends BaseGroupAdapter<GroupRecyclerAdapter.
     private Context mContext;
     private ItemTouchHelperExtension mItemTouchHelper;
     private boolean h;
+
     public GroupRecyclerAdapter(RecyclerView view, Context context, FixedHeaderListView fixedHeaderListView) {
         super(view);
         mContext = context;
@@ -84,19 +86,21 @@ public class GroupRecyclerAdapter extends BaseGroupAdapter<GroupRecyclerAdapter.
 //                notifyItemChanged(4,bundle);
 
 
-                ModifiableSchool modifiableSchool=ModifiableSchool.create().from(mDatas);
-                List<Student> stu = modifiableSchool.clazz().get(position).student();
+                ModifiableSchool modifiableSchool = ModifiableSchool.create().from(mDatas);
+                ModifiableClazz clazz = (ModifiableClazz) modifiableSchool.clazz().get(position);
+                clazz.setHide(!clazz.hide());
+
+                List<Student> stu = clazz.student();
 
                 for (int i = 0; i < stu.size(); i++) {
-                    ModifiableStudent s= (ModifiableStudent) stu.get(i);
-                    s.setHide(!s.hide());
+                    ModifiableStudent s = (ModifiableStudent) stu.get(i);
+                    s.setHide(clazz.hide());
                 }
 
                 ImmutableSchool news = modifiableSchool.toImmutable();
                 DiffUtil.DiffResult result = DiffUtil.calculateDiff(new Diff(GroupRecyclerAdapter.this, mDatas, news), false);
                 result.dispatchUpdatesTo(GroupRecyclerAdapter.this);
                 setDatas(news);
-
 
 
                 Toast.makeText(v.getContext(), "group" + position, Toast.LENGTH_SHORT).show();
@@ -205,7 +209,7 @@ public class GroupRecyclerAdapter extends BaseGroupAdapter<GroupRecyclerAdapter.
         v.bind(mDatas.clazz().get(groupPos).student().get(sonPos));
         Bundle args = (Bundle) payloads.get(0);
 //        v.mTextTitle.setText(args.getString("test"));
-        boolean h=args.getBoolean("test");
+        boolean h = args.getBoolean("test");
         v.hideItemView(h);
     }
 

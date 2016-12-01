@@ -14,4 +14,5 @@ public interface Clazz {
     String name();
     int index();
     List<Student> student();
+    boolean hide();
 }

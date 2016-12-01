@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
         for (int i = 0; i < 3; i++) {
-            ImmutableClazz.Builder classBuilder = ImmutableClazz.builder().name("class" + i).index(i);
+            ImmutableClazz.Builder classBuilder = ImmutableClazz.builder().name("class" + i).index(i).hide(false);
 
 
             for (int j = 0; j < (i==0?3:15); j++) {
