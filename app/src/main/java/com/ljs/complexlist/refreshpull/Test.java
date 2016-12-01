@@ -8,6 +8,8 @@ import android.widget.TextView;
 
 import com.ljs.complexlist.R;
 
+import itemtouchhelperextension.RefreshPullView;
+
 /**
  * Created by ljs on 16/9/26.
  */
