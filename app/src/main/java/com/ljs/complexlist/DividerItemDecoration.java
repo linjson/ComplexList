@@ -114,6 +114,9 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
         for (int i = 0; i < childCount - 1; i++) {
             final View child = parent.getChildAt(i);
             final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
+            if (params.height == 0) {
+                continue;
+            }
             final int top = child.getBottom() + params.bottomMargin +
                     Math.round(ViewCompat.getTranslationY(child));
             final int bottom = top + dividerHeight;
@@ -145,6 +148,12 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
         super.getItemOffsets(outRect, view, parent, state);
         if (mOrientation == VERTICAL_LIST) {
+
+            final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) view.getLayoutParams();
+            if (params.height == 0) {
+                return;
+            }
+
             if (parent.getChildAdapterPosition(view) != parent.getAdapter().getItemCount() - 1) {
                 outRect.set(0, 0, 0, dividerHeight);
             } else {
