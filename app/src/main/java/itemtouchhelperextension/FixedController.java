@@ -101,5 +101,16 @@ public class FixedController extends RecyclerView.OnScrollListener {
         }
     }
 
+    public void refreshView(int group) {
+        if (currentGroupIndex == -1) {
+            getAdapter().notifyItemChanged(getAdapter().getGroupIndexToDataIndex(group) + getAdapter().getHeaderViewCount());
+            return;
+        }
+        BaseGroupViewHolder holer = getAdapter().onCreateGroupViewHolder(mView, getAdapter().getGroupViewType(group));
+        getAdapter().onBindGroupViewHolder(holer, group);
+        clearHeaderView();
+        header.addView(holer.itemView);
+    }
+
 
 }

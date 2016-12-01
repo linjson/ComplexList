@@ -40,7 +40,7 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
         swipe = (SwipeRefreshLayoutEx) findViewById(R.id.swipe);
         swipe.setEnabled(false);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new GroupRecyclerAdapter(this);
+        mAdapter = new GroupRecyclerAdapter(mRecyclerView,this);
 
         mAdapter.addHeaderView(createTestView("header1"));
         mAdapter.addHeaderView(createTestView("header2"));

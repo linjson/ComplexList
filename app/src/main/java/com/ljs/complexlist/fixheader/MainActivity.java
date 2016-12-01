@@ -2,6 +2,7 @@ package com.ljs.complexlist.fixheader;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,15 +13,20 @@ import android.widget.Toast;
 import com.ljs.complexlist.DividerItemDecoration;
 import com.ljs.complexlist.ItemTouchHelperCallback;
 import com.ljs.complexlist.R;
-import com.ljs.complexlist.group.GroupRecyclerAdapter;
+import com.ljs.complexlist.group.Clazz;
 import com.ljs.complexlist.group.ImmutableClazz;
 import com.ljs.complexlist.group.ImmutableSchool;
 import com.ljs.complexlist.group.ImmutableStudent;
+import com.ljs.complexlist.group.ModifiableClazz;
+import com.ljs.complexlist.group.ModifiableSchool;
+import com.ljs.complexlist.group.ModifiableStudent;
 import com.ljs.complexlist.group.School;
 import com.ljs.complexlist.group.Student;
 
+import java.util.List;
 import java.util.Random;
 
+import itemtouchhelperextension.DiffCallBackEx;
 import itemtouchhelperextension.FixedHeaderListView;
 import itemtouchhelperextension.ItemTouchHelperExtension;
 import itemtouchhelperextension.RecyclerViewEx;
@@ -45,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         swipe = (SwipeRefreshLayoutEx) findViewById(R.id.swipe);
         swipe.setEnabled(false);
 
-        mAdapter = new GroupRecyclerAdapter(this);
+        mAdapter = new GroupRecyclerAdapter(mRecyclerView,this,view);
 
         mAdapter.addHeaderView(createTestView("header1"));
         mAdapter.addHeaderView(createTestView("header2"));
@@ -104,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             ImmutableClazz.Builder classBuilder = ImmutableClazz.builder().name("class" + i).index(i);
 
 
-            for (int j = 0; j < 15; j++) {
+            for (int j = 0; j < (i==0?3:15); j++) {
                 Student stu = ImmutableStudent.builder().name("test" + j).age(j).clazz(i).build();
                 classBuilder.addStudent(stu);
             }
@@ -132,7 +138,124 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
 
-        mRecyclerView.scrollToPosition(20);
+
+        //update
+        ModifiableSchool m = ModifiableSchool.create().from(testDatas);
+        ModifiableClazz c = (ModifiableClazz) m.clazz().get(0);
+        c.setName("change");
+
+        ModifiableStudent s = (ModifiableStudent) m.clazz().get(0).student().get(2);
+        s.setName("change-stu");
+
+        //delete
+        m.clazz().get(0).student().remove(1);
+
+        //add
+        m.clazz().get(0).student().add(0, ImmutableStudent.builder().age(0).name("adsd").clazz(0).build());
+
+
+        testDatas = m.toImmutable();
+        DiffUtil.DiffResult result = DiffUtil.calculateDiff(new MainActivity.Diff(mAdapter, mAdapter.getDatas(), testDatas), false);
+        result.dispatchUpdatesTo(mAdapter);
+        mAdapter.setDatas(testDatas);
+
+
+    }
+
+
+    static class Diff extends DiffCallBackEx {
+
+        private final School news;
+        private final School olds;
+
+        public Diff(GroupRecyclerAdapter adapter, School olds, School news) {
+            super(adapter);
+            this.olds = olds;
+            this.news = news;
+
+        }
+
+        @Override
+        protected Object getDataChangePayload(int oldItemPosition, int newItemPosition) {
+
+            int[] newPos = getGroupSonPosition(news.clazz(), newItemPosition);
+
+            Bundle bundle = new Bundle();
+            if (newPos[1] == -1) {
+                bundle.putString("test", news.clazz().get(newPos[0]).name());
+            } else {
+                bundle.putString("test", news.clazz().get(newPos[0]).student().get(newPos[1]).name());
+            }
+            return bundle;
+        }
+
+        private int getSize(School test) {
+            int size = test.clazz().size();
+            int t = size;
+
+            for (int i = 0; i < size; i++) {
+                t += test.clazz().get(i).student().size();
+            }
+
+            return t;
+        }
+
+        @Override
+        public int getOldDataSize() {
+            return getSize(olds);
+        }
+
+
+        @Override
+        public int getNewDataSize() {
+            return getSize(news);
+        }
+
+        private int[] getGroupSonPosition(List<Clazz> list, int pos) {
+
+            int groupSize = list.size();
+            int[] index = new int[2];
+            int p = pos;
+            for (int i = 0; i < groupSize; i++) {
+                int temp = p - list.get(i).student().size() - 1;
+                if (temp < 0) {
+                    index[0] = i;
+                    index[1] = p - 1;
+                    return index;
+                } else {
+                    p = temp;
+                }
+            }
+            return index;
+        }
+
+        @Override
+        public boolean areDataTheSame(int oldItemPosition, int newItemPosition) {
+
+            return oldItemPosition==newItemPosition;
+        }
+
+        @Override
+        public boolean areDataContentsTheSame(int oldItemPosition, int newItemPosition) {
+
+            int[] oldPos = getGroupSonPosition(olds.clazz(), oldItemPosition);
+            int[] newPos = getGroupSonPosition(news.clazz(), newItemPosition);
+//            String o = "", n = "";
+            Object o = null, n = null;
+            if (oldPos[1] == -1) {
+                o = olds.clazz().get(oldPos[0]);
+            } else {
+                o = olds.clazz().get(oldPos[0]).student().get(oldPos[1]);
+            }
+            if (newPos[1] == -1) {
+                n = news.clazz().get(newPos[0]);
+            } else {
+                n = news.clazz().get(newPos[0]).student().get(newPos[1]);
+            }
+
+            return o.equals(n);
+        }
+
 
     }
 

@@ -1,4 +1,4 @@
-package com.ljs.complexlist.group;
+package com.ljs.complexlist.fixheader;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -11,24 +11,32 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ljs.complexlist.R;
+import com.ljs.complexlist.group.Clazz;
+import com.ljs.complexlist.group.ModifiableSchool;
+import com.ljs.complexlist.group.ModifiableStudent;
+import com.ljs.complexlist.group.School;
+import com.ljs.complexlist.group.Student;
 
 import java.util.List;
 
 import itemtouchhelperextension.BaseGroupAdapter;
 import itemtouchhelperextension.BaseGroupViewHolder;
+import itemtouchhelperextension.FixedHeaderListView;
 import itemtouchhelperextension.ItemTouchHelperExtension;
 
 import static com.ljs.complexlist.R.id.text_list_main_index;
 
 public class GroupRecyclerAdapter extends BaseGroupAdapter<GroupRecyclerAdapter.Test> {
 
+    private final FixedHeaderListView fixedHeaderListView;
     private School mDatas;
     private Context mContext;
     private ItemTouchHelperExtension mItemTouchHelper;
 
-    public GroupRecyclerAdapter(RecyclerView view,Context context) {
+    public GroupRecyclerAdapter(RecyclerView view, Context context, FixedHeaderListView fixedHeaderListView) {
         super(view);
         mContext = context;
+        this.fixedHeaderListView = fixedHeaderListView;
     }
 
     public School getDatas() {
@@ -177,6 +185,7 @@ public class GroupRecyclerAdapter extends BaseGroupAdapter<GroupRecyclerAdapter.
 
     @Override
     public void onGroupChange(int toGroup) {
-        super.onGroupChange(toGroup);
+
+        fixedHeaderListView.refreshHeaderView(toGroup);
     }
 }

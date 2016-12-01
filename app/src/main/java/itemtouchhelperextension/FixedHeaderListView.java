@@ -14,6 +14,7 @@ import android.widget.FrameLayout;
 public class FixedHeaderListView extends FrameLayout {
     private RecyclerViewEx recyclerView;
     private FrameLayout headerLayout;
+    private FixedController fixedController;
 
     public FixedHeaderListView(Context context) {
         super(context);
@@ -42,7 +43,8 @@ public class FixedHeaderListView extends FrameLayout {
         addView(recyclerView);
         addView(headerLayout);
 
-        recyclerView.addOnScrollListener(new FixedController(recyclerView,headerLayout));
+        fixedController = new FixedController(recyclerView, headerLayout);
+        recyclerView.addOnScrollListener(fixedController);
 
 
     }
@@ -61,5 +63,9 @@ public class FixedHeaderListView extends FrameLayout {
 
     public FrameLayout getHeaderLayout() {
         return headerLayout;
+    }
+
+    public void refreshHeaderView(int group){
+        fixedController.refreshView(group);
     }
 }
