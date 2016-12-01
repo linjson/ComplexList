@@ -9,10 +9,12 @@ import android.view.View;
 public class BaseGroupViewHolder extends BaseViewHolder {
 
     private final boolean group;
+    private final int old;
 
     public BaseGroupViewHolder(View itemView, boolean group) {
         super(itemView);
         this.group = group;
+        old=itemView.getLayoutParams().height;
     }
 
     public int getGroupId() {
@@ -27,5 +29,13 @@ public class BaseGroupViewHolder extends BaseViewHolder {
 
     public BaseGroupViewHolder(View itemView) {
         this(itemView, false);
+    }
+
+    public void hideItemView(boolean h) {
+        if(h){
+            itemView.getLayoutParams().height=0;
+        }else{
+            itemView.getLayoutParams().height=old;
+        }
     }
 }

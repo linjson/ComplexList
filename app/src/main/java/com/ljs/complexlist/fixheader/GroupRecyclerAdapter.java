@@ -2,6 +2,7 @@ package com.ljs.complexlist.fixheader;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -12,6 +13,7 @@ import android.widget.Toast;
 
 import com.ljs.complexlist.R;
 import com.ljs.complexlist.group.Clazz;
+import com.ljs.complexlist.group.ImmutableSchool;
 import com.ljs.complexlist.group.ModifiableSchool;
 import com.ljs.complexlist.group.ModifiableStudent;
 import com.ljs.complexlist.group.School;
@@ -32,7 +34,7 @@ public class GroupRecyclerAdapter extends BaseGroupAdapter<GroupRecyclerAdapter.
     private School mDatas;
     private Context mContext;
     private ItemTouchHelperExtension mItemTouchHelper;
-
+    private boolean h;
     public GroupRecyclerAdapter(RecyclerView view, Context context, FixedHeaderListView fixedHeaderListView) {
         super(view);
         mContext = context;
@@ -76,6 +78,27 @@ public class GroupRecyclerAdapter extends BaseGroupAdapter<GroupRecyclerAdapter.
         holder.mTextTitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+//                Bundle bundle = new Bundle();
+//                h=!h;
+//                bundle.putBoolean("test",h);
+//                notifyItemChanged(4,bundle);
+
+
+                ModifiableSchool modifiableSchool=ModifiableSchool.create().from(mDatas);
+                List<Student> stu = modifiableSchool.clazz().get(position).student();
+
+                for (int i = 0; i < stu.size(); i++) {
+                    ModifiableStudent s= (ModifiableStudent) stu.get(i);
+                    s.setHide(!s.hide());
+                }
+
+                ImmutableSchool news = modifiableSchool.toImmutable();
+                DiffUtil.DiffResult result = DiffUtil.calculateDiff(new Diff(GroupRecyclerAdapter.this, mDatas, news), false);
+                result.dispatchUpdatesTo(GroupRecyclerAdapter.this);
+                setDatas(news);
+
+
+
                 Toast.makeText(v.getContext(), "group" + position, Toast.LENGTH_SHORT).show();
             }
         });
@@ -146,6 +169,7 @@ public class GroupRecyclerAdapter extends BaseGroupAdapter<GroupRecyclerAdapter.
             if (mTextIndex != null) {
                 mTextIndex.setText("#" + testModel.age());
             }
+            hideItemView(testModel.hide());
         }
 
 
@@ -180,7 +204,9 @@ public class GroupRecyclerAdapter extends BaseGroupAdapter<GroupRecyclerAdapter.
     public void onBindSonViewHolder(Test v, int groupPos, int sonPos, List<Object> payloads) {
         v.bind(mDatas.clazz().get(groupPos).student().get(sonPos));
         Bundle args = (Bundle) payloads.get(0);
-        v.mTextTitle.setText(args.getString("test"));
+//        v.mTextTitle.setText(args.getString("test"));
+        boolean h=args.getBoolean("test");
+        v.hideItemView(h);
     }
 
     @Override

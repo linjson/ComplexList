@@ -14,4 +14,6 @@ public interface Student {
     int age();
 
     int clazz();
+
+    boolean hide();
 }
