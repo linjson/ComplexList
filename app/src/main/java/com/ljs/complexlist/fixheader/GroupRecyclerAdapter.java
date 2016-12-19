@@ -88,7 +88,9 @@ public class GroupRecyclerAdapter extends BaseGroupAdapter<GroupRecyclerAdapter.
 
                 ModifiableSchool modifiableSchool = ModifiableSchool.create().from(mDatas);
                 ModifiableClazz clazz = (ModifiableClazz) modifiableSchool.clazz().get(position);
+
                 clazz.setHide(!clazz.hide());
+
 
                 List<Student> stu = clazz.student();
 
@@ -102,6 +104,7 @@ public class GroupRecyclerAdapter extends BaseGroupAdapter<GroupRecyclerAdapter.
                 result.dispatchUpdatesTo(GroupRecyclerAdapter.this);
                 setDatas(news);
 
+                fixedHeaderListView.getRecyclerView().scrollToPosition(getGroupIndexToDataIndex(position) + getHeaderViewCount());
 
                 Toast.makeText(v.getContext(), "group" + position, Toast.LENGTH_SHORT).show();
             }

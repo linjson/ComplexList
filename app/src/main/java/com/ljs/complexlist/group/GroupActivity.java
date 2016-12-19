@@ -96,11 +96,11 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
 
 
         for (int i = 0; i < 2; i++) {
-            ImmutableClazz.Builder classBuilder = ImmutableClazz.builder().name("class" + i).index(i);
+            ImmutableClazz.Builder classBuilder = ImmutableClazz.builder().name("class" + i).index(i).hide(false);
 
 
             for (int j = 0; j < 5; j++) {
-                Student stu = ImmutableStudent.builder().name("test" + j).age(j).clazz(i).build();
+                Student stu = ImmutableStudent.builder().name("test" + j).age(j).clazz(i).hide(false).build();
                 classBuilder.addStudent(stu);
             }
 

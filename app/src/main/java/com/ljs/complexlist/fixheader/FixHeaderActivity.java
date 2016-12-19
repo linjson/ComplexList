@@ -29,7 +29,7 @@ import itemtouchhelperextension.ItemTouchHelperExtension;
 import itemtouchhelperextension.RecyclerViewEx;
 import itemtouchhelperextension.SwipeRefreshLayoutEx;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class FixHeaderActivity extends AppCompatActivity implements View.OnClickListener {
 
     private RecyclerViewEx mRecyclerView;
     private GroupRecyclerAdapter mAdapter;
@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         a.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
+                Toast.makeText(FixHeaderActivity.this, text, Toast.LENGTH_SHORT).show();
             }
         });
         return a;
