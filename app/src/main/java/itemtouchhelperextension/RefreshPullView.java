@@ -185,13 +185,17 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
     }
 
     private void viewStopAnimator() {
-        childHead.clearAnimation();
-        childFoot.clearAnimation();
+        if (childHead != null) {
+            childHead.clearAnimation();
+        }
+        if (childFoot != null) {
+            childFoot.clearAnimation();
+        }
         headerScrolled = 0;
         footerScrolled = 0;
     }
 
-    public void setRefresh(boolean open) {
+    public void setRefreshing(boolean open) {
 
 
         if (loadingMore || open == refreshing) {
@@ -244,7 +248,7 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
 //        System.out.printf("==>onStopNestedScroll,%s \n", headerScrolled);
         if (headerScrolled > 0 && flag == ViewCompat.SCROLL_INDICATOR_TOP) {
             if (childHead.getTop() > desc) {
-                setRefresh(true);
+                setRefreshing(true);
             } else {
                 viewStartAnimator(childHead, headerSrcPosition);
             }
@@ -387,7 +391,7 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
 
         private void moveView(float interpolatedTime, View child, int to) {
             int current = child.getTop();
-            int result = (int) (current +  ((to - current) * interpolatedTime));
+            int result = (int) (current + ((to - current) * interpolatedTime));
             child.offsetTopAndBottom(result - current);
         }
     }

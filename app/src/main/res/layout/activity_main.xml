@@ -4,12 +4,17 @@
               android:layout_height="match_parent"
               android:orientation="vertical">
 
-    <itemtouchhelperextension.SwipeRefreshLayoutEx
+    <itemtouchhelperextension.RefreshPullView
         android:id="@+id/swipe"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
-
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/holo_blue_dark"
+            android:text="header"
+            android:textColor="@android:color/white"/>
         <itemtouchhelperextension.RecyclerViewEx
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/recycler_main"
@@ -33,7 +38,7 @@
 
         <!--</LinearLayout>-->
         <!--</android.support.v4.widget.NestedScrollView>-->
-    </itemtouchhelperextension.SwipeRefreshLayoutEx>
+    </itemtouchhelperextension.RefreshPullView>
 
     <Button
         android:id="@+id/btn"

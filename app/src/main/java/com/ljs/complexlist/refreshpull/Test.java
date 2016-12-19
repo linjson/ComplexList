@@ -43,7 +43,7 @@ public class Test extends Activity {
             @Override
             public void onClick(View v) {
 
-                nv.setRefresh(false);
+                nv.setRefreshing(false);
                 refreshing = !refreshing;
             }
         });

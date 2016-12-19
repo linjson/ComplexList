@@ -21,7 +21,7 @@ import java.util.Random;
 
 import itemtouchhelperextension.ItemTouchHelperExtension;
 import itemtouchhelperextension.RecyclerViewEx;
-import itemtouchhelperextension.SwipeRefreshLayoutEx;
+import itemtouchhelperextension.RefreshPullView;
 
 public class SwipeDragActivity extends AppCompatActivity {
 
@@ -30,7 +30,7 @@ public class SwipeDragActivity extends AppCompatActivity {
     public ItemTouchHelperExtension mItemTouchHelper;
     public ItemTouchHelperExtension.Callback mCallback;
     public ItemTouchHelperCallback2 mCallback2;
-    private SwipeRefreshLayoutEx swipe;
+    private RefreshPullView swipe;
     private Handler mHandler = new Handler();
     private ItemTouchHelper mItemTouchHelper2;
 
@@ -40,8 +40,8 @@ public class SwipeDragActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mRecyclerView = (RecyclerViewEx) findViewById(R.id.recycler_main);
-        swipe = (SwipeRefreshLayoutEx) findViewById(R.id.swipe);
-        swipe.setEnabled(false);
+        swipe = (RefreshPullView) findViewById(R.id.swipe);
+//        swipe.setEnabled(false);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new SwipeDragAdapter(this);
 
@@ -75,12 +75,12 @@ public class SwipeDragActivity extends AppCompatActivity {
 //            }
 //        });
 
-//        findViewById(R.id.btn).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                swipe.setRefreshing(false);
-//            }
-//        });
+        findViewById(R.id.btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                swipe.setRefreshing(false);
+            }
+        });
 //
 //        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.ll);
 //
