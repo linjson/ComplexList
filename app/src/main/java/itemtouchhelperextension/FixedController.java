@@ -32,7 +32,18 @@ public class FixedController extends RecyclerView.OnScrollListener {
     }
 
     private int findNextVisibleItemPosition() {
-        return layoutManger.findFirstCompletelyVisibleItemPosition() - getAdapter().getHeaderViewCount();
+        int next = layoutManger.findFirstCompletelyVisibleItemPosition() - getAdapter().getHeaderViewCount();
+
+        while (next < getAdapter().getChildrenCount()) {
+            RecyclerView.ViewHolder viewHolder = mView.findViewHolderForAdapterPosition(next + getAdapter().getHeaderViewCount());
+
+            if (viewHolder.itemView.getHeight() > 0) {
+                return next;
+            }
+            next++;
+        }
+
+        return next;
     }
 
     private void clearHeaderView() {
@@ -70,7 +81,6 @@ public class FixedController extends RecyclerView.OnScrollListener {
         }
         int a = findFirstVisibleItemPosition();
         int b = findNextVisibleItemPosition();
-
         if (a >= 0) {
             int[] pos = getAdapter().getGroupSonPosition(a);
             int[] next = getAdapter().getGroupSonPosition(b);
