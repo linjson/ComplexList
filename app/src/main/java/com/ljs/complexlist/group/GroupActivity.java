@@ -37,8 +37,8 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_main);
 
         mRecyclerView = (RecyclerViewEx) findViewById(R.id.recycler_main);
-        swipe = (SwipeRefreshLayoutEx) findViewById(R.id.swipe);
-        swipe.setEnabled(false);
+//        swipe = (SwipeRefreshLayoutEx) findViewById(R.id.swipe);
+//        swipe.setEnabled(false);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new GroupRecyclerAdapter(mRecyclerView,this);
 

@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
 
     private RecyclerView mList;
 
-    private final String[] list = new String[]{"fixheader", "group", "list", "refreshpull"};
+    private final String[] list = new String[]{"fixheader", "group", "swipe-drag", "refreshpull"};
 
     private final Class[] clazz = {FixHeaderActivity.class, GroupActivity.class, SwipeDragActivity.class, Test.class};
 
