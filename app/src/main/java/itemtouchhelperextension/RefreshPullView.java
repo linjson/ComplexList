@@ -147,11 +147,15 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
 
     private void setTargetOffset(int offsetY) {
         if (flag == ViewCompat.SCROLL_INDICATOR_TOP) {
-            headerScrolled += offsetY;
-            childHead.offsetTopAndBottom(offsetY);
+            if (childHead != null) {
+                headerScrolled += offsetY;
+                childHead.offsetTopAndBottom(offsetY);
+            }
         } else {
-            footerScrolled += offsetY;
-            childFoot.offsetTopAndBottom(offsetY);
+            if (childFoot != null) {
+                footerScrolled += offsetY;
+                childFoot.offsetTopAndBottom(offsetY);
+            }
         }
 
         childBody.offsetTopAndBottom(offsetY);
@@ -198,9 +202,9 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
     public void setRefreshing(boolean open) {
 
 
-        if (loadingMore || open == refreshing) {
-            return;
-        }
+//        if (loadingMore || open == refreshing) {
+//            return;
+//        }
         if (open) {
             viewStartAnimator(childHead, 0, -headerSrcPosition);
         } else {
@@ -210,9 +214,9 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
     }
 
     public void setLoadingMore(boolean open) {
-        if (refreshing || open == loadingMore) {
-            return;
-        }
+//        if (refreshing || open == loadingMore) {
+//            return;
+//        }
         if (open) {
             viewStartAnimator(childFoot, footerSrcPosition - childFoot.getMeasuredHeight(), -childFoot.getMeasuredHeight());
         } else {
@@ -228,9 +232,9 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
     public boolean onStartNestedScroll(View child, View target, int nestedScrollAxes) {
         viewStopAnimator();
 //        System.out.printf("==>onStartNestedScroll \n");
-        if (refreshing || loadingMore) {
-            return false;
-        }
+//        if (refreshing || loadingMore) {
+//            return false;
+//        }
         return (nestedScrollAxes & ViewCompat.SCROLL_AXIS_VERTICAL) != 0;
     }
 
@@ -242,21 +246,31 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
 //        System.out.printf("==>onNestedScrollAccepted \n");
     }
 
+    private void moveView(View child, int to) {
+        int current = child.getTop();
+        int result = (int) (current + ((to - current) * 1));
+        child.offsetTopAndBottom(result - current);
+    }
+
     @Override
     public void onStopNestedScroll(View target) {
         nestedScrollingParentHelper.onStopNestedScroll(target);
 //        System.out.printf("==>onStopNestedScroll,%s \n", headerScrolled);
-        if (headerScrolled > 0 && flag == ViewCompat.SCROLL_INDICATOR_TOP) {
-            if (childHead.getTop() > desc) {
-                setRefreshing(true);
-            } else {
-                viewStartAnimator(childHead, headerSrcPosition);
+        if (flag == ViewCompat.SCROLL_INDICATOR_TOP) {
+            if (headerScrolled > 0) {
+                if (childHead.getTop() > desc || refreshing) {
+                    setRefreshing(true);
+                } else {
+                    viewStartAnimator(childHead, headerSrcPosition);
+                }
             }
+
             headerScrolled = 0;
+
         } else if (footerScrolled < 0 && flag == ViewCompat.SCROLL_INDICATOR_BOTTOM) {
             footerScrolled = 0;
 
-            if (getMeasuredHeight() - childFoot.getBottom() > desc) {
+            if (getMeasuredHeight() - childFoot.getBottom() > desc || loadingMore) {
                 setLoadingMore(true);
             } else {
                 viewStartAnimator(childFoot, footerSrcPosition);
@@ -274,7 +288,23 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
         dispatchNestedScroll(dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed,
                 mParentOffsetInWindow);
         final int dy = dyUnconsumed + mParentOffsetInWindow[1];
-        if (dy < 0 && !childBodyCanScrollUP()) {
+        if (refreshing) {
+            if (dy > 0 && !childBodyCanScrollUP()) {
+                flag = ViewCompat.SCROLL_INDICATOR_TOP;
+                setTargetOffset(-dy);
+            }
+//            System.out.printf("==>%s,%s \n", "refreshing", childBody.getTop());
+
+            moveView(childBody, 0);
+            moveView(childHead, headerSrcPosition);
+        } else if (loadingMore) {
+            if(dy<0&&!childBodyCanScrollDown()){
+                flag = ViewCompat.SCROLL_INDICATOR_BOTTOM;
+                setTargetOffset(-dy);
+            }
+            moveView(childBody, 0);
+            moveView(childFoot, footerSrcPosition);
+        } else if (dy < 0 && !childBodyCanScrollUP()) {
             flag = ViewCompat.SCROLL_INDICATOR_TOP;
             setTargetOffset(-dy);
         } else if (dy > 0 && !childBodyCanScrollDown()) {
@@ -287,7 +317,23 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
     @Override
     public void onNestedPreScroll(View target, int dx, int dy, int[] consumed) {
 //        System.out.printf("==>onNestedPreScroll,dx:%s,dy:%s,[0]:%s,[1]:%s \n", dx, dy, consumed[0], consumed[1]);
-        if (flag == ViewCompat.SCROLL_INDICATOR_TOP && dy > 0 && headerScrolled > 0) {
+        System.out.printf("==>headerScrolled=%s \n", headerScrolled);
+
+        if (refreshing) {
+
+
+            if (childHead.getTop() >= headerSrcPosition && !childBodyCanScrollUP()) {
+                consumed[1] = dy;
+                setTargetOffset(-dy);
+            }
+
+
+        } else if (loadingMore) {
+            if (childFoot.getTop() <= getMeasuredHeight() && !childBodyCanScrollDown()) {
+                consumed[1] = dy;
+                setTargetOffset(-dy);
+            }
+        } else if (flag == ViewCompat.SCROLL_INDICATOR_TOP && dy > 0 && headerScrolled > 0) {
             consumed[1] = dy;
             setTargetOffset(-dy);
         } else if (flag == ViewCompat.SCROLL_INDICATOR_BOTTOM && dy < 0 && footerScrolled < 0) {
@@ -301,6 +347,7 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
             consumed[0] += parentConsumed[0];
             consumed[1] += parentConsumed[1];
         }
+
 
     }
 
@@ -385,7 +432,7 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
         protected void applyTransformation(float interpolatedTime, Transformation t) {
             moveView(interpolatedTime, child, childTo);
             moveView(interpolatedTime, body, bodyTo);
-            System.out.printf("==>in:%s \n", interpolatedTime);
+//            System.out.printf("==>in:%s \n", interpolatedTime);
 
         }
 
