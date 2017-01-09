@@ -308,12 +308,6 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
                 setTargetOffset(-x);
             }
         } else if (loadingMore) {
-//            if (dy < 0 && !childBodyCanScrollDown()) {
-//                flag = ViewCompat.SCROLL_INDICATOR_BOTTOM;
-//                setTargetOffset(-dy);
-//            }
-//            moveView(childBody, 0);
-//            moveView(childFoot, footerSrcPosition);
 
             if (childFoot.getTop() >= footerSrcPosition && !childBodyCanScrollDown()) {
                 int x = Math.min(childFoot.getTop(), dy);
