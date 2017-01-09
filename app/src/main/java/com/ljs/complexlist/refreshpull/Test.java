@@ -39,6 +39,14 @@ public class Test extends Activity {
 
         }
 
+//        TextView textView = new TextView(this);
+//        textView.setText("header");
+//        nv.setHeaderView(textView);
+//
+//        TextView textView2 = new TextView(this);
+//        textView2.setText("footer");
+//        nv.setFooterView(textView2);
+
         findViewById(R.id.up).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

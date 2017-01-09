@@ -133,6 +133,17 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
         }
     }
 
+    public void setHeaderView(View view) {
+        childHead = view;
+        addView(view);
+    }
+
+    public void setFooterView(View view) {
+        childFoot = view;
+        addView(view);
+    }
+
+
     @Override
     public void addView(View child, LayoutParams params) {
         super.addView(child, params);
@@ -150,15 +161,17 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
             if (childHead != null) {
                 headerScrolled += offsetY;
                 childHead.offsetTopAndBottom(offsetY);
+                childBody.offsetTopAndBottom(offsetY);
             }
         } else {
             if (childFoot != null) {
                 footerScrolled += offsetY;
                 childFoot.offsetTopAndBottom(offsetY);
+                childBody.offsetTopAndBottom(offsetY);
             }
         }
 
-        childBody.offsetTopAndBottom(offsetY);
+
     }
 
     private boolean childBodyCanScrollUP() {
@@ -202,7 +215,7 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
     public void setRefreshing(boolean open) {
 
 
-        if (loadingMore) {
+        if (loadingMore || childHead == null) {
             return;
         }
         if (open) {
@@ -214,7 +227,7 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
     }
 
     public void setLoadingMore(boolean open) {
-        if (refreshing) {
+        if (refreshing || childFoot == null) {
             return;
         }
         if (open) {
@@ -250,6 +263,7 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
 
     @Override
     public boolean onStartNestedScroll(View child, View target, int nestedScrollAxes) {
+
         viewStopAnimator();
 //        System.out.printf("==>onStartNestedScroll \n");
 //        if (refreshing || loadingMore) {
@@ -426,7 +440,6 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
     }
 
     //NestedScrollingChild end
-
 
     private static class ViewAnimation extends Animation {
 
