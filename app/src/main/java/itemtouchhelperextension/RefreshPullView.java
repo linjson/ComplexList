@@ -30,7 +30,6 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
     private DecelerateInterpolator mDecelerateInterpolator;
     private int footerSrcPosition;
     private int durationMillis = 400;
-    private int desc;
     private Animation.AnimationListener listener = new Animation.AnimationListener() {
         @Override
         public void onAnimationStart(Animation animation) {
@@ -118,7 +117,6 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        desc = getMeasuredHeight() / 4;
         if (childBody != null) {
             childBody.measure(MeasureSpec.makeMeasureSpec(getMeasuredWidth() - getPaddingLeft() - getPaddingRight(), MeasureSpec.EXACTLY),
                     MeasureSpec.makeMeasureSpec(getMeasuredHeight() - getPaddingTop() - getPaddingBottom(), MeasureSpec.EXACTLY));
@@ -284,8 +282,8 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
     public void onStopNestedScroll(View target) {
         nestedScrollingParentHelper.onStopNestedScroll(target);
 //        System.out.printf("==>onStopNestedScroll,%s \n", headerScrolled);
-        if (headerScrolled > 0 && flag == ViewCompat.SCROLL_INDICATOR_TOP) {
-            if (childHead.getTop() > desc || refreshing) {
+        if (headerScrolled >= 0 && flag == ViewCompat.SCROLL_INDICATOR_TOP) {
+            if (childHead.getTop() > 0 || refreshing) {
                 setRefreshing(true);
             } else {
                 viewStartAnimator(childHead, headerSrcPosition);
@@ -296,7 +294,7 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
         } else if (footerScrolled < 0 && flag == ViewCompat.SCROLL_INDICATOR_BOTTOM) {
             footerScrolled = 0;
 
-            if (getMeasuredHeight() - childFoot.getBottom() > desc || loadingMore) {
+            if (getMeasuredHeight() - childFoot.getBottom() >= 0 || loadingMore) {
                 setLoadingMore(true);
             } else {
                 viewStartAnimator(childFoot, footerSrcPosition);
