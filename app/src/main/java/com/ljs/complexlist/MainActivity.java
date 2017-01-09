@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.ljs.complexlist.fixheader.FixHeaderActivity;
-import com.ljs.complexlist.group.GroupActivity;
 import com.ljs.complexlist.list.SwipeDragActivity;
 import com.ljs.complexlist.refreshpull.Test;
 
@@ -23,9 +22,9 @@ public class MainActivity extends AppCompatActivity {
 
     private RecyclerView mList;
 
-    private final String[] list = new String[]{"fixheader", "group", "swipe-drag", "refreshpull"};
+    private final String[] list = new String[]{"fixheader-group","swipe-drag", "refreshpull"};
 
-    private final Class[] clazz = {FixHeaderActivity.class, GroupActivity.class, SwipeDragActivity.class, Test.class};
+    private final Class[] clazz = {FixHeaderActivity.class, SwipeDragActivity.class, Test.class};
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

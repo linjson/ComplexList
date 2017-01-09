@@ -1,8 +1,5 @@
 package com.ljs.complexlist.fixheader;
 
-import com.ljs.complexlist.group.Clazz;
-import com.ljs.complexlist.group.School;
-
 import java.util.List;
 
 import itemtouchhelperextension.DiffCallBackEx;

@@ -13,14 +13,6 @@ import android.widget.Toast;
 import com.ljs.complexlist.DividerItemDecoration;
 import com.ljs.complexlist.ItemTouchHelperCallback;
 import com.ljs.complexlist.R;
-import com.ljs.complexlist.group.ImmutableClazz;
-import com.ljs.complexlist.group.ImmutableSchool;
-import com.ljs.complexlist.group.ImmutableStudent;
-import com.ljs.complexlist.group.ModifiableClazz;
-import com.ljs.complexlist.group.ModifiableSchool;
-import com.ljs.complexlist.group.ModifiableStudent;
-import com.ljs.complexlist.group.School;
-import com.ljs.complexlist.group.Student;
 
 import java.util.Random;
 

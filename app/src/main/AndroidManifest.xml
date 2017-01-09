@@ -15,7 +15,6 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".group.GroupActivity"/>
         <activity android:name=".list.SwipeDragActivity"/>
         <activity android:name=".refreshpull.Test"/>
         <activity android:name=".fixheader.FixHeaderActivity"/>
