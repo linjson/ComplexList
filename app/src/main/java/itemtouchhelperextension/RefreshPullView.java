@@ -136,10 +136,10 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
     @Override
     public void addView(View child, LayoutParams params) {
         super.addView(child, params);
-        if (childHead == null) {
-            childHead = child;
-        } else if (childBody == null) {
+        if (childBody == null) {
             childBody = child;
+        } else if (childHead == null) {
+            childHead = child;
         } else if (childFoot == null) {
             childFoot = child;
         }
@@ -202,9 +202,9 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
     public void setRefreshing(boolean open) {
 
 
-//        if (loadingMore || open == refreshing) {
-//            return;
-//        }
+        if (loadingMore) {
+            return;
+        }
         if (open) {
             viewStartAnimator(childHead, 0, -headerSrcPosition);
         } else {
@@ -214,9 +214,9 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
     }
 
     public void setLoadingMore(boolean open) {
-//        if (refreshing || open == loadingMore) {
-//            return;
-//        }
+        if (refreshing) {
+            return;
+        }
         if (open) {
             viewStartAnimator(childFoot, footerSrcPosition - childFoot.getMeasuredHeight(), -childFoot.getMeasuredHeight());
         } else {

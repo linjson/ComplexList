@@ -23,12 +23,7 @@
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:background="@android:color/holo_blue_dark"
-            android:text="header"
-            android:textColor="@android:color/white"/>
+
 
         <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
@@ -47,6 +42,14 @@
 
             </LinearLayout>
         </android.support.v4.widget.NestedScrollView>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+
+            android:background="@android:color/holo_blue_dark"
+            android:text="header"
+            android:textColor="@android:color/white"/>
 
         <TextView
             android:layout_width="match_parent"
