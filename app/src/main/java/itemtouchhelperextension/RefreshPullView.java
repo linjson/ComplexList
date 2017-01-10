@@ -10,15 +10,15 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
-import android.view.animation.LinearInterpolator;
 import android.view.animation.Transformation;
 
 /**
  * Created by ljs on 16/9/20.
  */
 public class RefreshPullView extends ViewGroup implements NestedScrollingParent, NestedScrollingChild {
-    private final int durationMillis = 200;
+    private final int durationMillis = 300;
 
     private NestedScrollingParentHelper nestedScrollingParentHelper;
     private NestedScrollingChildHelper nestedScrollingChildHelper;
@@ -92,7 +92,7 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
 
     private void init(Context context) {
         mAnimation = new ViewAnimation();
-        mInterpolator = new LinearInterpolator();
+        mInterpolator = new DecelerateInterpolator(0.5f);
 
         nestedScrollingParentHelper = new NestedScrollingParentHelper(this);
         nestedScrollingChildHelper = new NestedScrollingChildHelper(this);
