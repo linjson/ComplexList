@@ -10,13 +10,16 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
-import android.view.animation.DecelerateInterpolator;
+import android.view.animation.Interpolator;
+import android.view.animation.LinearInterpolator;
 import android.view.animation.Transformation;
 
 /**
  * Created by ljs on 16/9/20.
  */
 public class RefreshPullView extends ViewGroup implements NestedScrollingParent, NestedScrollingChild {
+    private final int durationMillis = 200;
+
     private NestedScrollingParentHelper nestedScrollingParentHelper;
     private NestedScrollingChildHelper nestedScrollingChildHelper;
     private View childBody;
@@ -27,15 +30,14 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
     private int headerScrolled = 0;
     private int footerScrolled = 0;
     private int headerSrcPosition = 0;
-    private DecelerateInterpolator mDecelerateInterpolator;
+    private Interpolator mInterpolator;
     private int footerSrcPosition;
-    private int durationMillis = 400;
-    private boolean loadingMoreDispatch;
     private int flag;
     private ViewAnimation mAnimation;
     private boolean refreshing;
     private boolean loadingMore;
     private boolean refreshingDispatch;
+    private boolean loadingMoreDispatch;
     private OnRefreshingListener mOnRefreshingListener;
     private OnLoadingMoreListener mOnLoadingMoreListener;
 
@@ -90,7 +92,8 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
 
     private void init(Context context) {
         mAnimation = new ViewAnimation();
-        mDecelerateInterpolator = new DecelerateInterpolator(2f);
+        mInterpolator = new LinearInterpolator();
+
         nestedScrollingParentHelper = new NestedScrollingParentHelper(this);
         nestedScrollingChildHelper = new NestedScrollingChildHelper(this);
         setNestedScrollingEnabled(true);
@@ -197,7 +200,7 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
         mAnimation.reset();
         mAnimation.setDuration(durationMillis);
         mAnimation.setAnimationListener(listener);
-        mAnimation.setInterpolator(mDecelerateInterpolator);
+        mAnimation.setInterpolator(mInterpolator);
         mAnimation.body = childBody;
         mAnimation.bodyTo = getPaddingTop() + offset;
         mAnimation.child = child;
