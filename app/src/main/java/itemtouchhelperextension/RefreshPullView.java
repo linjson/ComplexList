@@ -30,6 +30,15 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
     private DecelerateInterpolator mDecelerateInterpolator;
     private int footerSrcPosition;
     private int durationMillis = 400;
+    private boolean loadingMoreDispatch;
+    private int flag;
+    private ViewAnimation mAnimation;
+    private boolean refreshing;
+    private boolean loadingMore;
+    private boolean refreshingDispatch;
+    private OnRefreshingListener mOnRefreshingListener;
+    private OnLoadingMoreListener mOnLoadingMoreListener;
+
     private Animation.AnimationListener listener = new Animation.AnimationListener() {
         @Override
         public void onAnimationStart(Animation animation) {
@@ -39,11 +48,19 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
         @Override
         public void onAnimationEnd(Animation animation) {
             viewStopAnimator();
-            if (refreshing) {
+            if (refreshingDispatch) {
+                refreshingDispatch = false;
+                if (mOnRefreshingListener != null) {
+                    mOnRefreshingListener.doRefreshingData();
+                }
                 System.out.printf("==>refreshing is open \n");
             }
 
-            if (loadingMore) {
+            if (loadingMoreDispatch) {
+                loadingMoreDispatch = false;
+                if (mOnLoadingMoreListener != null) {
+                    mOnLoadingMoreListener.doLoadingMoreData();
+                }
                 System.out.printf("==>loadingmore is open \n");
             }
         }
@@ -53,16 +70,6 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
 
         }
     };
-
-
-    //    private Animation mAnimation = new Animation() {
-//
-//
-//    };
-    private int flag;
-    private ViewAnimation mAnimation;
-    private boolean refreshing;
-    private boolean loadingMore;
 
 
     public RefreshPullView(Context context) {
@@ -218,9 +225,15 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
         }
         if (open) {
             viewStartAnimator(childHead, 0, -headerSrcPosition);
+
         } else {
             viewStartAnimator(childHead, headerSrcPosition);
         }
+
+        if (refreshing != open && open) {
+            refreshingDispatch = true;
+        }
+
         refreshing = open;
     }
 
@@ -233,6 +246,11 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
         } else {
             viewStartAnimator(childFoot, footerSrcPosition);
         }
+
+        if (loadingMore != open && open) {
+            loadingMoreDispatch = true;
+        }
+
         loadingMore = open;
     }
 
@@ -256,6 +274,13 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
         return Math.min(space, dy);
     }
 
+    public void setOnLoadingMoreListener(OnLoadingMoreListener onLoadingMoreListener) {
+        mOnLoadingMoreListener = onLoadingMoreListener;
+    }
+
+    public void setOnRefreshingListener(OnRefreshingListener onRefreshingListener) {
+        mOnRefreshingListener = onRefreshingListener;
+    }
 
     //NestedScrollingParent begin
 
@@ -440,6 +465,7 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
 
     //NestedScrollingChild end
 
+
     private static class ViewAnimation extends Animation {
 
         private View child;
@@ -460,5 +486,13 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
             int result = (int) (current + ((to - current) * interpolatedTime));
             child.offsetTopAndBottom(result - current);
         }
+    }
+
+    public interface OnRefreshingListener {
+        void doRefreshingData();
+    }
+
+    public interface OnLoadingMoreListener {
+        void doLoadingMoreData();
     }
 }
