@@ -282,7 +282,7 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
     public void onStopNestedScroll(View target) {
         nestedScrollingParentHelper.onStopNestedScroll(target);
 //        System.out.printf("==>onStopNestedScroll,%s \n", headerScrolled);
-        if (headerScrolled >= 0 && flag == ViewCompat.SCROLL_INDICATOR_TOP) {
+        if (headerScrolled > 0 && flag == ViewCompat.SCROLL_INDICATOR_TOP) {
             if (childHead.getTop() > 0 || refreshing) {
                 setRefreshing(true);
             } else {
@@ -338,10 +338,11 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
 
     @Override
     public void onNestedPreScroll(View target, int dx, int dy, int[] consumed) {
-        System.out.printf("==>onNestedPreScroll,dx:%s,dy:%s,[0]:%s,[1]:%s \n", dx, dy, consumed[0], consumed[1]);
+//        System.out.printf("==>onNestedPreScroll,dx:%s,dy:%s,[0]:%s,[1]:%s \n", dx, dy, consumed[0], consumed[1]);
 //        System.out.printf("==>headerScrolled=%s \n", headerScrolled);
 
         if (refreshing) {
+
             if (childHead.getTop() >= headerSrcPosition) {
                 consumed[1] = getHeaderScrollUp(dy);
                 setTargetOffset(-consumed[1]);
