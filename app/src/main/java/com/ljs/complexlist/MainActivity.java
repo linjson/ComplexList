@@ -12,7 +12,8 @@ import android.widget.TextView;
 
 import com.ljs.complexlist.fixheader.FixHeaderActivity;
 import com.ljs.complexlist.list.SwipeDragActivity;
-import com.ljs.complexlist.refreshpull.Test;
+import com.ljs.complexlist.refreshpull.BaseTest;
+import com.ljs.complexlist.refreshpull.RefreshListTest;
 
 /**
  * Created by ljs on 2016/12/19.
@@ -22,9 +23,9 @@ public class MainActivity extends AppCompatActivity {
 
     private RecyclerView mList;
 
-    private final String[] list = new String[]{"fixheader-group","swipe-drag", "refreshpull"};
+    private final String[] list = {"fixheader-group", "swipe-drag", "refreshpull-base", "refreshpull-list"};
 
-    private final Class[] clazz = {FixHeaderActivity.class, SwipeDragActivity.class, Test.class};
+    private final Class[] clazz = {FixHeaderActivity.class, SwipeDragActivity.class, BaseTest.class, RefreshListTest.class};
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

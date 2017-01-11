@@ -14,7 +14,7 @@ import itemtouchhelperextension.RefreshPullView;
  * Created by ljs on 16/9/26.
  */
 
-public class Test extends Activity {
+public class BaseTest extends Activity {
 
     private boolean refreshing = false;
     private boolean loading = false;
@@ -38,6 +38,7 @@ public class Test extends Activity {
             linearLayout.addView(textView, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 
         }
+
 
 //        TextView textView = new TextView(this);
 //        textView.setText("header");
