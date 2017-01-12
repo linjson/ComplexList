@@ -1210,6 +1210,11 @@ public class ItemTouchHelperExtension extends RecyclerView.ItemDecoration
         }
         obtainVelocityTracker();
         mDx = mDy = 0f;
+        if (mPreOpened != null) {
+            closeOpenedPreItem();
+        }
+
+
         select(viewHolder, ACTION_STATE_DRAG);
     }
 
@@ -1257,6 +1262,10 @@ public class ItemTouchHelperExtension extends RecyclerView.ItemDecoration
         }
         obtainVelocityTracker();
         mDx = mDy = 0f;
+
+        if (mPreOpened != null) {
+            closeOpenedPreItem();
+        }
         select(viewHolder, ACTION_STATE_SWIPE);
     }
 
