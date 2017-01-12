@@ -13,4 +13,6 @@ public interface Extension {
     int getGroupId();
 
     boolean isGroup();
+
+    int getSwipeDirection();
 }

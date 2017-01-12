@@ -28,7 +28,7 @@ public class SwipeDragActivity extends AppCompatActivity {
     private SwipeDragAdapter mAdapter;
     public ItemTouchHelperExtension mItemTouchHelper;
     public ItemTouchHelperExtension.Callback mCallback;
-    public ItemTouchHelperCallback2 mCallback2;
+//    public ItemTouchHelperCallback2 mCallback2;
     private RefreshPullView swipe;
     private Handler mHandler = new Handler();
     private ItemTouchHelper mItemTouchHelper2;
@@ -53,7 +53,7 @@ public class SwipeDragActivity extends AppCompatActivity {
 //        mRecyclerView.addItemDecoration(new DividerItemDecoration(this));
 //        mAdapter.updateData(createTestDatas());
         mCallback = new ItemTouchHelperCallback();
-        mCallback2 = new ItemTouchHelperCallback2();
+//        mCallback2 = new ItemTouchHelperCallback2();
         mItemTouchHelper = new ItemTouchHelperExtension(mCallback);
         mItemTouchHelper.attachToRecyclerView(mRecyclerView);
         mAdapter.setItemTouchHelper(mItemTouchHelper);

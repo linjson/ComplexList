@@ -296,7 +296,6 @@ public class ItemTouchHelperExtension extends RecyclerView.ItemDecoration
                 if (mSelected == null) {
                     final RecoverAnimation animation = findAnimation(event);
                     if (animation != null) {
-                        System.out.printf("==>%s \n", animation.mViewHolder.itemView.getTag());
                         mInitialTouchX -= animation.mX;
                         mInitialTouchY -= animation.mY;
                         endRecoverAnimation(animation.mViewHolder, true);
@@ -1106,6 +1105,13 @@ public class ItemTouchHelperExtension extends RecyclerView.ItemDecoration
             return false;
         }
         if (absDx > absDy) {
+
+            int flag = dx > 0 ? RIGHT : LEFT;
+            int dir = getSwipeDirection(vh);
+            if (dir != flag && dir != 0) {
+                return false;
+            }
+
             if (dx < 0 && (swipeFlags & LEFT) == 0) {
                 return false;
             }
@@ -1286,6 +1292,15 @@ public class ItemTouchHelperExtension extends RecyclerView.ItemDecoration
         }
         if ((directionFlags & DOWN) == 0) {
             mDy = Math.min(0, mDy);
+        }
+
+        if (mSelected != null) {
+            int dir = getSwipeDirection(mSelected);
+            if (dir == LEFT) {
+                mDx = Math.min(0, mDx);
+            } else if (dir == RIGHT) {
+                mDx = Math.max(0, mDx);
+            }
         }
 
     }
@@ -2602,6 +2617,14 @@ public class ItemTouchHelperExtension extends RecyclerView.ItemDecoration
             return (Extension) vh;
         }
         return null;
+    }
+
+    private int getSwipeDirection(ViewHolder vh) {
+        Extension ex = getExtension(vh);
+        if (ex == null) {
+            return 0;
+        }
+        return ex.getSwipeDirection();
     }
 
     public void setMoveDiffGroup(boolean enabled) {

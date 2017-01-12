@@ -198,6 +198,11 @@ public class SwipeDragAdapter extends BaseAdapter<BaseViewHolder> {
         public float getActionWidth() {
             return mActionContainer.getWidth();
         }
+
+        @Override
+        public int getSwipeDirection() {
+            return ItemTouchHelperExtension.LEFT;
+        }
     }
 
     class ItemSwipeWithActionWidthNoSpringViewHolder extends ItemSwipeWithActionWidthViewHolder {

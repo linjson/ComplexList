@@ -39,6 +39,11 @@ public class BaseViewHolder extends RecyclerView.ViewHolder implements Extension
         return false;
     }
 
+    @Override
+    public int getSwipeDirection() {
+        return 0;
+    }
+
     public void setFixed(boolean fixed) {
         this.fixed = fixed;
     }
