@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ljs.complexlist.DividerItemDecoration;
 import com.ljs.complexlist.R;
@@ -89,6 +90,7 @@ public class RefreshListTest extends Activity implements RefreshPullView.OnLoadi
             public void run() {
                 adapter.setData(data);
                 view.setLoadingMore(false);
+                Toast.makeText(RefreshListTest.this, "loading结束", Toast.LENGTH_SHORT).show();
             }
         }, 1000);
     }
@@ -103,6 +105,7 @@ public class RefreshListTest extends Activity implements RefreshPullView.OnLoadi
             public void run() {
                 adapter.setData(data);
                 view.setRefreshing(false);
+                Toast.makeText(RefreshListTest.this, "refreshing结束", Toast.LENGTH_SHORT).show();
 
             }
         }, 2000);

@@ -299,11 +299,8 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
     @Override
     public boolean onStartNestedScroll(View child, View target, int nestedScrollAxes) {
 
-        viewStopAnimator();
+//        viewStopAnimator();
 //        System.out.printf("==>onStartNestedScroll \n");
-//        if (refreshing || loadingMore) {
-//            return false;
-//        }
         return (nestedScrollAxes & ViewCompat.SCROLL_AXIS_VERTICAL) != 0;
     }
 

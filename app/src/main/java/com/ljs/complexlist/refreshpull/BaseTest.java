@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ljs.complexlist.R;
 
@@ -91,6 +92,7 @@ public class BaseTest extends Activity implements RefreshPullView.OnRefreshingLi
 
                 linearLayout.addView(textView, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
                 view.setRefreshing(false);
+                Toast.makeText(BaseTest.this, "refreshing结束", Toast.LENGTH_SHORT).show();
             }
         }, 2000);
     }
