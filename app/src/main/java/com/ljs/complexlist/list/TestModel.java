@@ -1,4 +1,4 @@
-package com.ljs.complexlist;
+package com.ljs.complexlist.list;
 
 import java.util.ArrayList;
 

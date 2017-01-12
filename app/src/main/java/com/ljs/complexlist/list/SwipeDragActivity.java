@@ -13,7 +13,6 @@ import android.widget.Toast;
 
 import com.ljs.complexlist.ItemTouchHelperCallback;
 import com.ljs.complexlist.R;
-import com.ljs.complexlist.TestModel;
 
 import java.util.ArrayList;
 import java.util.List;
