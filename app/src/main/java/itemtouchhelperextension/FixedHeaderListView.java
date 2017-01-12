@@ -2,6 +2,7 @@ package itemtouchhelperextension;
 
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +13,7 @@ import android.widget.FrameLayout;
  */
 
 public class FixedHeaderListView extends FrameLayout {
-    private RecyclerViewEx recyclerView;
+    private RecyclerView recyclerView;
     private FrameLayout headerLayout;
     private FixedController fixedController;
 
@@ -36,7 +37,7 @@ public class FixedHeaderListView extends FrameLayout {
         headerLayout = new FrameLayout(getContext());
         headerLayout.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 
-        recyclerView = new RecyclerViewEx(getContext());
+        recyclerView = new RecyclerView(getContext());
         recyclerView.setLayoutParams(generateDefaultLayoutParams());
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -57,7 +58,7 @@ public class FixedHeaderListView extends FrameLayout {
         super.addView(child, index, params);
     }
 
-    public RecyclerViewEx getRecyclerView() {
+    public RecyclerView getRecyclerView() {
         return recyclerView;
     }
 

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,16 +20,15 @@ import java.util.List;
 import java.util.Random;
 
 import itemtouchhelperextension.ItemTouchHelperExtension;
-import itemtouchhelperextension.RecyclerViewEx;
 import itemtouchhelperextension.RefreshPullView;
 
 public class SwipeDragActivity extends AppCompatActivity {
 
-    private RecyclerViewEx mRecyclerView;
+    private RecyclerView mRecyclerView;
     private SwipeDragAdapter mAdapter;
     public ItemTouchHelperExtension mItemTouchHelper;
     public ItemTouchHelperExtension.Callback mCallback;
-//    public ItemTouchHelperCallback2 mCallback2;
+    //    public ItemTouchHelperCallback2 mCallback2;
     private RefreshPullView swipe;
     private Handler mHandler = new Handler();
     private ItemTouchHelper mItemTouchHelper2;
@@ -38,9 +38,7 @@ public class SwipeDragActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mRecyclerView = (RecyclerViewEx) findViewById(R.id.recycler_main);
-        swipe = (RefreshPullView) findViewById(R.id.swipe);
-//        swipe.setEnabled(false);
+        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_main);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new SwipeDragAdapter(this);
 

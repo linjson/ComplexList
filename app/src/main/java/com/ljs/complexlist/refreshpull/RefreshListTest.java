@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +20,6 @@ import com.ljs.complexlist.fixheader.ModifiableClazz;
 
 import itemtouchhelperextension.BaseAdapter;
 import itemtouchhelperextension.BaseViewHolder;
-import itemtouchhelperextension.RecyclerViewEx;
 import itemtouchhelperextension.RefreshPullView;
 
 /**
@@ -27,7 +27,7 @@ import itemtouchhelperextension.RefreshPullView;
  */
 
 public class RefreshListTest extends Activity implements RefreshPullView.OnLoadingMoreListener, RefreshPullView.OnRefreshingListener {
-    private RecyclerViewEx recycler_main;
+    private RecyclerView recycler_main;
     private RefreshPullView rpview;
     private ImmutableClazz data;
     private static Handler sHandler = new Handler();
@@ -41,7 +41,7 @@ public class RefreshListTest extends Activity implements RefreshPullView.OnLoadi
     }
 
     private void initView() {
-        recycler_main = (RecyclerViewEx) findViewById(R.id.recycler_main);
+        recycler_main = (RecyclerView) findViewById(R.id.recycler_main);
         rpview = (RefreshPullView) findViewById(R.id.rpview);
 
 

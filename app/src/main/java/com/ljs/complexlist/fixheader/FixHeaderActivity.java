@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,16 +19,13 @@ import java.util.Random;
 
 import itemtouchhelperextension.FixedHeaderListView;
 import itemtouchhelperextension.ItemTouchHelperExtension;
-import itemtouchhelperextension.RecyclerViewEx;
-import itemtouchhelperextension.SwipeRefreshLayoutEx;
 
 public class FixHeaderActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private RecyclerViewEx mRecyclerView;
+    private RecyclerView mRecyclerView;
     private GroupRecyclerAdapter mAdapter;
     public ItemTouchHelperExtension mItemTouchHelper;
     public ItemTouchHelperExtension.Callback mCallback;
-    private SwipeRefreshLayoutEx swipe;
     private School testDatas;
 
     @Override
@@ -37,8 +35,6 @@ public class FixHeaderActivity extends AppCompatActivity implements View.OnClick
 
         FixedHeaderListView view = (FixedHeaderListView) findViewById(R.id.recycler_main);
         mRecyclerView = view.getRecyclerView();
-        swipe = (SwipeRefreshLayoutEx) findViewById(R.id.swipe);
-        swipe.setEnabled(false);
 
         mAdapter = new GroupRecyclerAdapter(mRecyclerView,this,view);
 
