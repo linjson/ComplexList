@@ -33,6 +33,8 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
     private Interpolator mInterpolator;
     private int footerSrcPosition;
     private int flag;
+    private int viewOffsetHeader;
+    private int viewOffsetFooter;
     private ViewAnimation mAnimation;
     private boolean refreshing;
     private boolean loadingMore;
@@ -53,17 +55,15 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
             if (refreshingDispatch) {
                 refreshingDispatch = false;
                 if (mOnRefreshingListener != null) {
-                    mOnRefreshingListener.doRefreshingData();
+                    mOnRefreshingListener.doRefreshingData(RefreshPullView.this);
                 }
-                System.out.printf("==>refreshing is open \n");
-            }
-
-            if (loadingMoreDispatch) {
+//                System.out.printf("==>refreshing is open \n");
+            } else if (loadingMoreDispatch) {
                 loadingMoreDispatch = false;
                 if (mOnLoadingMoreListener != null) {
-                    mOnLoadingMoreListener.doLoadingMoreData();
+                    mOnLoadingMoreListener.doLoadingMoreData(RefreshPullView.this);
                 }
-                System.out.printf("==>loadingmore is open \n");
+//                System.out.printf("==>loadingmore is open \n");
             }
         }
 
@@ -76,21 +76,21 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
 
     public RefreshPullView(Context context) {
         super(context);
-        init(context);
+        init();
     }
 
 
     public RefreshPullView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(context);
+        init();
     }
 
     public RefreshPullView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init(context);
+        init();
     }
 
-    private void init(Context context) {
+    private void init() {
         mAnimation = new ViewAnimation();
         mInterpolator = new DecelerateInterpolator(0.5f);
 
@@ -107,20 +107,20 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
         }
 
         int width = getMeasuredWidth();
-        int height = getMeasuredHeight();
+        int height = getMeasuredHeight() - getPaddingBottom();
 
         int left = getPaddingLeft();
-        int top = getPaddingTop();
+        int top = getPaddingTop() + viewOffsetHeader == 0 ? viewOffsetFooter : viewOffsetHeader;
 
         if (childBody != null) {
-            childBody.layout(left, top, width - left - getPaddingRight(), height - top - getPaddingBottom());
+            childBody.layout(left, top, width - left - getPaddingRight(), height + top);
         }
 
         if (childHead != null) {
-            childHead.layout(0, headerSrcPosition, childHead.getMeasuredWidth(), headerSrcPosition + childHead.getMeasuredHeight());
+            childHead.layout(0, headerSrcPosition + viewOffsetHeader, childHead.getMeasuredWidth(), headerSrcPosition + childHead.getMeasuredHeight() + viewOffsetHeader);
         }
         if (childFoot != null) {
-            childFoot.layout(0, footerSrcPosition, childFoot.getMeasuredWidth(), footerSrcPosition + childFoot.getMeasuredHeight());
+            childFoot.layout(0, footerSrcPosition + viewOffsetFooter, childFoot.getMeasuredWidth(), footerSrcPosition + childFoot.getMeasuredHeight() + viewOffsetFooter);
         }
     }
 
@@ -207,6 +207,8 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
         mAnimation.childTo = to;
         child.clearAnimation();
         child.startAnimation(mAnimation);
+
+        System.out.printf("==>%s \n", mAnimation.child.getTop());
     }
 
     private void viewStopAnimator() {
@@ -218,6 +220,9 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
         }
         headerScrolled = 0;
         footerScrolled = 0;
+
+        viewOffsetHeader = 0;
+        viewOffsetFooter = 0;
     }
 
     public void setRefreshing(boolean open) {
@@ -230,6 +235,8 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
             viewStartAnimator(childHead, 0, -headerSrcPosition);
 
         } else {
+            viewOffsetHeader = -headerSrcPosition + childHead.getTop();
+            viewOffsetFooter = 0;
             viewStartAnimator(childHead, headerSrcPosition);
         }
 
@@ -247,6 +254,8 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
         if (open) {
             viewStartAnimator(childFoot, footerSrcPosition - childFoot.getMeasuredHeight(), -childFoot.getMeasuredHeight());
         } else {
+            viewOffsetHeader = 0;
+            viewOffsetFooter = childFoot.getTop() - footerSrcPosition;
             viewStartAnimator(childFoot, footerSrcPosition);
         }
 
@@ -481,7 +490,7 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
         protected void applyTransformation(float interpolatedTime, Transformation t) {
             moveView(interpolatedTime, child, childTo);
             moveView(interpolatedTime, body, bodyTo);
-//            System.out.printf("==>in:%s \n", interpolatedTime);
+
 
         }
 
@@ -493,10 +502,10 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
     }
 
     public interface OnRefreshingListener {
-        void doRefreshingData();
+        void doRefreshingData(RefreshPullView view);
     }
 
     public interface OnLoadingMoreListener {
-        void doLoadingMoreData();
+        void doLoadingMoreData(RefreshPullView view);
     }
 }

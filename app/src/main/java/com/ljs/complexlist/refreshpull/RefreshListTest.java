@@ -81,28 +81,31 @@ public class RefreshListTest extends Activity implements RefreshPullView.OnLoadi
     }
 
     @Override
-    public void doLoadingMoreData() {
+    public void doLoadingMoreData(final RefreshPullView view) {
         data = addStudents();
 
         sHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 adapter.setData(data);
-                rpview.setLoadingMore(false);
+                view.setLoadingMore(false);
             }
-        }, 2000);
+        }, 1000);
     }
 
     @Override
-    public void doRefreshingData() {
+    public void doRefreshingData(final RefreshPullView view) {
         data = createStudents();
+
+
         sHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 adapter.setData(data);
-                rpview.setRefreshing(false);
+                view.setRefreshing(false);
+
             }
-        }, 1000);
+        }, 2000);
     }
 
 
