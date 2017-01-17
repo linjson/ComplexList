@@ -71,7 +71,7 @@ public class BaseTest extends Activity implements RefreshPullView.OnRefreshingLi
         });
 
 
-//        nv.setOnRefreshingListener(this);
+        nv.setOnRefreshingListener(this);
 
 
     }

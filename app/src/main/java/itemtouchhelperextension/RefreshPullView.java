@@ -490,7 +490,7 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        System.out.printf("==>onInterceptTouchEvent \n");
+//        System.out.printf("==>onInterceptTouchEvent \n");
         final int act = ev.getAction();
 
         if (act == MotionEvent.ACTION_DOWN) {
@@ -509,12 +509,13 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
             }
             final float diff = y - mInitialDownY;
             if (Math.abs(diff) > mTouchSlop) {
-                if (!childBodyCanScrollUP() && (diff > 0 || childHead.getTop() >= 0)) {
+                if (!loadingMore && !childBodyCanScrollUP() && (diff > 0 || childHead.getTop() >= 0)) {
                     flag = ViewCompat.SCROLL_INDICATOR_TOP;
-                } else if (!childBodyCanScrollDown() && (diff < 0 || childFoot.getBottom() <= footerSrcPosition)) {
+                } else if (!refreshing && !childBodyCanScrollDown() && (diff < 0 || childFoot.getBottom() <= footerSrcPosition)) {
                     flag = ViewCompat.SCROLL_INDICATOR_BOTTOM;
                 }
-                System.out.printf("==>flag:%s, %s,%s\n", flag, childBodyCanScrollDown(), diff);
+//                System.out.printf("==>flag:%s, %s,%s,%s\n", flag, childBodyCanScrollDown(), diff,
+//                        VelocityTrackerCompat.getYVelocity(velocityTracker, actionPointerId));
                 if (flag != -1 && !mIsBeingDragged) {
                     mIsBeingDragged = true;
                     mInitialMoveY = y;// mInitialDownY + mTouchSlop;
@@ -568,7 +569,6 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
             }
 
             float overscrollTop = (y - mInitialMoveY);
-            System.out.printf("==>overscrollTop:%s \n", overscrollTop);
             if (!loadingMore && mIsBeingDragged && flag == ViewCompat.SCROLL_INDICATOR_TOP) {
                 int dy = overscrollTop > 0 ? (int) overscrollTop : getHeaderScrollUp((int) overscrollTop);
                 if (childBodyCanScrollUP() && overscrollTop > 0) {
@@ -583,7 +583,6 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
                     dy = 0;
                 }
 
-                System.out.printf("==>down:%s\n", dy);
                 setTargetOffset(dy);
             }
             mInitialMoveY = y;
@@ -595,13 +594,13 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
                     viewStartAnimator(childHead, headerSrcPosition);
                 }
             } else if (flag == ViewCompat.SCROLL_INDICATOR_BOTTOM) {
-                System.out.printf("==>xx:%s \n", getMeasuredHeight() - childFoot.getBottom());
                 if (getMeasuredHeight() - childFoot.getBottom() >= 0) {
                     setLoadingMore(true);
                 } else {
                     viewStartAnimator(childFoot, footerSrcPosition);
                 }
             }
+
         }
 
         return true;
