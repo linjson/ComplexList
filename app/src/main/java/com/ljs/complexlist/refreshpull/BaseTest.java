@@ -28,7 +28,7 @@ public class BaseTest extends Activity implements RefreshPullView.OnRefreshingLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.nesttest);
+        setContentView(R.layout.scrolltest);
 
         final RefreshPullView nv = (RefreshPullView) findViewById(R.id.sv);
 
@@ -71,7 +71,7 @@ public class BaseTest extends Activity implements RefreshPullView.OnRefreshingLi
         });
 
 
-        nv.setOnRefreshingListener(this);
+//        nv.setOnRefreshingListener(this);
 
 
     }

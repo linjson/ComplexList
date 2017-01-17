@@ -7,7 +7,9 @@ import android.support.v4.view.NestedScrollingParent;
 import android.support.v4.view.NestedScrollingParentHelper;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
@@ -72,6 +74,11 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
 
         }
     };
+    private int actionPointerId;
+    private float mInitialDownY;
+    private int mTouchSlop;
+    private boolean mIsBeingDragged;
+    private float mInitialMoveY;
 
 
     public RefreshPullView(Context context) {
@@ -93,9 +100,9 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
     private void init() {
         mAnimation = new ViewAnimation();
         mInterpolator = new DecelerateInterpolator(0.5f);
-
         nestedScrollingParentHelper = new NestedScrollingParentHelper(this);
         nestedScrollingChildHelper = new NestedScrollingChildHelper(this);
+        mTouchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
         setNestedScrollingEnabled(true);
     }
 
@@ -206,9 +213,14 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
         mAnimation.child = child;
         mAnimation.childTo = to;
         child.clearAnimation();
+
+
+        if (child.getTop() == to) {
+            return;
+        }
+
         child.startAnimation(mAnimation);
 
-        System.out.printf("==>%s \n", mAnimation.child.getTop());
     }
 
     private void viewStopAnimator() {
@@ -280,7 +292,7 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
         int space = footerSrcPosition - childFoot.getTop();
 
         if (space < Math.abs(dy)) {
-            return -space;
+            return space;
         }
 
         return Math.min(space, dy);
@@ -475,6 +487,133 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
 
     //NestedScrollingChild end
 
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        System.out.printf("==>onInterceptTouchEvent \n");
+        final int act = ev.getAction();
+
+        if (act == MotionEvent.ACTION_DOWN) {
+            flag = -1;
+            actionPointerId = ev.getPointerId(0);
+            mIsBeingDragged = false;
+            final float y = getMotionY(ev);
+            if (Float.isNaN(y)) {
+                return false;
+            }
+            mInitialDownY = y;
+        } else if (act == MotionEvent.ACTION_MOVE) {
+            final float y = getMotionY(ev);
+            if (Float.isNaN(y)) {
+                return false;
+            }
+            final float diff = y - mInitialDownY;
+            if (Math.abs(diff) > mTouchSlop) {
+                if (!childBodyCanScrollUP() && (diff > 0 || childHead.getTop() >= 0)) {
+                    flag = ViewCompat.SCROLL_INDICATOR_TOP;
+                } else if (!childBodyCanScrollDown() && (diff < 0 || childFoot.getBottom() <= footerSrcPosition)) {
+                    flag = ViewCompat.SCROLL_INDICATOR_BOTTOM;
+                }
+                System.out.printf("==>flag:%s, %s,%s\n", flag, childBodyCanScrollDown(), diff);
+                if (flag != -1 && !mIsBeingDragged) {
+                    mIsBeingDragged = true;
+                    mInitialMoveY = y;// mInitialDownY + mTouchSlop;
+                }
+
+            }
+        }
+        return mIsBeingDragged;
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+
+
+        boolean result = super.dispatchTouchEvent(ev);
+        final int act = ev.getAction();
+
+        if (act == MotionEvent.ACTION_MOVE) {
+
+            if (childBody.getTop() == 0) {
+                childBody.dispatchTouchEvent(ev);
+            }
+
+
+        }
+        return result;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+
+        final int act = ev.getAction();
+
+//        if (childBodyCanScrollUP()) {
+//            return false;
+//        }
+        if (act == MotionEvent.ACTION_DOWN) {
+
+            actionPointerId = ev.getPointerId(0);
+            mIsBeingDragged = false;
+
+
+        } else if (act == MotionEvent.ACTION_MOVE) {
+            if (flag == -1) {
+                return false;
+            }
+
+            final float y = getMotionY(ev);
+            if (Float.isNaN(y)) {
+                return false;
+            }
+
+            float overscrollTop = (y - mInitialMoveY);
+            System.out.printf("==>overscrollTop:%s \n", overscrollTop);
+            if (!loadingMore && mIsBeingDragged && flag == ViewCompat.SCROLL_INDICATOR_TOP) {
+                int dy = overscrollTop > 0 ? (int) overscrollTop : getHeaderScrollUp((int) overscrollTop);
+                if (childBodyCanScrollUP() && overscrollTop > 0) {
+                    dy = 0;
+                }
+                setTargetOffset(dy);
+
+            } else if (!refreshing && mIsBeingDragged && flag == ViewCompat.SCROLL_INDICATOR_BOTTOM) {
+                int dy = overscrollTop < 0 ? (int) overscrollTop : getFooterScrollDown((int) overscrollTop);
+
+                if (childBodyCanScrollDown() && overscrollTop < 0) {
+                    dy = 0;
+                }
+
+                System.out.printf("==>down:%s\n", dy);
+                setTargetOffset(dy);
+            }
+            mInitialMoveY = y;
+        } else if (act == MotionEvent.ACTION_CANCEL || act == MotionEvent.ACTION_UP) {
+            if (flag == ViewCompat.SCROLL_INDICATOR_TOP) {
+                if (childHead.getTop() > 0) {
+                    setRefreshing(true);
+                } else {
+                    viewStartAnimator(childHead, headerSrcPosition);
+                }
+            } else if (flag == ViewCompat.SCROLL_INDICATOR_BOTTOM) {
+                System.out.printf("==>xx:%s \n", getMeasuredHeight() - childFoot.getBottom());
+                if (getMeasuredHeight() - childFoot.getBottom() >= 0) {
+                    setLoadingMore(true);
+                } else {
+                    viewStartAnimator(childFoot, footerSrcPosition);
+                }
+            }
+        }
+
+        return true;
+    }
+
+    private float getMotionY(MotionEvent ev) {
+        int index = ev.findPointerIndex(actionPointerId);
+        if (index < 0) {
+            return Float.NaN;
+        }
+        return ev.getY();
+    }
 
     private static class ViewAnimation extends Animation {
 
