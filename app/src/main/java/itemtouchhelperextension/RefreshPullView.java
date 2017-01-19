@@ -222,6 +222,7 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
             return;
         }
 
+        mChildBodyTouch = true;
         child.startAnimation(mAnimation);
 
     }
@@ -295,7 +296,7 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
         int space = mFooterSrcPosition - mChildFoot.getTop();
 
         if (space < Math.abs(dy)) {
-            return space;
+            return mNestedScroll ? -space : space;
         }
 
         return Math.min(space, dy);
@@ -322,7 +323,7 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
     @Override
     public void onNestedScrollAccepted(View child, View target, int nestedScrollAxes) {
         mNestedScrollingParentHelper.onNestedScrollAccepted(child, target, nestedScrollAxes);
-
+        mChildBodyTouch = false;
         startNestedScroll(nestedScrollAxes & ViewCompat.SCROLL_AXIS_VERTICAL);
 //        System.out.printf("==>onNestedScrollAccepted \n");
     }
@@ -330,7 +331,7 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
     @Override
     public void onStopNestedScroll(View target) {
         mNestedScrollingParentHelper.onStopNestedScroll(target);
-//        System.out.printf("==>onStopNestedScroll,%s \n", mHeaderScrolled);
+//        System.out.printf("==>onStopNestedScroll,%s \n", mViewOffsetHeader);
         if (mHeaderScrolled > 0 && mFlag == ViewCompat.SCROLL_INDICATOR_TOP) {
             if (mChildHead.getTop() > 0 || mRefreshing) {
                 setRefreshing(true);
@@ -358,6 +359,7 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
     @Override
     public void onNestedScroll(View target, int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed) {
 //        System.out.printf("==>onNestedScroll,dyConsumed:%s,dyUnconsumed:%s \n", dyConsumed, dyUnconsumed);
+
         dispatchNestedScroll(dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed,
                 mParentOffsetInWindow);
         final int dy = dyUnconsumed + mParentOffsetInWindow[1];
@@ -388,9 +390,14 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
 
     @Override
     public void onNestedPreScroll(View target, int dx, int dy, int[] consumed) {
-//        System.out.printf("==>onNestedPreScroll,dx:%s,dy:%s,[0]:%s,[1]:%s \n", dx, dy, consumed[0], consumed[1]);
-//        System.out.printf("==>mHeaderScrolled=%s \n", mHeaderScrolled);
+        System.out.printf("==>onNestedPreScroll,dx:%s,dy:%s,[0]:%s,[1]:%s \n", dx, dy, consumed[0], consumed[1]);
+
 //
+        if (mChildBodyTouch) {
+            consumed[1] = dy;
+            return;
+        }
+
         if (mRefreshing) {
 
             if (mChildHead.getTop() >= mHeaderSrcPosition) {
@@ -430,6 +437,11 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
     @Override
     public boolean onNestedPreFling(View target, float velocityX, float velocityY) {
 //        System.out.printf("==>onNestedPreFling \n");
+
+        if (mChildBody.getTop() != 0) {
+            return true;
+        }
+
         return dispatchNestedPreFling(velocityX, velocityY);
     }
 
