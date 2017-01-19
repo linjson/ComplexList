@@ -79,6 +79,8 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
     private int mTouchSlop;
     private boolean mIsBeingDragged;
     private float mInitialMoveY;
+    private boolean mChildBodyTouch;
+    private boolean mNestedScroll;
 
 
     public RefreshPullView(Context context) {
@@ -164,6 +166,7 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
         super.addView(child, params);
         if (childBody == null) {
             childBody = child;
+            mNestedScroll = childBody instanceof NestedScrollingChild;
         } else if (childHead == null) {
             childHead = child;
         } else if (childFoot == null) {
@@ -310,7 +313,6 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
 
     @Override
     public boolean onStartNestedScroll(View child, View target, int nestedScrollAxes) {
-
 //        viewStopAnimator();
 //        System.out.printf("==>onStartNestedScroll \n");
         return (nestedScrollAxes & ViewCompat.SCROLL_AXIS_VERTICAL) != 0;
@@ -320,6 +322,7 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
     @Override
     public void onNestedScrollAccepted(View child, View target, int nestedScrollAxes) {
         nestedScrollingParentHelper.onNestedScrollAccepted(child, target, nestedScrollAxes);
+
         startNestedScroll(nestedScrollAxes & ViewCompat.SCROLL_AXIS_VERTICAL);
 //        System.out.printf("==>onNestedScrollAccepted \n");
     }
@@ -491,12 +494,16 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
 //        System.out.printf("==>onInterceptTouchEvent \n");
-        final int act = ev.getAction();
 
+        if (mNestedScroll) {
+            return super.onInterceptTouchEvent(ev);
+        }
+        final int act = ev.getAction();
         if (act == MotionEvent.ACTION_DOWN) {
             flag = -1;
             actionPointerId = ev.getPointerId(0);
             mIsBeingDragged = false;
+            mChildBodyTouch = false;
             final float y = getMotionY(ev);
             if (Float.isNaN(y)) {
                 return false;
@@ -531,15 +538,16 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
 
 
         boolean result = super.dispatchTouchEvent(ev);
-        final int act = ev.getAction();
 
-        if (act == MotionEvent.ACTION_MOVE) {
 
-            if (childBody.getTop() == 0) {
-                childBody.dispatchTouchEvent(ev);
+        if (mChildBodyTouch) {
+            final int act = ev.getAction();
+            if (act == MotionEvent.ACTION_MOVE) {
+
+                if (childBody.getTop() == 0) {
+                    childBody.dispatchTouchEvent(ev);
+                }
             }
-
-
         }
         return result;
     }
@@ -547,11 +555,14 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
 
-        final int act = ev.getAction();
 
 //        if (childBodyCanScrollUP()) {
 //            return false;
 //        }
+        if (mNestedScroll) {
+            return super.onTouchEvent(ev);
+        }
+        final int act = ev.getAction();
         if (act == MotionEvent.ACTION_DOWN) {
 
             actionPointerId = ev.getPointerId(0);
@@ -571,9 +582,11 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
             float overscrollTop = (y - mInitialMoveY);
             if (!loadingMore && mIsBeingDragged && flag == ViewCompat.SCROLL_INDICATOR_TOP) {
                 int dy = overscrollTop > 0 ? (int) overscrollTop : getHeaderScrollUp((int) overscrollTop);
+
                 if (childBodyCanScrollUP() && overscrollTop > 0) {
                     dy = 0;
                 }
+                mChildBodyTouch = dy == 0;
                 setTargetOffset(dy);
 
             } else if (!refreshing && mIsBeingDragged && flag == ViewCompat.SCROLL_INDICATOR_BOTTOM) {
@@ -582,7 +595,7 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
                 if (childBodyCanScrollDown() && overscrollTop < 0) {
                     dy = 0;
                 }
-
+                mChildBodyTouch = dy == 0;
                 setTargetOffset(dy);
             }
             mInitialMoveY = y;
