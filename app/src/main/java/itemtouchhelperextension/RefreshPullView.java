@@ -570,10 +570,6 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
 
 
         } else if (act == MotionEvent.ACTION_MOVE) {
-            if (flag == -1) {
-                return false;
-            }
-
             final float y = getMotionY(ev);
             if (Float.isNaN(y)) {
                 return false;
