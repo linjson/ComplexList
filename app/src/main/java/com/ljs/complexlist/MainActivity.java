@@ -18,6 +18,8 @@ import com.ljs.complexlist.refreshpull.RefreshListTest;
 
 import java.util.ArrayList;
 
+import itemtouchhelperextension.DefaultDividerDecoration;
+
 /**
  * Created by ljs on 2016/12/19.
  */

@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ljs.complexlist.DefaultDividerDecoration;
+import itemtouchhelperextension.DefaultDividerDecoration;
 import com.ljs.complexlist.R;
 import com.ljs.complexlist.fixheader.ImmutableClazz;
 import com.ljs.complexlist.fixheader.ImmutableStudent;

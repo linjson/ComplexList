@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ljs.complexlist;
+package itemtouchhelperextension;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -25,6 +25,8 @@ import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+
+import com.ljs.complexlist.R;
 
 public class DefaultDividerDecoration extends RecyclerView.ItemDecoration {
     private static final int DEFAULT_DIVIDER_HEIGHT = 1;
