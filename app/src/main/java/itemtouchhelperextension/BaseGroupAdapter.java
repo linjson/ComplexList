@@ -69,7 +69,7 @@ public abstract class BaseGroupAdapter<T extends BaseGroupViewHolder> extends Ba
     @Override
     public void onBindChildrenViewHolder(BaseGroupViewHolder holder, int position, List<Object> payloads) {
         int[] ix = getGroupSonPosition(position);
-        System.out.printf("==>onbind:%s \n", position);
+//        System.out.printf("==>onbind:%s \n", position);
         if (ix[1] == -1) {
             if (payloads.isEmpty()) {
                 onBindGroupViewHolder((T) holder, ix[0]);
@@ -105,11 +105,6 @@ public abstract class BaseGroupAdapter<T extends BaseGroupViewHolder> extends Ba
                 index[0] = i;
                 index[1] = p - 1;
 
-//                if (index[1] == -1) {
-//                    index[0] =Math.max(index[0]-1,0);
-//                    index[1] = getSonSize(index[0]);
-//                }
-
                 return index;
             } else {
                 p = temp;
@@ -124,6 +119,10 @@ public abstract class BaseGroupAdapter<T extends BaseGroupViewHolder> extends Ba
             g += getSonSize(i) + 1;
         }
         return g;
+    }
+
+    public int getGroupIndexToViewIndex(int groudIndex){
+        return getGroupIndexToDataIndex(groudIndex)+getHeaderViewCount();
     }
 
     @Override
@@ -160,7 +159,7 @@ public abstract class BaseGroupAdapter<T extends BaseGroupViewHolder> extends Ba
         int[] src = getGroupSonPosition(listFrom - getHeaderViewCount());
         int[] desc = getGroupSonPosition(listTo - getHeaderViewCount());
 //        System.out.printf("==>%s,%s,%s,%s,%s,%s \n", listFrom - getHeaderViewCount(), listTo - getHeaderViewCount(), src[0], src[1], desc[0], desc[1]);
-        RecyclerView.ViewHolder src_vh = view.findViewHolderForAdapterPosition(getGroupIndexToDataIndex(src[0]) + getHeaderViewCount());
+        RecyclerView.ViewHolder src_vh = view.findViewHolderForAdapterPosition(getGroupIndexToViewIndex(src[0]));
         if (src_vh != null) {
             onBindGroupViewHolder((T) src_vh, src[0]);
         }

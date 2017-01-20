@@ -57,13 +57,12 @@ public class SwipeDragActivity extends AppCompatActivity {
         mAdapter.setItemTouchHelper(mItemTouchHelper);
 
 
-
         findViewById(R.id.btn).setOnClickListener(v -> swipe.setRefreshing(false));
 
-//        swipe.setOnRefreshingListener((v) -> mHandler.postDelayed(() -> {
-//            v.setRefreshing(false);
-//            Toast.makeText(SwipeDragActivity.this, "refreshing finish", Toast.LENGTH_SHORT).show();
-//        }, 1000));
+        swipe.setOnRefreshingListener((v) -> mHandler.postDelayed(() -> {
+            v.setRefreshing(false);
+            Toast.makeText(SwipeDragActivity.this, "refreshing finish", Toast.LENGTH_SHORT).show();
+        }, 1000));
 
         swipe.setOnLoadingMoreListener((v) -> mHandler.postDelayed(() -> {
             v.setLoadingMore(false);

@@ -91,7 +91,7 @@ public class GroupRecyclerAdapter extends BaseGroupAdapter<GroupRecyclerAdapter.
             result.dispatchUpdatesTo(GroupRecyclerAdapter.this);
             setDatas(news);
 
-            fixedHeaderListView.getRecyclerView().scrollToPosition(getGroupIndexToDataIndex(position) + getHeaderViewCount());
+            fixedHeaderListView.getRecyclerView().scrollToPosition(getGroupIndexToViewIndex(position));
 
             Toast.makeText(v.getContext(), "group" + position, Toast.LENGTH_SHORT).show();
         });

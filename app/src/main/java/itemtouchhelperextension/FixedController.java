@@ -111,7 +111,7 @@ public class FixedController extends RecyclerView.OnScrollListener {
     }
 
     public void refreshView(int group) {
-        int viewid = getAdapter().getGroupIndexToDataIndex(group) + getAdapter().getHeaderViewCount();
+        int viewid = getAdapter().getGroupIndexToViewIndex(group);
         if (currentGroupIndex == -1) {
             RecyclerView.ViewHolder oldViewHolder = mView.findViewHolderForAdapterPosition(viewid);
             if (oldViewHolder != null) {
