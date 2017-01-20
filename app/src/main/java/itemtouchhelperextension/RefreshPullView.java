@@ -218,9 +218,10 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
         child.clearAnimation();
 
 
-        if (child.getTop() == to) {
-            return;
-        }
+//        if (child.getTop() == to) {
+//            System.out.printf("==>%s \n","eq");
+//            return;
+//        }
 
         mChildBodyTouch = true;
         child.startAnimation(mAnimation);
@@ -296,7 +297,7 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
         int space = mFooterSrcPosition - mChildFoot.getTop();
 
         if (space < Math.abs(dy)) {
-            return mNestedScroll ? -space : space;
+            return -space;
         }
 
         return Math.min(space, dy);
@@ -364,16 +365,15 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
                 mParentOffsetInWindow);
         final int dy = dyUnconsumed + mParentOffsetInWindow[1];
         if (mRefreshing) {
-//            System.out.printf("==>%s,%s \n", mChildHead.getTop(), dy);
             if (mChildHead.getTop() < 0 && !childBodyCanScrollUP() && dy < 0) {
-                int x = Math.max(mChildHead.getTop(), dy);
-                setTargetOffset(-x);
+                int y = Math.max(mChildHead.getTop(), dy);
+                setTargetOffset(-y);
             }
         } else if (mLoadingMore) {
 
             if (mChildFoot.getTop() >= mFooterSrcPosition && !childBodyCanScrollDown() && dy > 0) {
-                int x = Math.min(mChildFoot.getTop(), dy);
-                setTargetOffset(-x);
+                int y = Math.min(mChildFoot.getTop(), dy);
+                setTargetOffset(-y);
 
             }
 
@@ -390,7 +390,7 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
 
     @Override
     public void onNestedPreScroll(View target, int dx, int dy, int[] consumed) {
-        System.out.printf("==>onNestedPreScroll,dx:%s,dy:%s,[0]:%s,[1]:%s \n", dx, dy, consumed[0], consumed[1]);
+//        System.out.printf("==>onNestedPreScroll,dx:%s,dy:%s,[0]:%s,[1]:%s \n", dx, dy, consumed[0], consumed[1]);
 
 //
         if (mChildBodyTouch) {
@@ -526,18 +526,16 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
             if (Float.isNaN(y)) {
                 return false;
             }
-            final float diff = y - mInitialDownY;
-            if (Math.abs(diff) > mTouchSlop) {
-                if (!mLoadingMore && !childBodyCanScrollUP() && (diff > 0 || mChildHead.getTop() >= 0)) {
-                    mFlag = ViewCompat.SCROLL_INDICATOR_TOP;
-                } else if (!mRefreshing && !childBodyCanScrollDown() && (diff < 0 || mChildFoot.getBottom() <= mFooterSrcPosition)) {
-                    mFlag = ViewCompat.SCROLL_INDICATOR_BOTTOM;
-                }
-                if (mFlag != -1 && !mIsBeingDragged) {
-                    mIsBeingDragged = true;
-                    mInitialMoveY = y;
-                }
-
+            final float diff = mInitialDownY - y;
+            boolean startDrag = Math.abs(diff) > mTouchSlop;
+            if (!mLoadingMore && !childBodyCanScrollUP() && ((diff < 0 && startDrag) || mChildHead.getTop() >= 0)) {
+                mFlag = ViewCompat.SCROLL_INDICATOR_TOP;
+            } else if (!mRefreshing && !childBodyCanScrollDown() && ((diff > 0 && startDrag) || mChildFoot.getBottom() <= mFooterSrcPosition)) {
+                mFlag = ViewCompat.SCROLL_INDICATOR_BOTTOM;
+            }
+            if (mFlag != -1 && !mIsBeingDragged) {
+                mIsBeingDragged = true;
+                mInitialMoveY = y;
             }
         }
         return mIsBeingDragged;
@@ -550,7 +548,7 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
         boolean result = super.dispatchTouchEvent(ev);
 
 
-        if (mChildBodyTouch) {
+        if (mChildBodyTouch && !mNestedScroll) {
             final int act = ev.getAction();
             if (act == MotionEvent.ACTION_MOVE) {
 
@@ -585,24 +583,24 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
                 return false;
             }
 
-            float overscrollTop = (y - mInitialMoveY);
+            float overscrollTop = mInitialMoveY - y;
             if (!mLoadingMore && mIsBeingDragged && mFlag == ViewCompat.SCROLL_INDICATOR_TOP) {
-                int dy = overscrollTop > 0 ? (int) overscrollTop : getHeaderScrollUp((int) overscrollTop);
+                int dy = overscrollTop < 0 ? (int) overscrollTop : getHeaderScrollUp((int) overscrollTop);
 
-                if (childBodyCanScrollUP() && overscrollTop > 0) {
+                if (childBodyCanScrollUP() && overscrollTop < 0) {
                     dy = 0;
                 }
                 mChildBodyTouch = dy == 0;
-                setTargetOffset(dy);
+                setTargetOffset(-dy);
 
             } else if (!mRefreshing && mIsBeingDragged && mFlag == ViewCompat.SCROLL_INDICATOR_BOTTOM) {
-                int dy = overscrollTop < 0 ? (int) overscrollTop : getFooterScrollDown((int) overscrollTop);
+                int dy = overscrollTop > 0 ? (int) overscrollTop : getFooterScrollDown((int) overscrollTop);
 
-                if (childBodyCanScrollDown() && overscrollTop < 0) {
+                if (childBodyCanScrollDown() && overscrollTop > 0) {
                     dy = 0;
                 }
                 mChildBodyTouch = dy == 0;
-                setTargetOffset(dy);
+                setTargetOffset(-dy);
             }
             mInitialMoveY = y;
         } else if (act == MotionEvent.ACTION_CANCEL || act == MotionEvent.ACTION_UP) {
@@ -644,8 +642,9 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
         protected void applyTransformation(float interpolatedTime, Transformation t) {
             moveView(interpolatedTime, child, childTo);
             moveView(interpolatedTime, body, bodyTo);
-
-
+            if (child.getTop() == childTo) {
+                child.clearAnimation();
+            }
         }
 
         private void moveView(float interpolatedTime, View child, int to) {
