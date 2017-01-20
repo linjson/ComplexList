@@ -69,12 +69,9 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(TestViewHolder holder, final int position) {
             final Data data = list.get(position);
-            holder.show(data.desc, new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent it = new Intent(MainActivity.this, data.cls);
-                    startActivity(it);
-                }
+            holder.show(data.desc, v -> {
+                Intent it = new Intent(MainActivity.this, data.cls);
+                startActivity(it);
             });
         }
 

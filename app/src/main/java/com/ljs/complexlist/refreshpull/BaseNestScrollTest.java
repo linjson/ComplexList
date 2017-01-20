@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,22 +51,16 @@ public class BaseNestScrollTest extends Activity implements RefreshPullView.OnRe
 //        textView2.setText("footer");
 //        nv.setFooterView(textView2);
 
-        findViewById(R.id.up).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        findViewById(R.id.up).setOnClickListener(v -> {
 
-                nv.setRefreshing(false);
-                refreshing = !refreshing;
-            }
+            nv.setRefreshing(false);
+            refreshing = !refreshing;
         });
 
-        findViewById(R.id.down).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        findViewById(R.id.down).setOnClickListener(v -> {
 
-                nv.setLoadingMore(false);
-                loading = !loading;
-            }
+            nv.setLoadingMore(false);
+            loading = !loading;
         });
 
 
@@ -85,15 +78,12 @@ public class BaseNestScrollTest extends Activity implements RefreshPullView.OnRe
 
     @Override
     public void doRefreshingData(final RefreshPullView view) {
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                TextView textView = getTextView("add" + 1);
+        mHandler.postDelayed(() -> {
+            TextView textView = getTextView("add" + 1);
 
-                linearLayout.addView(textView, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-                view.setRefreshing(false);
-                Toast.makeText(BaseNestScrollTest.this, "refreshing结束", Toast.LENGTH_SHORT).show();
-            }
+            linearLayout.addView(textView, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            view.setRefreshing(false);
+            Toast.makeText(BaseNestScrollTest.this, "refreshing结束", Toast.LENGTH_SHORT).show();
         }, 2000);
     }
 }

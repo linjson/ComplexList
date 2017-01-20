@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -57,12 +56,9 @@ public class GroupRecyclerAdapter extends BaseGroupAdapter<GroupRecyclerAdapter.
     @Override
     protected void onBindSonViewHolder(final Test holder, int groupPos, int sonPos) {
         holder.bind(mDatas.clazz().get(groupPos).student().get(sonPos));
-        holder.mTextIndex.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                mItemTouchHelper.startDrag(holder);
-                return false;
-            }
+        holder.mTextIndex.setOnTouchListener((v, event) -> {
+            mItemTouchHelper.startDrag(holder);
+            return false;
         });
     }
 
@@ -70,37 +66,34 @@ public class GroupRecyclerAdapter extends BaseGroupAdapter<GroupRecyclerAdapter.
     protected void onBindGroupViewHolder(final Test holder, final int position) {
         holder.bind(mDatas.clazz().get(position));
         holder.mTextTitle.setClickable(true);
-        holder.mTextTitle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        holder.mTextTitle.setOnClickListener(v -> {
 //                Bundle bundle = new Bundle();
 //                h=!h;
 //                bundle.putBoolean("test",h);
 //                notifyItemChanged(4,bundle);
 
 
-                ModifiableSchool modifiableSchool = ModifiableSchool.create().from(mDatas);
-                ModifiableClazz clazz = (ModifiableClazz) modifiableSchool.clazz().get(position);
+            ModifiableSchool modifiableSchool = ModifiableSchool.create().from(mDatas);
+            ModifiableClazz clazz = (ModifiableClazz) modifiableSchool.clazz().get(position);
 
-                clazz.setHide(!clazz.hide());
+            clazz.setHide(!clazz.hide());
 
 
-                List<Student> stu = clazz.student();
+            List<Student> stu = clazz.student();
 
-                for (int i = 0; i < stu.size(); i++) {
-                    ModifiableStudent s = (ModifiableStudent) stu.get(i);
-                    s.setHide(clazz.hide());
-                }
-
-                ImmutableSchool news = modifiableSchool.toImmutable();
-                DiffUtil.DiffResult result = DiffUtil.calculateDiff(new Diff(GroupRecyclerAdapter.this, mDatas, news), false);
-                result.dispatchUpdatesTo(GroupRecyclerAdapter.this);
-                setDatas(news);
-
-                fixedHeaderListView.getRecyclerView().scrollToPosition(getGroupIndexToDataIndex(position) + getHeaderViewCount());
-
-                Toast.makeText(v.getContext(), "group" + position, Toast.LENGTH_SHORT).show();
+            for (int i = 0; i < stu.size(); i++) {
+                ModifiableStudent s = (ModifiableStudent) stu.get(i);
+                s.setHide(clazz.hide());
             }
+
+            ImmutableSchool news = modifiableSchool.toImmutable();
+            DiffUtil.DiffResult result = DiffUtil.calculateDiff(new Diff(GroupRecyclerAdapter.this, mDatas, news), false);
+            result.dispatchUpdatesTo(GroupRecyclerAdapter.this);
+            setDatas(news);
+
+            fixedHeaderListView.getRecyclerView().scrollToPosition(getGroupIndexToDataIndex(position) + getHeaderViewCount());
+
+            Toast.makeText(v.getContext(), "group" + position, Toast.LENGTH_SHORT).show();
         });
 
     }

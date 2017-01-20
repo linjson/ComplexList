@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import itemtouchhelperextension.DefaultDividerDecoration;
 import com.ljs.complexlist.R;
 import com.ljs.complexlist.fixheader.ImmutableClazz;
 import com.ljs.complexlist.fixheader.ImmutableStudent;
@@ -20,6 +19,7 @@ import com.ljs.complexlist.fixheader.ModifiableClazz;
 
 import itemtouchhelperextension.BaseAdapter;
 import itemtouchhelperextension.BaseViewHolder;
+import itemtouchhelperextension.DefaultDividerDecoration;
 import itemtouchhelperextension.RefreshPullView;
 
 /**
@@ -100,14 +100,11 @@ public class RefreshListTest extends Activity implements RefreshPullView.OnLoadi
         data = createStudents();
 
 
-        sHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                adapter.setData(data);
-                view.setRefreshing(false);
-                Toast.makeText(RefreshListTest.this, "refreshing结束", Toast.LENGTH_SHORT).show();
+        sHandler.postDelayed(() -> {
+            adapter.setData(data);
+            view.setRefreshing(false);
+            Toast.makeText(RefreshListTest.this, "refreshing结束", Toast.LENGTH_SHORT).show();
 
-            }
         }, 2000);
     }
 

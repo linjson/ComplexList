@@ -11,12 +11,12 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import itemtouchhelperextension.DefaultDividerDecoration;
 import com.ljs.complexlist.ItemTouchHelperCallback;
 import com.ljs.complexlist.R;
 
 import java.util.Random;
 
+import itemtouchhelperextension.DefaultDividerDecoration;
 import itemtouchhelperextension.FixedHeaderListView;
 import itemtouchhelperextension.ItemTouchHelperExtension;
 
@@ -54,7 +54,7 @@ public class FixHeaderActivity extends AppCompatActivity implements View.OnClick
         mAdapter.setItemTouchHelper(mItemTouchHelper);
 
 
-        findViewById(R.id.btn).setOnClickListener(this);
+//        findViewById(R.id.btn).setOnClickListener(this);
     }
 
 
@@ -66,12 +66,7 @@ public class FixHeaderActivity extends AppCompatActivity implements View.OnClick
         a.setText(text);
         a.setTag(text);
         a.setClickable(true);
-        a.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(FixHeaderActivity.this, text, Toast.LENGTH_SHORT).show();
-            }
-        });
+        a.setOnClickListener(v -> Toast.makeText(FixHeaderActivity.this, text, Toast.LENGTH_SHORT).show());
         return a;
     }
 

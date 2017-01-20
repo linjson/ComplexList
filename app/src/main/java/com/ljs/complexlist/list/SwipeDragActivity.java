@@ -37,7 +37,7 @@ public class SwipeDragActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        swipe = (RefreshPullView) findViewById(R.id.swip);
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_main);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new SwipeDragAdapter(this);
@@ -72,12 +72,17 @@ public class SwipeDragActivity extends AppCompatActivity {
 //            }
 //        });
 
-        findViewById(R.id.btn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                swipe.setRefreshing(false);
-            }
-        });
+        findViewById(R.id.btn).setOnClickListener(v -> swipe.setRefreshing(false));
+
+        swipe.setOnRefreshingListener((v) -> mHandler.postDelayed(() -> {
+            v.setRefreshing(false);
+            Toast.makeText(SwipeDragActivity.this, "refreshing finish", Toast.LENGTH_SHORT).show();
+        }, 1000));
+
+        swipe.setOnLoadingMoreListener((v) -> mHandler.postDelayed(() -> {
+            v.setLoadingMore(false);
+            Toast.makeText(SwipeDragActivity.this, "loading finish", Toast.LENGTH_SHORT).show();
+        }, 1000));
 //
 //        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.ll);
 //

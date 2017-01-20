@@ -91,31 +91,16 @@ public class SwipeDragAdapter extends BaseAdapter<BaseViewHolder> {
         });
         if (holder instanceof ItemViewHolderWithRecyclerWidth) {
             ItemViewHolderWithRecyclerWidth viewHolder = (ItemViewHolderWithRecyclerWidth) holder;
-            viewHolder.mActionViewDelete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    doDelete(holder.getAdapterPosition());
-                }
-            });
+            viewHolder.mActionViewDelete.setOnClickListener(view -> doDelete(holder.getAdapterPosition()));
         } else if (holder instanceof ItemSwipeWithActionWidthViewHolder) {
             ItemSwipeWithActionWidthViewHolder viewHolder = (ItemSwipeWithActionWidthViewHolder) holder;
             viewHolder.mActionViewRefresh.setOnClickListener(
-                    new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Toast.makeText(mContext, "Refresh Click" + holder.getAdapterPosition()
-                                    , Toast.LENGTH_SHORT).show();
-                        }
-                    }
+                    view -> Toast.makeText(mContext, "Refresh Click" + holder.getAdapterPosition()
+                            , Toast.LENGTH_SHORT).show()
 
             );
             viewHolder.mActionViewDelete.setOnClickListener(
-                    new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            doDelete(holder.getAdapterPosition());
-                        }
-                    }
+                    view -> doDelete(holder.getAdapterPosition())
             );
         }
     }

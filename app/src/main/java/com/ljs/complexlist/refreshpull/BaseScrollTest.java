@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,22 +51,16 @@ public class BaseScrollTest extends Activity implements RefreshPullView.OnRefres
 //        textView2.setText("footer");
 //        nv.setFooterView(textView2);
 
-        findViewById(R.id.up).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        findViewById(R.id.up).setOnClickListener(v -> {
 
-                nv.setRefreshing(false);
-                refreshing = !refreshing;
-            }
+            nv.setRefreshing(false);
+            refreshing = !refreshing;
         });
 
-        findViewById(R.id.down).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        findViewById(R.id.down).setOnClickListener(v -> {
 
-                nv.setLoadingMore(false);
-                loading = !loading;
-            }
+            nv.setLoadingMore(false);
+            loading = !loading;
         });
 
 
