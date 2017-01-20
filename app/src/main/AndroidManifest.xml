@@ -16,8 +16,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".list.SwipeDragActivity"/>
-        <activity android:name=".refreshpull.BaseTest"/>
+        <activity android:name=".refreshpull.BaseScrollTest"/>
         <activity android:name=".refreshpull.RefreshListTest"/>
+        <activity android:name=".refreshpull.BaseNestScrollTest"/>
         <activity android:name=".fixheader.FixHeaderActivity"/>
 
 

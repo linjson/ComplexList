@@ -11,7 +11,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ljs.complexlist.DividerItemDecoration;
+import com.ljs.complexlist.DefaultDividerDecoration;
 import com.ljs.complexlist.ItemTouchHelperCallback;
 import com.ljs.complexlist.R;
 
@@ -45,7 +45,7 @@ public class FixHeaderActivity extends AppCompatActivity implements View.OnClick
         testDatas = createTestDatas();
         mAdapter.setDatas(ImmutableSchool.copyOf(testDatas));
         mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
+        mRecyclerView.addItemDecoration(new DefaultDividerDecoration(this, LinearLayoutManager.VERTICAL));
 //        mAdapter.updateData(createTestDatas());
         mCallback = new ItemTouchHelperCallback();
         mItemTouchHelper = new ItemTouchHelperExtension(mCallback);

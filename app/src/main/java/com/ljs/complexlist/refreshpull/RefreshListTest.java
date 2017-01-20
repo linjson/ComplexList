@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ljs.complexlist.DividerItemDecoration;
+import com.ljs.complexlist.DefaultDividerDecoration;
 import com.ljs.complexlist.R;
 import com.ljs.complexlist.fixheader.ImmutableClazz;
 import com.ljs.complexlist.fixheader.ImmutableStudent;
@@ -46,7 +46,7 @@ public class RefreshListTest extends Activity implements RefreshPullView.OnLoadi
 
 
         LinearLayoutManager layout = new LinearLayoutManager(this);
-        recycler_main.addItemDecoration(new DividerItemDecoration(this));
+        recycler_main.addItemDecoration(new DefaultDividerDecoration(this));
         recycler_main.setLayoutManager(layout);
 
         data = createStudents();

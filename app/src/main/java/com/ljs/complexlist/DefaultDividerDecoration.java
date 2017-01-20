@@ -26,7 +26,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-public class DividerItemDecoration extends RecyclerView.ItemDecoration {
+public class DefaultDividerDecoration extends RecyclerView.ItemDecoration {
     private static final int DEFAULT_DIVIDER_HEIGHT = 1;
 
     public static final int HORIZONTAL_LIST = LinearLayoutManager.HORIZONTAL;
@@ -42,15 +42,15 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
     protected Paint mPaddingPaint;
     protected Paint mDividerPaint;
 
-    public DividerItemDecoration(Context context) {
+    public DefaultDividerDecoration(Context context) {
         this(context, VERTICAL_LIST, -1, -1);
     }
 
-    public DividerItemDecoration(Context context, int orientation) {
+    public DefaultDividerDecoration(Context context, int orientation) {
         this(context, orientation, -1, -1);
     }
 
-    public DividerItemDecoration(Context context, int orientation, int padding, int dividerHeight) {
+    public DefaultDividerDecoration(Context context, int orientation, int padding, int dividerHeight) {
         setOrientation(orientation);
         mContext = context;
 
@@ -60,7 +60,7 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
         if (dividerHeight != -1) this.dividerHeight = dividerHeight;
     }
 
-    public DividerItemDecoration(Context context, int orientation, int startpadding, int endpadding, int dividerHeight) {
+    public DefaultDividerDecoration(Context context, int orientation, int startpadding, int endpadding, int dividerHeight) {
         setOrientation(orientation);
         mContext = context;
 

@@ -12,8 +12,11 @@ import android.widget.TextView;
 
 import com.ljs.complexlist.fixheader.FixHeaderActivity;
 import com.ljs.complexlist.list.SwipeDragActivity;
-import com.ljs.complexlist.refreshpull.BaseTest;
+import com.ljs.complexlist.refreshpull.BaseNestScrollTest;
+import com.ljs.complexlist.refreshpull.BaseScrollTest;
 import com.ljs.complexlist.refreshpull.RefreshListTest;
+
+import java.util.ArrayList;
 
 /**
  * Created by ljs on 2016/12/19.
@@ -23,15 +26,21 @@ public class MainActivity extends AppCompatActivity {
 
     private RecyclerView mList;
 
-    private final String[] list = {"fixheader-group", "swipe-drag", "refreshpull-base", "refreshpull-list"};
 
-    private final Class[] clazz = {FixHeaderActivity.class, SwipeDragActivity.class, BaseTest.class, RefreshListTest.class};
+    private ArrayList<Data> list = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.main);
+
+        list.add(new Data("refreshpull-base", BaseScrollTest.class));
+        list.add(new Data("refreshpull-base-nest", BaseNestScrollTest.class));
+        list.add(new Data("refreshpull-list", RefreshListTest.class));
+        list.add(new Data("swipe-drag", SwipeDragActivity.class));
+        list.add(new Data("fixheader-group", FixHeaderActivity.class));
+
         initView();
 
 
@@ -42,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
         mList.setLayoutManager(new LinearLayoutManager(this));
 
-        mList.addItemDecoration(new DividerItemDecoration(this));
+        mList.addItemDecoration(new DefaultDividerDecoration(this));
 
         mList.setAdapter(new TestAdapter());
     }
@@ -57,10 +66,11 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(TestViewHolder holder, final int position) {
-            holder.show(list[position], new View.OnClickListener() {
+            final Data data = list.get(position);
+            holder.show(data.desc, new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent it = new Intent(MainActivity.this, clazz[position]);
+                    Intent it = new Intent(MainActivity.this, data.cls);
                     startActivity(it);
                 }
             });
@@ -68,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public int getItemCount() {
-            return list.length;
+            return list.size();
         }
     }
 
@@ -85,6 +95,16 @@ public class MainActivity extends AppCompatActivity {
         public void show(String t, View.OnClickListener listen) {
             v.setText(t);
             v.setOnClickListener(listen);
+        }
+    }
+
+    public static class Data {
+        String desc;
+        Class cls;
+
+        public Data(String desc, Class cls) {
+            this.desc = desc;
+            this.cls = cls;
         }
     }
 }

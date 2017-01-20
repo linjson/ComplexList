@@ -17,7 +17,7 @@ import itemtouchhelperextension.RefreshPullView;
  * Created by ljs on 16/9/26.
  */
 
-public class BaseTest extends Activity implements RefreshPullView.OnRefreshingListener {
+public class BaseNestScrollTest extends Activity implements RefreshPullView.OnRefreshingListener {
 
     private boolean refreshing = false;
     private boolean loading = false;
@@ -28,7 +28,7 @@ public class BaseTest extends Activity implements RefreshPullView.OnRefreshingLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.scrolltest);
+        setContentView(R.layout.nesttest);
 
         final RefreshPullView nv = (RefreshPullView) findViewById(R.id.sv);
 
@@ -73,8 +73,8 @@ public class BaseTest extends Activity implements RefreshPullView.OnRefreshingLi
 
         nv.setOnRefreshingListener(this);
 
-
     }
+
 
     @NonNull
     private TextView getTextView(String i) {
@@ -92,7 +92,7 @@ public class BaseTest extends Activity implements RefreshPullView.OnRefreshingLi
 
                 linearLayout.addView(textView, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
                 view.setRefreshing(false);
-                Toast.makeText(BaseTest.this, "refreshing结束", Toast.LENGTH_SHORT).show();
+                Toast.makeText(BaseNestScrollTest.this, "refreshing结束", Toast.LENGTH_SHORT).show();
             }
         }, 2000);
     }
