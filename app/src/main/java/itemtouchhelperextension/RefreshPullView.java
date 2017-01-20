@@ -1,6 +1,7 @@
 package itemtouchhelperextension;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.v4.view.NestedScrollingChild;
 import android.support.v4.view.NestedScrollingChildHelper;
 import android.support.v4.view.NestedScrollingParent;
@@ -15,6 +16,8 @@ import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.view.animation.Transformation;
+
+import java.lang.reflect.Method;
 
 /**
  * Created by ljs on 16/9/20.
@@ -114,7 +117,6 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
         if (getChildCount() == 0) {
             return;
         }
-
         int width = getMeasuredWidth();
         int height = getMeasuredHeight() - getPaddingBottom();
 
@@ -166,12 +168,32 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
         super.addView(child, params);
         if (mChildBody == null) {
             mChildBody = child;
-            mNestedScroll = mChildBody instanceof NestedScrollingChild;
+            judgeChildBodyNestScroll();
         } else if (mChildHead == null) {
             mChildHead = child;
         } else if (mChildFoot == null) {
             mChildFoot = child;
         }
+    }
+
+    private void judgeChildBodyNestScroll() {
+        mNestedScroll = mChildBody instanceof NestedScrollingChild;
+
+        if (!mNestedScroll && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            try {
+                Class clz = Class.forName(mChildBody.getClass().getName());
+                Method[] methods = clz.getMethods();
+                for (int i = 0; i < methods.length; i++) {
+                    if (methods[i].getName().startsWith("onNested")) {
+                        mNestedScroll = true;
+                        return;
+                    }
+                }
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
     private void setTargetOffset(int offsetY) {
@@ -189,11 +211,14 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
             }
         }
 
+        if (mChildBody.getTop() == 0) {
+            mViewOffsetHeader = 0;
+            mViewOffsetFooter = 0;
+        }
 
     }
 
     private boolean childBodyCanScrollUP() {
-
         return ViewCompat.canScrollVertically(mChildBody, -1);
     }
 
@@ -238,8 +263,16 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
         mHeaderScrolled = 0;
         mFooterScrolled = 0;
 
-        mViewOffsetHeader = 0;
-        mViewOffsetFooter = 0;
+        if (!mRefreshing) {
+            mViewOffsetHeader = 0;
+        } else {
+            mViewOffsetHeader = -mHeaderSrcPosition + mChildHead.getTop();
+        }
+        if (!mLoadingMore) {
+            mViewOffsetFooter = 0;
+        } else {
+            mViewOffsetFooter = mChildFoot.getTop() - mFooterSrcPosition;
+        }
     }
 
     public void setRefreshing(boolean open) {
@@ -250,7 +283,6 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
         }
         if (open) {
             viewStartAnimator(mChildHead, 0, -mHeaderSrcPosition);
-
         } else {
             mViewOffsetHeader = -mHeaderSrcPosition + mChildHead.getTop();
             mViewOffsetFooter = 0;
@@ -399,15 +431,28 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
         }
 
         if (mRefreshing) {
-
             if (mChildHead.getTop() >= mHeaderSrcPosition) {
-                consumed[1] = getHeaderScrollUp(dy);
-                setTargetOffset(-consumed[1]);
+                if (childBodyCanScrollUP()) {
+                    if (dy > 0) {
+                        consumed[1] = getHeaderScrollUp(dy);
+                        setTargetOffset(-consumed[1]);
+                    }
+                } else {
+                    consumed[1] = getHeaderScrollUp(dy);
+                    setTargetOffset(-consumed[1]);
+                }
             }
         } else if (mLoadingMore) {
             if (mChildFoot.getTop() <= mFooterSrcPosition) {
-                consumed[1] = getFooterScrollDown(dy);
-                setTargetOffset(-consumed[1]);
+                if (childBodyCanScrollDown()) {
+                    if (dy < 0) {
+                        consumed[1] = getFooterScrollDown(dy);
+                        setTargetOffset(-consumed[1]);
+                    }
+                } else {
+                    consumed[1] = getFooterScrollDown(dy);
+                    setTargetOffset(-consumed[1]);
+                }
             }
         } else if (mFlag == ViewCompat.SCROLL_INDICATOR_TOP && dy > 0 && mHeaderScrolled > 0) {
             consumed[1] = dy;

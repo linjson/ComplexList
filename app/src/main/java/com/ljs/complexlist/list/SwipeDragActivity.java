@@ -57,44 +57,18 @@ public class SwipeDragActivity extends AppCompatActivity {
         mAdapter.setItemTouchHelper(mItemTouchHelper);
 
 
-//        mItemTouchHelper2=new ItemTouchHelper(mCallback2);
-//        mItemTouchHelper2.attachToRecyclerView(mRecyclerView);
-//        swipe.setProgressViewEndTarget(true,0);
-
-
-//        ItemTouchHelper
-
-//        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-//            @Override
-//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-//                super.onScrolled(recyclerView, dx, dy);
-////                System.out.printf("==>onScrolled,%s \n",dy);
-//            }
-//        });
 
         findViewById(R.id.btn).setOnClickListener(v -> swipe.setRefreshing(false));
 
-        swipe.setOnRefreshingListener((v) -> mHandler.postDelayed(() -> {
-            v.setRefreshing(false);
-            Toast.makeText(SwipeDragActivity.this, "refreshing finish", Toast.LENGTH_SHORT).show();
-        }, 1000));
+//        swipe.setOnRefreshingListener((v) -> mHandler.postDelayed(() -> {
+//            v.setRefreshing(false);
+//            Toast.makeText(SwipeDragActivity.this, "refreshing finish", Toast.LENGTH_SHORT).show();
+//        }, 1000));
 
         swipe.setOnLoadingMoreListener((v) -> mHandler.postDelayed(() -> {
             v.setLoadingMore(false);
             Toast.makeText(SwipeDragActivity.this, "loading finish", Toast.LENGTH_SHORT).show();
         }, 1000));
-//
-//        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.ll);
-//
-//        for (int i = 0; i < 50; i++) {
-//
-//
-//            TextView textView = new TextView(this);
-//            textView.setText("text" + i);
-//
-//            linearLayout.addView(textView, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-//
-//        }
     }
 
 

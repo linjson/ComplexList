@@ -66,7 +66,9 @@ public class FixedHeaderListView extends FrameLayout {
         return headerLayout;
     }
 
-    public void refreshHeaderView(int group){
+    public void refreshHeaderView(int group) {
         fixedController.refreshView(group);
     }
+
+
 }

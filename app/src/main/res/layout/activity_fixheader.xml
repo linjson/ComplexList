@@ -4,11 +4,30 @@
               android:layout_height="match_parent"
               android:orientation="vertical">
 
+    <itemtouchhelperextension.RefreshPullView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <itemtouchhelperextension.FixedHeaderListView
             android:id="@+id/recycler_main"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
+            android:layout_height="match_parent"
+            />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+
+            android:background="@android:color/holo_blue_dark"
+            android:text="header"
+            android:textColor="@android:color/white"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+
+            android:background="@android:color/holo_blue_dark"
+            android:text="footer"
+            android:textColor="@android:color/white"/>
+    </itemtouchhelperextension.RefreshPullView>
 </LinearLayout>
