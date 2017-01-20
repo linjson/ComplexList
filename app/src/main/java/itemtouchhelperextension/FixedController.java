@@ -42,7 +42,6 @@ public class FixedController extends RecyclerView.OnScrollListener {
             }
             next++;
         }
-
         return next;
     }
 
@@ -112,9 +111,20 @@ public class FixedController extends RecyclerView.OnScrollListener {
     }
 
     public void refreshView(int group) {
+        int viewid = getAdapter().getGroupIndexToDataIndex(group) + getAdapter().getHeaderViewCount();
         if (currentGroupIndex == -1) {
-            getAdapter().notifyItemChanged(getAdapter().getGroupIndexToDataIndex(group) + getAdapter().getHeaderViewCount());
+            RecyclerView.ViewHolder oldViewHolder = mView.findViewHolderForAdapterPosition(viewid);
+            if (oldViewHolder != null) {
+                getAdapter().onBindGroupViewHolder((BaseGroupViewHolder) oldViewHolder, group);
+            } else {
+                getAdapter().notifyItemChanged(viewid);
+            }
             return;
+        }
+
+        RecyclerView.ViewHolder oldViewHolder = mView.findViewHolderForAdapterPosition(viewid);
+        if (oldViewHolder == null) {
+            getAdapter().notifyItemChanged(viewid);
         }
         BaseGroupViewHolder holer = getAdapter().onCreateGroupViewHolder(mView, getAdapter().getGroupViewType(group));
         getAdapter().onBindGroupViewHolder(holer, group);
