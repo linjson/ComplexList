@@ -70,5 +70,13 @@ public class FixedHeaderListView extends FrameLayout {
         fixedController.refreshView(group);
     }
 
+    @Override
+    public boolean canScrollVertically(int direction) {
+        return recyclerView.canScrollVertically(direction);
+    }
 
+    @Override
+    public boolean canScrollHorizontally(int direction) {
+        return recyclerView.canScrollVertically(direction);
+    }
 }
