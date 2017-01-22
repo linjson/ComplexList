@@ -5,10 +5,8 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,10 +26,8 @@ public class SwipeDragActivity extends AppCompatActivity {
     private SwipeDragAdapter mAdapter;
     public ItemTouchHelperExtension mItemTouchHelper;
     public ItemTouchHelperExtension.Callback mCallback;
-    //    public ItemTouchHelperCallback2 mCallback2;
     private RefreshPullView swipe;
     private Handler mHandler = new Handler();
-    private ItemTouchHelper mItemTouchHelper2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,12 +75,7 @@ public class SwipeDragActivity extends AppCompatActivity {
         a.setText(text);
         a.setTag(text);
         a.setClickable(true);
-        a.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(SwipeDragActivity.this, text, Toast.LENGTH_SHORT).show();
-            }
-        });
+        a.setOnClickListener(v -> Toast.makeText(SwipeDragActivity.this, text, Toast.LENGTH_SHORT).show());
         return a;
     }
 
