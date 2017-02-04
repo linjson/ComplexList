@@ -26,8 +26,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.ljs.complexlist.R;
-
 public class DefaultDividerDecoration extends RecyclerView.ItemDecoration {
     private static final int DEFAULT_DIVIDER_HEIGHT = 1;
 
@@ -78,7 +76,7 @@ public class DefaultDividerDecoration extends RecyclerView.ItemDecoration {
     }
 
     private void init() {
-        padding = mContext.getResources().getDimensionPixelSize(R.dimen.activity_horizontal_margin);
+        padding = 0;
         updatePaddint();
         dividerHeight = DEFAULT_DIVIDER_HEIGHT;
 
