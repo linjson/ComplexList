@@ -1,6 +1,7 @@
 package itemtouchhelperextension;
 
 import android.content.Context;
+import android.support.v4.view.NestedScrollingChild;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -12,7 +13,7 @@ import android.widget.FrameLayout;
  * Created by ljs on 2016/11/3.
  */
 
-public class FixedHeaderListView extends FrameLayout {
+public class FixedHeaderListView extends FrameLayout implements NestedScrollingChild {
     private RecyclerView recyclerView;
     private FrameLayout headerLayout;
     private FixedController fixedController;
