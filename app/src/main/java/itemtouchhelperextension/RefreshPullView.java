@@ -240,11 +240,6 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
         child.clearAnimation();
 
 
-//        if (child.getTop() == to) {
-//            System.out.printf("==>%s \n","eq");
-//            return;
-//        }
-
         mChildBodyTouch = true;
         child.startAnimation(mAnimation);
 
