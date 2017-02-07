@@ -23,6 +23,9 @@ public class BaseNestScrollTest extends Activity implements RefreshPullView.OnRe
     private Handler mHandler = new Handler();
     private LinearLayout linearLayout;
 
+    private int count = 0;
+    private static final int testNumber = 2;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,14 +45,10 @@ public class BaseNestScrollTest extends Activity implements RefreshPullView.OnRe
 
         }
 
-
-//        TextView textView = new TextView(this);
-//        textView.setText("header");
-//        nv.setHeaderView(textView);
-//
-//        TextView textView2 = new TextView(this);
-//        textView2.setText("footer");
-//        nv.setFooterView(textView2);
+        RPViewHeader head = new RPViewHeader(this);
+        nv.setHeaderView(head);
+        RPViewFooter footer = new RPViewFooter(this);
+        nv.setFooterView(footer);
 
         findViewById(R.id.up).setOnClickListener(v -> {
 
@@ -65,6 +64,22 @@ public class BaseNestScrollTest extends Activity implements RefreshPullView.OnRe
 
 
         nv.setOnRefreshingListener(this);
+        nv.setOnLoadingMoreListener(view -> mHandler.postDelayed(() -> {
+
+            if (count < testNumber) {
+                TextView textView = getTextView("add" + 1);
+
+                linearLayout.addView(textView, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                count++;
+
+            }
+
+            if (count >= testNumber) {
+                view.stopLoadingMore();
+            }
+
+            view.setLoadingMore(false);
+        }, 2000));
 
     }
 
@@ -79,7 +94,7 @@ public class BaseNestScrollTest extends Activity implements RefreshPullView.OnRe
     @Override
     public void doRefreshingData(final RefreshPullView view) {
         mHandler.postDelayed(() -> {
-            TextView textView = getTextView("add" + 1);
+            TextView textView = getTextView("refresh" + 1);
 
             linearLayout.addView(textView, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
             view.setRefreshing(false);

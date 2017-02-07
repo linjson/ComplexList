@@ -22,6 +22,8 @@ public class BaseScrollTest extends Activity implements RefreshPullView.OnRefres
     private boolean loading = false;
     private Handler mHandler = new Handler();
     private LinearLayout linearLayout;
+    private int count;
+    private int testNumber = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +32,7 @@ public class BaseScrollTest extends Activity implements RefreshPullView.OnRefres
         setContentView(R.layout.scrolltest);
 
         final RefreshPullView nv = (RefreshPullView) findViewById(R.id.sv);
+
 
         linearLayout = (LinearLayout) findViewById(R.id.ll);
 
@@ -43,13 +46,11 @@ public class BaseScrollTest extends Activity implements RefreshPullView.OnRefres
         }
 
 
-//        TextView textView = new TextView(this);
-//        textView.setText("header");
-//        nv.setHeaderView(textView);
-//
-//        TextView textView2 = new TextView(this);
-//        textView2.setText("footer");
-//        nv.setFooterView(textView2);
+        RPViewHeader head = new RPViewHeader(this);
+        nv.setHeaderView(head);
+
+        RPViewFooter footer = new RPViewFooter(this);
+        nv.setFooterView(footer);
 
         findViewById(R.id.up).setOnClickListener(v -> {
 
@@ -66,6 +67,23 @@ public class BaseScrollTest extends Activity implements RefreshPullView.OnRefres
 
         nv.setOnRefreshingListener(this);
 
+        nv.setOnLoadingMoreListener(view -> mHandler.postDelayed(() -> {
+
+            if (count < testNumber) {
+                TextView textView = getTextView("add" + 1);
+
+                linearLayout.addView(textView, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                count++;
+
+            }
+
+            if (count >= testNumber) {
+                view.stopLoadingMore();
+            }
+
+            view.setLoadingMore(false);
+        }, 2000));
+
     }
 
 
@@ -78,15 +96,12 @@ public class BaseScrollTest extends Activity implements RefreshPullView.OnRefres
 
     @Override
     public void doRefreshingData(final RefreshPullView view) {
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                TextView textView = getTextView("add" + 1);
+        mHandler.postDelayed(() -> {
+            TextView textView = getTextView("refresh" + 1);
 
-                linearLayout.addView(textView, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-                view.setRefreshing(false);
-                Toast.makeText(BaseScrollTest.this, "refreshing结束", Toast.LENGTH_SHORT).show();
-            }
+            linearLayout.addView(textView, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            view.setRefreshing(false);
+            Toast.makeText(BaseScrollTest.this, "refreshing结束", Toast.LENGTH_SHORT).show();
         }, 2000);
     }
 }

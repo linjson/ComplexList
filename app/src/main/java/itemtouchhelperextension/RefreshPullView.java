@@ -51,7 +51,7 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
     private float mInitialMoveY;
     private boolean mChildBodyTouch;
     private boolean mNestedScroll;
-
+    private boolean mLoadingMoreEnable = true;
     private Animation.AnimationListener listener = new Animation.AnimationListener() {
         @Override
         public void onAnimationStart(Animation animation) {
@@ -63,6 +63,8 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
             viewStopAnimator();
             if (mRefreshingDispatch) {
                 mRefreshingDispatch = false;
+
+
                 if (mOnRefreshingListener != null) {
                     mOnRefreshingListener.doRefreshingData(RefreshPullView.this);
                 }
@@ -150,13 +152,31 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
     }
 
     public void setHeaderView(View view) {
-        mChildHead = view;
-        addView(view);
+        assertWrapViewExtension(view);
+        if (mChildHead != view) {
+            if (mChildHead != null) {
+                removeView(mChildHead);
+            }
+            mChildHead = view;
+            addView(view, -1, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+        }
+    }
+
+    private void assertWrapViewExtension(View view) {
+        if (view instanceof WrapViewExtension) {
+            throw new RuntimeException("view must be implement <WrapViewExtension>");
+        }
     }
 
     public void setFooterView(View view) {
-        mChildFoot = view;
-        addView(view);
+        assertWrapViewExtension(view);
+        if (mChildFoot != view) {
+            if (mChildFoot != null) {
+                removeView(mChildFoot);
+            }
+            mChildFoot = view;
+            addView(view, -1, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+        }
     }
 
 
@@ -167,8 +187,10 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
             mChildBody = child;
             judgeChildBodyNestScroll();
         } else if (mChildHead == null) {
+            assertWrapViewExtension(child);
             mChildHead = child;
         } else if (mChildFoot == null) {
+            assertWrapViewExtension(child);
             mChildFoot = child;
         }
     }
@@ -196,15 +218,38 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
     private void setTargetOffset(int offsetY) {
         if (mFlag == ViewCompat.SCROLL_INDICATOR_TOP) {
             if (mChildHead != null) {
-                mHeaderScrolled += offsetY;
+
                 mChildHead.offsetTopAndBottom(offsetY);
                 mChildBody.offsetTopAndBottom(offsetY);
+
+                if (!mRefreshing) {
+                    float rate = Math.min(1, mChildBody.getTop() * 1.0f / mChildHead.getMeasuredHeight());
+                    getWrapViewExtension(mChildHead).setRate(rate);
+
+                    if (mHeaderScrolled == 0) {
+                        getWrapViewExtension(mChildHead).showPreView();
+                    }
+
+                }
+
+                mHeaderScrolled += offsetY;
+
             }
         } else {
             if (mChildFoot != null) {
-                mFooterScrolled += offsetY;
+
                 mChildFoot.offsetTopAndBottom(offsetY);
                 mChildBody.offsetTopAndBottom(offsetY);
+
+                if (!mLoadingMore && mLoadingMoreEnable) {
+                    float rate = Math.min(1, mChildBody.getTop() * -1.0f / mChildFoot.getMeasuredHeight());
+                    getWrapViewExtension(mChildFoot).setRate(rate);
+
+                    if (mFooterScrolled == 0) {
+                        getWrapViewExtension(mChildFoot).showPreView();
+                    }
+                }
+                mFooterScrolled += offsetY;
             }
         }
 
@@ -279,10 +324,16 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
             mViewOffsetHeader = -mHeaderSrcPosition + mChildHead.getTop();
             mViewOffsetFooter = 0;
             viewStartAnimator(mChildHead, mHeaderSrcPosition);
+
+            getWrapViewExtension(mChildHead).resetView();
+
         }
 
         if (mRefreshing != open && open) {
             mRefreshingDispatch = true;
+
+            getWrapViewExtension(mChildHead).showStartView();
+
         }
 
         mRefreshing = open;
@@ -298,10 +349,16 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
             mViewOffsetHeader = 0;
             mViewOffsetFooter = mChildFoot.getTop() - mFooterSrcPosition;
             viewStartAnimator(mChildFoot, mFooterSrcPosition);
+            if (mLoadingMoreEnable) {
+                getWrapViewExtension(mChildFoot).resetView();
+            }
         }
 
         if (mLoadingMore != open && open) {
             mLoadingMoreDispatch = true;
+            if (mLoadingMoreEnable) {
+                getWrapViewExtension(mChildFoot).showStartView();
+            }
         }
 
         mLoadingMore = open;
@@ -352,6 +409,7 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
         mHeaderScrolled = 0;
         mFooterScrolled = 0;
         startNestedScroll(nestedScrollAxes & ViewCompat.SCROLL_AXIS_VERTICAL);
+
 //        System.out.printf("==>onNestedScrollAccepted \n");
     }
 
@@ -556,9 +614,9 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
             }
             final float diff = mInitialDownY - y;
             boolean startDrag = Math.abs(diff) > mTouchSlop;
-            if (!mLoadingMore && !childBodyCanScrollUP() && ((diff < 0 && startDrag) || mChildHead.getTop() >= 0)) {
+            if (mChildHead != null && !mLoadingMore && !childBodyCanScrollUP() && ((diff < 0 && startDrag) || mChildHead.getTop() >= 0)) {
                 mFlag = ViewCompat.SCROLL_INDICATOR_TOP;
-            } else if (!mRefreshing && !childBodyCanScrollDown() && ((diff > 0 && startDrag) || mChildFoot.getBottom() <= mFooterSrcPosition)) {
+            } else if (mChildFoot != null && !mRefreshing && !childBodyCanScrollDown() && ((diff > 0 && startDrag) || mChildFoot.getBottom() <= mFooterSrcPosition)) {
                 mFlag = ViewCompat.SCROLL_INDICATOR_BOTTOM;
             }
             if (mFlag != -1 && !mIsBeingDragged) {
@@ -669,6 +727,20 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
         return ev.getY();
     }
 
+    public void stopLoadingMore() {
+        if (mLoadingMoreEnable) {
+            getWrapViewExtension(mChildFoot).showFinishView();
+        }
+        mLoadingMoreEnable = false;
+    }
+
+    public void setLoadingMoreEnable(boolean enable) {
+        if (!mLoadingMoreEnable) {
+            getWrapViewExtension(mChildFoot).resetView();
+        }
+        mLoadingMoreEnable = enable;
+    }
+
     private static class ViewAnimation extends Animation {
 
         private View child;
@@ -692,6 +764,13 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
         }
     }
 
+    private WrapViewExtension getWrapViewExtension(View child) {
+        if (child instanceof WrapViewExtension) {
+            return (WrapViewExtension) child;
+        }
+        return new EmptyExtension();
+    }
+
     public interface OnRefreshingListener {
         void doRefreshingData(RefreshPullView view);
     }
@@ -699,4 +778,32 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
     public interface OnLoadingMoreListener {
         void doLoadingMoreData(RefreshPullView view);
     }
+
+    private static class EmptyExtension implements WrapViewExtension {
+        @Override
+        public void setRate(float rate) {
+
+        }
+
+        @Override
+        public void showPreView() {
+
+        }
+
+        @Override
+        public void showStartView() {
+
+        }
+
+        @Override
+        public void resetView() {
+
+        }
+
+        @Override
+        public void showFinishView() {
+
+        }
+    }
+
 }

@@ -30,4 +30,5 @@ dependencies {
     apt "org.immutables:value:2.3.8"
     provided "org.immutables:value:2.3.8"
     compile 'com.android.support:design:+'
+    compile 'com.airbnb.android:lottie:1.0.1'
 }
