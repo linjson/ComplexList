@@ -163,7 +163,7 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
     }
 
     private void assertWrapViewExtension(View view) {
-        if (view instanceof WrapViewExtension) {
+        if (!(view instanceof WrapViewExtension)) {
             throw new RuntimeException("view must be implement <WrapViewExtension>");
         }
     }
