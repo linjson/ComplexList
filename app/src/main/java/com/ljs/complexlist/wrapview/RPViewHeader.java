@@ -1,4 +1,4 @@
-package com.ljs.complexlist.refreshpull;
+package com.ljs.complexlist.wrapview;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -69,8 +69,7 @@ public class RPViewHeader extends FrameLayout implements WrapViewExtension {
 
     }
 
-
-//    @Override
+    //    @Override
 //    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 //        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 //        measureChild(getChildAt(0), widthMeasureSpec, heightMeasureSpec);

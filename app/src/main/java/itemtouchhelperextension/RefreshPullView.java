@@ -137,18 +137,16 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        if (mChildBody != null) {
-            mChildBody.measure(MeasureSpec.makeMeasureSpec(getMeasuredWidth() - getPaddingLeft() - getPaddingRight(), MeasureSpec.EXACTLY),
-                    MeasureSpec.makeMeasureSpec(getMeasuredHeight() - getPaddingTop() - getPaddingBottom(), MeasureSpec.EXACTLY));
-        }
+
+        measureChildren(widthMeasureSpec, heightMeasureSpec);
         if (mChildHead != null) {
-            measureChild(mChildHead, widthMeasureSpec, heightMeasureSpec);
             mHeaderSrcPosition = -mChildHead.getMeasuredHeight();
         }
         if (mChildFoot != null) {
-            measureChild(mChildFoot, widthMeasureSpec, heightMeasureSpec);
             mFooterSrcPosition = getMeasuredHeight();
         }
+
+
     }
 
     public void setHeaderView(View view) {
@@ -158,7 +156,7 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
                 removeView(mChildHead);
             }
             mChildHead = view;
-            addView(view, -1, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+            addView(view, 0, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         }
     }
 
@@ -175,23 +173,26 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
                 removeView(mChildFoot);
             }
             mChildFoot = view;
-            addView(view, -1, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+            addView(view, 0, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         }
     }
 
 
     @Override
     public void addView(View child, LayoutParams params) {
-        super.addView(child, params);
+
         if (mChildBody == null) {
             mChildBody = child;
             judgeChildBodyNestScroll();
+            super.addView(child, params);
         } else if (mChildHead == null) {
             assertWrapViewExtension(child);
             mChildHead = child;
+            super.addView(child,0, params);
         } else if (mChildFoot == null) {
             assertWrapViewExtension(child);
             mChildFoot = child;
+            super.addView(child,0, params);
         }
     }
 
@@ -218,7 +219,7 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
     private void setTargetOffset(int offsetY) {
         if (mFlag == ViewCompat.SCROLL_INDICATOR_TOP) {
             if (mChildHead != null) {
-
+                invalidate();
                 mChildHead.offsetTopAndBottom(offsetY);
                 mChildBody.offsetTopAndBottom(offsetY);
 
@@ -237,7 +238,7 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
             }
         } else {
             if (mChildFoot != null) {
-
+                invalidate();
                 mChildFoot.offsetTopAndBottom(offsetY);
                 mChildBody.offsetTopAndBottom(offsetY);
 

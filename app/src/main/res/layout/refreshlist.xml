@@ -15,19 +15,17 @@
             android:layout_height="match_parent"
             />
 
-        <TextView
+        <com.ljs.complexlist.wrapview.RPViewHeader
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:background="@android:color/holo_orange_light"
-            android:gravity="center"
-            android:text="refreshing"/>
+            android:background="@android:color/holo_blue_dark"
+            />
 
-        <TextView
+        <com.ljs.complexlist.wrapview.RPViewFooter
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:background="@android:color/holo_red_dark"
-            android:gravity="center"
-            android:text="loading"/>
+            android:background="@android:color/holo_blue_dark"
+            />
 
     </itemtouchhelperextension.RefreshPullView>
 </LinearLayout>

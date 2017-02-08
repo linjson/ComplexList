@@ -1,6 +1,7 @@
-package com.ljs.complexlist.refreshpull;
+package com.ljs.complexlist.wrapview;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -38,6 +39,9 @@ public class RPViewFooter extends FrameLayout implements WrapViewExtension {
         inflate(getContext(), R.layout.header, this);
         percent = (LottieAnimationView) findViewById(R.id.animation_view);
         desc = (TextView) findViewById(R.id.desc);
+
+        desc.setText("footer");
+        desc.setTextColor(Color.RED);
 //        addView(View.inflate(getContext(), R.layout.header, this));
     }
 

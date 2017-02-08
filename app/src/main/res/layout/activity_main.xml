@@ -16,21 +16,17 @@
             android:layout_height="match_parent"
             />
 
-        <TextView
+        <com.ljs.complexlist.wrapview.RPViewHeader
             android:layout_width="match_parent"
             android:layout_height="100dp"
-
             android:background="@android:color/holo_blue_dark"
-            android:text="header"
-            android:textColor="@android:color/white"/>
+            />
 
-        <TextView
+        <com.ljs.complexlist.wrapview.RPViewFooter
             android:layout_width="match_parent"
             android:layout_height="100dp"
-
             android:background="@android:color/holo_blue_dark"
-            android:text="footer"
-            android:textColor="@android:color/white"/>
+            />
     </itemtouchhelperextension.RefreshPullView>
 
     <Button
