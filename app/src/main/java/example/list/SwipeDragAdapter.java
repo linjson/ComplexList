@@ -8,9 +8,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.linjson.BaseAdapter;
-import com.github.linjson.BaseViewHolder;
-import com.github.linjson.ItemTouchHelperExtension;
+import com.github.linjson.exlist.BaseAdapter;
+import com.github.linjson.exlist.BaseViewHolder;
+import com.github.linjson.exlist.ItemTouchHelperExtension;
 
 import java.util.ArrayList;
 import java.util.Collections;

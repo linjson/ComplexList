@@ -12,10 +12,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.linjson.BaseAdapter;
-import com.github.linjson.BaseViewHolder;
-import com.github.linjson.DefaultDividerDecoration;
-import com.github.linjson.RefreshPullView;
+import com.github.linjson.exlist.BaseAdapter;
+import com.github.linjson.exlist.BaseViewHolder;
+import com.github.linjson.exlist.DefaultDividerDecoration;
+import com.github.linjson.exlist.RefreshPullView;
 
 import example.R;
 import example.fixheader.ImmutableClazz;

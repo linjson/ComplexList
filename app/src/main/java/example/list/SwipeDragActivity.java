@@ -10,8 +10,8 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.linjson.ItemTouchHelperExtension;
-import com.github.linjson.RefreshPullView;
+import com.github.linjson.exlist.ItemTouchHelperExtension;
+import com.github.linjson.exlist.RefreshPullView;
 
 import java.util.ArrayList;
 import java.util.List;

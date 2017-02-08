@@ -1,4 +1,4 @@
-package com.github.linjson;
+package com.github.linjson.exlist;
 
 import android.support.annotation.Nullable;
 import android.support.v7.util.DiffUtil;

@@ -1,4 +1,4 @@
-package com.github.linjson;
+package com.github.linjson.exlist;
 
 /**
  * Created by ljs on 2016/10/28.

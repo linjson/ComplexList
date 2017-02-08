@@ -1,4 +1,4 @@
-package com.github.linjson;
+package com.github.linjson.exlist;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;

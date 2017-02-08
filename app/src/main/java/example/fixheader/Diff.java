@@ -1,6 +1,6 @@
 package example.fixheader;
 
-import com.github.linjson.DiffCallBackEx;
+import com.github.linjson.exlist.DiffCallBackEx;
 
 import java.util.List;
 

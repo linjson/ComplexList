@@ -1,4 +1,4 @@
-package com.github.linjson;
+package com.github.linjson.exlist;
 
 import android.content.Context;
 import android.support.v4.view.NestedScrollingChild;

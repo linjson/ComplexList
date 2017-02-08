@@ -7,7 +7,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
-import com.github.linjson.WrapViewExtension;
+import com.github.linjson.exlist.WrapViewExtension;
 
 import example.R;
 

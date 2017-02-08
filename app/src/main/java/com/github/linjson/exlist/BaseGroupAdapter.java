@@ -1,4 +1,4 @@
-package com.github.linjson;
+package com.github.linjson.exlist;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;

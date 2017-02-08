@@ -4,8 +4,8 @@ package example;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 
-import com.github.linjson.ItemTouchCallback;
-import com.github.linjson.ItemTouchHelperExtension;
+import com.github.linjson.exlist.ItemTouchCallback;
+import com.github.linjson.exlist.ItemTouchHelperExtension;
 
 
 public class ItemTouchHelperCallback extends ItemTouchHelperExtension.Callback {

@@ -11,9 +11,9 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.linjson.DefaultDividerDecoration;
-import com.github.linjson.FixedHeaderListView;
-import com.github.linjson.ItemTouchHelperExtension;
+import com.github.linjson.exlist.DefaultDividerDecoration;
+import com.github.linjson.exlist.FixedHeaderListView;
+import com.github.linjson.exlist.ItemTouchHelperExtension;
 
 import java.util.Random;
 

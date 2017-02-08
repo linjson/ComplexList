@@ -8,7 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.linjson.RefreshPullView;
+import com.github.linjson.exlist.RefreshPullView;
 
 import example.R;
 import example.wrapview.RPViewFooter;

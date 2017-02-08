@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.github.linjson;
+package com.github.linjson.exlist;
 
 import android.graphics.Canvas;
 import android.support.v4.view.ViewCompat;

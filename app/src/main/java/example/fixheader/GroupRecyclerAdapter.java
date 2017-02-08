@@ -10,10 +10,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.linjson.BaseGroupAdapter;
-import com.github.linjson.BaseGroupViewHolder;
-import com.github.linjson.FixedHeaderListView;
-import com.github.linjson.ItemTouchHelperExtension;
+import com.github.linjson.exlist.BaseGroupAdapter;
+import com.github.linjson.exlist.BaseGroupViewHolder;
+import com.github.linjson.exlist.FixedHeaderListView;
+import com.github.linjson.exlist.ItemTouchHelperExtension;
 
 import java.util.List;
 
