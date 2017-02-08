@@ -6,7 +6,7 @@ import android.view.View;
 /**
  * Created by ljs on 16/9/6.
  */
-public class BaseViewHolder extends RecyclerView.ViewHolder implements Extension {
+public class BaseViewHolder extends RecyclerView.ViewHolder implements ViewHolderExtension {
 
     private boolean fixed = false;
 

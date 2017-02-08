@@ -2,7 +2,7 @@ package itemtouchhelperextension;
 
 import android.view.View;
 
-public interface Extension {
+public interface ViewHolderExtension {
 
     float getActionWidth();
 

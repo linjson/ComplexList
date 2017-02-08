@@ -766,7 +766,7 @@ public class ItemTouchHelperExtension extends RecyclerView.ItemDecoration
     }
 
     private float getSwipeWidth(RecyclerView.ViewHolder vh) {
-        if (vh instanceof Extension) {
+        if (vh instanceof ViewHolderExtension) {
             return getExtension(vh).getActionWidth();
         }
         return mRecyclerView.getWidth();
@@ -2621,15 +2621,15 @@ public class ItemTouchHelperExtension extends RecyclerView.ItemDecoration
         }
     }
 
-    private static Extension getExtension(ViewHolder vh) {
-        if (vh instanceof Extension) {
-            return (Extension) vh;
+    private static ViewHolderExtension getExtension(ViewHolder vh) {
+        if (vh instanceof ViewHolderExtension) {
+            return (ViewHolderExtension) vh;
         }
         return null;
     }
 
     private int getSwipeDirection(ViewHolder vh) {
-        Extension ex = getExtension(vh);
+        ViewHolderExtension ex = getExtension(vh);
         if (ex == null) {
             return 0;
         }
