@@ -9,6 +9,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ljs.complexlist.R;
+import com.ljs.complexlist.wrapview.RPViewFooter;
+import com.ljs.complexlist.wrapview.RPViewHeader;
 
 import itemtouchhelperextension.RefreshPullView;
 
