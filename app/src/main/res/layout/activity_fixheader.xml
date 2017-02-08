@@ -4,26 +4,26 @@
               android:layout_height="match_parent"
               android:orientation="vertical">
 
-    <itemtouchhelperextension.RefreshPullView
+    <com.github.linjson.RefreshPullView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <itemtouchhelperextension.FixedHeaderListView
+        <com.github.linjson.FixedHeaderListView
             android:id="@+id/recycler_main"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             />
 
-        <com.ljs.complexlist.wrapview.RPViewHeader
+        <example.wrapview.RPViewHeader
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:background="@android:color/holo_blue_dark"
             />
 
-        <com.ljs.complexlist.wrapview.RPViewFooter
+        <example.wrapview.RPViewFooter
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:background="@android:color/holo_blue_dark"
             />
-    </itemtouchhelperextension.RefreshPullView>
+    </com.github.linjson.RefreshPullView>
 </LinearLayout>

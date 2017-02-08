@@ -35,7 +35,7 @@
     <!--</android.support.v4.widget.NestedScrollView>-->
     <!--</itemtouchhelperextension.old.SwipeRefreshLayoutEx>-->
 
-    <itemtouchhelperextension.RefreshPullView
+    <com.github.linjson.RefreshPullView
         android:id="@+id/sv"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -74,5 +74,5 @@
         <!--android:background="@android:color/holo_blue_dark"-->
         <!--android:text="footer"-->
         <!--android:textColor="@android:color/white"/>-->
-    </itemtouchhelperextension.RefreshPullView>
+    </com.github.linjson.RefreshPullView>
 </LinearLayout>
