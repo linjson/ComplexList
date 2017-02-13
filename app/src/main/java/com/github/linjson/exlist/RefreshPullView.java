@@ -39,7 +39,7 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
 
     private void init() {
 
-        mRPViewController = new RPViewController(this);
+        mRPViewController = new RPViewMarkController(this);
 
     }
 

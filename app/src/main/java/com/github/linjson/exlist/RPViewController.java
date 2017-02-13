@@ -1,6 +1,7 @@
 package com.github.linjson.exlist;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v4.view.NestedScrollingChild;
 import android.support.v4.view.NestedScrollingChildHelper;
 import android.support.v4.view.NestedScrollingParentHelper;
@@ -14,6 +15,8 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.view.animation.Transformation;
 
+import static android.view.View.GONE;
+
 /**
  * Created by ljs on 2017/2/13.
  */
@@ -21,44 +24,44 @@ import android.view.animation.Transformation;
 public class RPViewController {
 
     private final int mDurationMillis = 300;
-    private final Context mContext;
-    private final RefreshPullView mView;
+    protected final Context mContext;
+    protected final RefreshPullView mView;
     private ViewAnimation mAnimation;
     private Interpolator mInterpolator;
     private NestedScrollingParentHelper mNestedScrollingParentHelper;
     private NestedScrollingChildHelper mNestedScrollingChildHelper;
-    private int mTouchSlop;
-    private boolean mRefreshingDispatch;
-    private boolean mLoadingMoreDispatch;
+    protected int mTouchSlop;
+    protected boolean mRefreshingDispatch;
+    protected boolean mLoadingMoreDispatch;
     private RefreshPullView.OnRefreshingListener mOnRefreshingListener;
     private RefreshPullView.OnLoadingMoreListener mOnLoadingMoreListener;
-    private int mViewOffsetHeader;
-    private int mViewOffsetFooter;
-    private int mHeaderSrcPosition;
-    private int mFooterSrcPosition;
+    protected int mViewOffsetHeader;
+    protected int mViewOffsetFooter;
+    protected int mHeaderSrcPosition;
+    protected int mFooterSrcPosition;
 
-    private View mChildBody;
-    private View mChildHead;
-    private View mChildFoot;
+    protected View mChildBody;
+    protected View mChildHead;
+    protected View mChildFoot;
 
-    private int[] mParentOffsetInWindow = new int[2];
-    private int[] mParentScrollConsumed = new int[2];
-    private int mHeaderScrolled;
-    private int mFooterScrolled;
-    private int mFlag;
+    protected int[] mParentOffsetInWindow = new int[2];
+    protected int[] mParentScrollConsumed = new int[2];
+    protected int mHeaderScrolled;
+    protected int mFooterScrolled;
+    protected int mFlag;
 
 
-    private boolean mRefreshing;
-    private boolean mLoadingMore;
+    protected boolean mRefreshing;
+    protected boolean mLoadingMore;
 
-    private int mActionPointerId;
-    private float mInitialDownY;
+    protected int mActionPointerId;
+    protected float mInitialDownY;
 
-    private boolean mIsBeingDragged;
-    private float mInitialMoveY;
-    private boolean mChildBodyTouch;
-    private boolean mNestedScroll;
-    private boolean mLoadingMoreEnable = true;
+    protected boolean mIsBeingDragged;
+    protected float mInitialMoveY;
+    protected boolean mChildBodyTouch;
+    protected boolean mNestedScroll;
+    protected boolean mLoadingMoreEnable = true;
 
     private Animation.AnimationListener listener = new Animation.AnimationListener() {
         @Override
@@ -72,7 +75,6 @@ public class RPViewController {
             if (mRefreshingDispatch) {
                 mRefreshingDispatch = false;
 
-
                 if (mOnRefreshingListener != null) {
                     mOnRefreshingListener.doRefreshingData(mView);
                 }
@@ -83,6 +85,17 @@ public class RPViewController {
                     mOnLoadingMoreListener.doLoadingMoreData(mView);
                 }
 //                System.out.printf("==>loadingmore is open \n");
+            } else {
+                if (!mRefreshing && mChildHead != null) {
+                    mChildHead.setVisibility(GONE);
+                    getWrapViewExtension(mChildHead).resetView();
+                }
+                if (!mLoadingMore && mChildFoot != null) {
+                    mChildFoot.setVisibility(GONE);
+                    if (mLoadingMoreEnable) {
+                        getWrapViewExtension(mChildFoot).resetView();
+                    }
+                }
             }
         }
 
@@ -142,6 +155,7 @@ public class RPViewController {
                 mView.removeView(mChildHead);
             }
             mChildHead = view;
+            mChildHead.setVisibility(View.GONE);
             mView.addView(view, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         }
     }
@@ -159,6 +173,7 @@ public class RPViewController {
                 mView.removeView(mChildFoot);
             }
             mChildFoot = view;
+            mChildFoot.setVisibility(View.GONE);
             mView.addView(view, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         }
     }
@@ -166,15 +181,20 @@ public class RPViewController {
     public void addView(View child, ViewGroup.LayoutParams params) {
         if (mChildBody == null) {
             mChildBody = child;
+            if (child.getBackground() == null) {
+                child.setBackgroundColor(Color.WHITE);
+            }
             judgeChildBodyNestScroll();
             mView.addView(child, -1, params);
         } else if (mChildHead == null) {
             assertWrapViewExtension(child);
             mChildHead = child;
+            mChildHead.setVisibility(View.GONE);
             mView.addView(child, 0, params);
         } else if (mChildFoot == null) {
             assertWrapViewExtension(child);
             mChildFoot = child;
+            mChildFoot.setVisibility(View.GONE);
             mView.addView(child, 0, params);
         }
     }
@@ -184,7 +204,7 @@ public class RPViewController {
     }
 
 
-    private void setTargetOffset(int offsetY) {
+    protected void setTargetOffset(int offsetY) {
         if (mFlag == ViewCompat.SCROLL_INDICATOR_TOP) {
             if (mChildHead != null) {
                 mView.invalidate();
@@ -229,27 +249,27 @@ public class RPViewController {
 
     }
 
-    private WrapViewExtension getWrapViewExtension(View child) {
+    protected WrapViewExtension getWrapViewExtension(View child) {
         if (child instanceof WrapViewExtension) {
             return (WrapViewExtension) child;
         }
         return null;
     }
 
-    private boolean childBodyCanScrollUP() {
+    protected boolean childBodyCanScrollUP() {
         return ViewCompat.canScrollVertically(mChildBody, -1);
     }
 
-    private boolean childBodyCanScrollDown() {
+    protected boolean childBodyCanScrollDown() {
 
         return ViewCompat.canScrollVertically(mChildBody, 1);
     }
 
-    private void viewStartAnimator(View child, int to) {
+    protected void viewStartAnimator(View child, int to) {
         viewStartAnimator(child, to, 0);
     }
 
-    private void viewStartAnimator(View child, int to, int offset) {
+    protected void viewStartAnimator(View child, int to, int offset) {
         mAnimation.reset();
         mAnimation.setDuration(mDurationMillis);
         mAnimation.setAnimationListener(listener);
@@ -338,7 +358,7 @@ public class RPViewController {
         mLoadingMore = open;
     }
 
-    private int getHeaderScrollUp(int dy) {
+    protected int getHeaderScrollUp(int dy) {
         int space = mHeaderSrcPosition - mChildHead.getTop();
 
         if (Math.abs(space) < dy) {
@@ -348,7 +368,7 @@ public class RPViewController {
         return Math.max(dy, space);
     }
 
-    private int getFooterScrollDown(int dy) {
+    protected int getFooterScrollDown(int dy) {
         int space = mFooterSrcPosition - mChildFoot.getTop();
 
         if (space < Math.abs(dy)) {
@@ -602,7 +622,7 @@ public class RPViewController {
     }
 
 
-    private void footerViewStopAction() {
+    protected void footerViewStopAction() {
         mFooterScrolled = 0;
         if (mView.getMeasuredHeight() - mChildFoot.getBottom() >= 0) {
             setLoadingMore(true);
@@ -611,7 +631,7 @@ public class RPViewController {
         }
     }
 
-    private void headerViewStopAction() {
+    protected void headerViewStopAction() {
         if (mChildHead.getTop() > 0) {
             setRefreshing(true);
         } else {
@@ -620,7 +640,7 @@ public class RPViewController {
         mHeaderScrolled = 0;
     }
 
-    private float getMotionY(MotionEvent ev) {
+    protected float getMotionY(MotionEvent ev) {
         int index = ev.findPointerIndex(mActionPointerId);
         if (index < 0) {
             return Float.NaN;
@@ -661,7 +681,7 @@ public class RPViewController {
         protected void applyTransformation(float interpolatedTime, Transformation t) {
             moveView(interpolatedTime, child, childTo);
             moveView(interpolatedTime, body, bodyTo);
-            if (child.getTop() == childTo) {
+            if (hasStarted() && body.getTop() == childTo) {
                 child.clearAnimation();
             }
         }
