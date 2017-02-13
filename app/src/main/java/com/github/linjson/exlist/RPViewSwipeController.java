@@ -8,11 +8,11 @@ import android.view.View;
  * Created by ljs on 2017/2/13.
  */
 
-public class RPViewMarkController extends RPViewController {
+public class RPViewSwipeController extends RPViewController {
     private int mHeaderSrcHeight;
     private int mFooterSrcHeight;
 
-    public RPViewMarkController(RefreshPullView view) {
+    public RPViewSwipeController(RefreshPullView view) {
         super(view);
     }
 
@@ -25,37 +25,27 @@ public class RPViewMarkController extends RPViewController {
         int height = mView.getMeasuredHeight() - mView.getPaddingBottom();
 
         int left = mView.getPaddingLeft();
-        int top = mView.getPaddingTop() + (mViewOffsetHeader == 0 ? mViewOffsetFooter : mViewOffsetHeader);
+        int top = mView.getPaddingTop() + mViewOffsetHeader == 0 ? mViewOffsetFooter : mViewOffsetHeader;
 
         if (mChildBody != null) {
             mChildBody.layout(left, top, width - left - mView.getPaddingRight(), height + top);
         }
-        int offset = 0;
-        if (mChildHead != null) {
 
-            if (mViewOffsetHeader > mHeaderSrcHeight) {
-                offset = mViewOffsetHeader - mHeaderSrcHeight;
-            }
-            mChildHead.layout(0, mHeaderSrcPosition + offset, mChildHead.getMeasuredWidth(), mHeaderSrcPosition + mChildHead.getMeasuredHeight() + offset);
+        if (mChildHead != null) {
+            mChildHead.layout(0, mHeaderSrcPosition + mViewOffsetHeader, mChildHead.getMeasuredWidth(), mHeaderSrcPosition + mChildHead.getMeasuredHeight() + mViewOffsetHeader);
         }
         if (mChildFoot != null) {
-
-            if (Math.abs(mViewOffsetFooter) > mFooterSrcHeight) {
-                offset = mViewOffsetFooter + mFooterSrcHeight;
-            }
-            mChildFoot.layout(0, mFooterSrcPosition + offset, mChildFoot.getMeasuredWidth(), mFooterSrcPosition + mChildFoot.getMeasuredHeight() + offset);
+            mChildFoot.layout(0, mFooterSrcPosition + mViewOffsetFooter, mChildFoot.getMeasuredWidth(), mFooterSrcPosition + mChildFoot.getMeasuredHeight() + mViewOffsetFooter);
         }
     }
 
     @Override
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         if (mChildHead != null) {
-            mHeaderSrcPosition = 0;
-            mHeaderSrcHeight = mChildHead.getMeasuredHeight();
+            mHeaderSrcPosition = -mChildHead.getMeasuredHeight();
         }
         if (mChildFoot != null) {
-            mFooterSrcHeight = mChildFoot.getMeasuredHeight();
-            mFooterSrcPosition = mView.getMeasuredHeight() - mFooterSrcHeight;
+            mFooterSrcPosition = mView.getMeasuredHeight();
         }
     }
 
@@ -63,21 +53,14 @@ public class RPViewMarkController extends RPViewController {
     protected void setTargetOffset(int offsetY) {
         if (mFlag == ViewCompat.SCROLL_INDICATOR_TOP) {
             if (mChildHead != null) {
+                mView.invalidate();
+
                 if (mChildHead.getVisibility() == View.GONE) {
                     mChildHead.setVisibility(View.VISIBLE);
                 }
 
-                mHeaderScrolled += offsetY;
+                mChildHead.offsetTopAndBottom(offsetY);
                 mChildBody.offsetTopAndBottom(offsetY);
-
-
-                if (mChildBody.getTop() > mHeaderSrcHeight) {
-                    mChildHead.setTop(mChildBody.getTop() - mHeaderSrcHeight);
-                    mChildHead.setBottom(mChildBody.getTop());
-                } else if (mChildHead.getTop() != mHeaderSrcPosition) {
-                    mChildHead.setTop(mHeaderSrcPosition);
-                    mChildHead.setBottom(mHeaderSrcHeight);
-                }
 
                 if (!mRefreshing) {
                     float rate = Math.min(1, mChildBody.getTop() * 1.0f / mChildHead.getMeasuredHeight());
@@ -89,25 +72,18 @@ public class RPViewMarkController extends RPViewController {
 
                 }
 
+                mHeaderScrolled += offsetY;
 
             }
         } else {
             if (mChildFoot != null) {
+                mView.invalidate();
+
                 if (mChildFoot.getVisibility() == View.GONE) {
                     mChildFoot.setVisibility(View.VISIBLE);
                 }
-                mFooterScrolled += offsetY;
+                mChildFoot.offsetTopAndBottom(offsetY);
                 mChildBody.offsetTopAndBottom(offsetY);
-
-
-                if (mChildBody.getBottom() < mFooterSrcPosition) {
-                    mChildFoot.setTop(mChildBody.getBottom());
-                    mChildFoot.setBottom(mChildBody.getBottom() + mFooterSrcHeight);
-                } else if (mChildFoot.getTop() != mFooterSrcPosition) {
-                    mChildFoot.setTop(mFooterSrcPosition);
-                    mChildFoot.setBottom(mFooterSrcPosition + mFooterSrcHeight);
-                }
-
 
                 if (!mLoadingMore && mLoadingMoreEnable) {
                     float rate = Math.min(1, mChildBody.getTop() * -1.0f / mChildFoot.getMeasuredHeight());
@@ -117,7 +93,7 @@ public class RPViewMarkController extends RPViewController {
                         getWrapViewExtension(mChildFoot).showPreView();
                     }
                 }
-
+                mFooterScrolled += offsetY;
             }
         }
 
@@ -125,6 +101,7 @@ public class RPViewMarkController extends RPViewController {
             mViewOffsetHeader = 0;
             mViewOffsetFooter = 0;
         }
+
     }
 
     @Override
@@ -133,12 +110,13 @@ public class RPViewMarkController extends RPViewController {
             return;
         }
         if (open) {
-            viewStartAnimator(mChildHead, 0, mHeaderSrcHeight);
+            viewStartAnimator(mChildHead, 0, -mHeaderSrcPosition);
         } else {
-            mViewOffsetHeader = mChildBody.getTop();
+            mViewOffsetHeader = -mHeaderSrcPosition + mChildHead.getTop();
             mViewOffsetFooter = 0;
             viewStartAnimator(mChildHead, mHeaderSrcPosition);
 
+            getWrapViewExtension(mChildHead).resetView();
 
         }
 
@@ -158,11 +136,14 @@ public class RPViewMarkController extends RPViewController {
             return;
         }
         if (open) {
-            viewStartAnimator(mChildFoot, mFooterSrcPosition, -mFooterSrcHeight);
+            viewStartAnimator(mChildFoot, mFooterSrcPosition - mChildFoot.getMeasuredHeight(), -mChildFoot.getMeasuredHeight());
         } else {
             mViewOffsetHeader = 0;
-            mViewOffsetFooter = -mFooterSrcHeight + mChildBody.getBottom() - mFooterSrcPosition;
+            mViewOffsetFooter = mChildFoot.getTop() - mFooterSrcPosition;
             viewStartAnimator(mChildFoot, mFooterSrcPosition);
+            if (mLoadingMoreEnable) {
+                getWrapViewExtension(mChildFoot).resetView();
+            }
         }
 
         if (mLoadingMore != open && open) {
@@ -176,7 +157,7 @@ public class RPViewMarkController extends RPViewController {
     }
 
     protected int getHeaderScrollUp(int dy) {
-        int space = mHeaderSrcPosition - mChildBody.getTop();
+        int space = mHeaderSrcPosition - mChildHead.getTop();
 
         if (Math.abs(space) < dy) {
             return Math.abs(space);
@@ -186,7 +167,7 @@ public class RPViewMarkController extends RPViewController {
     }
 
     protected int getFooterScrollDown(int dy) {
-        int space = mFooterSrcPosition + mFooterSrcHeight - mChildBody.getBottom();
+        int space = mFooterSrcPosition - mChildFoot.getTop();
 
         if (space < Math.abs(dy)) {
             return -space;
@@ -199,7 +180,21 @@ public class RPViewMarkController extends RPViewController {
     public void onNestedScroll(View target, int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed) {
         super.onNestedScroll(target,dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed);
         final int dy = dyUnconsumed + mParentOffsetInWindow[1];
-        if (dy < 0 && !childBodyCanScrollUP()) {
+        if (mRefreshing) {
+            if (mChildHead.getTop() < 0 && !childBodyCanScrollUP() && dy < 0) {
+                int y = Math.max(mChildHead.getTop(), dy);
+                setTargetOffset(-y);
+            }
+        } else if (mLoadingMore) {
+
+            if (mChildFoot.getTop() >= mFooterSrcPosition && !childBodyCanScrollDown() && dy > 0) {
+                int y = Math.min(mChildFoot.getTop(), dy);
+                setTargetOffset(-y);
+
+            }
+
+
+        } else if (dy < 0 && !childBodyCanScrollUP()) {
             mFlag = ViewCompat.SCROLL_INDICATOR_TOP;
             setTargetOffset(-dy);
         } else if (dy > 0 && !childBodyCanScrollDown()) {
@@ -216,26 +211,26 @@ public class RPViewMarkController extends RPViewController {
         }
 
         if (mRefreshing) {
-            if (childBodyCanScrollUP()) {
-                if (dy > 0) {
+            if (mChildHead.getTop() >= mHeaderSrcPosition) {
+                if (childBodyCanScrollUP()) {
+                    if (dy > 0) {
+                        consumed[1] = getHeaderScrollUp(dy);
+                        setTargetOffset(-consumed[1]);
+                    }
+                } else {
                     consumed[1] = getHeaderScrollUp(dy);
-                    setTargetOffset(-consumed[1]);
-                }
-            } else {
-                if (dy < 0) {
-                    consumed[1] = dy;
                     setTargetOffset(-consumed[1]);
                 }
             }
         } else if (mLoadingMore) {
-            if (childBodyCanScrollDown()) {
-                if (dy < 0) {
+            if (mChildFoot.getTop() <= mFooterSrcPosition) {
+                if (childBodyCanScrollDown()) {
+                    if (dy < 0) {
+                        consumed[1] = getFooterScrollDown(dy);
+                        setTargetOffset(-consumed[1]);
+                    }
+                } else {
                     consumed[1] = getFooterScrollDown(dy);
-                    setTargetOffset(-consumed[1]);
-                }
-            } else {
-                if (dy > 0) {
-                    consumed[1] = dy;
                     setTargetOffset(-consumed[1]);
                 }
             }
@@ -254,16 +249,10 @@ public class RPViewMarkController extends RPViewController {
             consumed[1] += parentConsumed[1];
         }
 
-
     }
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-//        System.out.printf("==>onInterceptTouchEvent \n");
-
-        if (mNestedScroll) {
-            return super.onInterceptTouchEvent(ev);
-        }
         final int act = ev.getAction();
         if (act == MotionEvent.ACTION_DOWN) {
             mFlag = -1;
@@ -282,9 +271,9 @@ public class RPViewMarkController extends RPViewController {
             }
             final float diff = mInitialDownY - y;
             boolean startDrag = Math.abs(diff) > mTouchSlop;
-            if (mChildHead != null && !mLoadingMore && !childBodyCanScrollUP() && ((diff < 0 && startDrag) || mChildBody.getTop() > 0)) {
+            if (mChildHead != null && !mLoadingMore && !childBodyCanScrollUP() && ((diff < 0 && startDrag) || mChildHead.getTop() >= 0)) {
                 mFlag = ViewCompat.SCROLL_INDICATOR_TOP;
-            } else if (mChildFoot != null && !mRefreshing && !childBodyCanScrollDown() && ((diff > 0 && startDrag) || mChildBody.getBottom() <= mFooterSrcPosition)) {
+            } else if (mChildFoot != null && !mRefreshing && !childBodyCanScrollDown() && ((diff > 0 && startDrag) || mChildFoot.getBottom() <= mFooterSrcPosition)) {
                 mFlag = ViewCompat.SCROLL_INDICATOR_BOTTOM;
             }
             if (mFlag != -1 && !mIsBeingDragged) {
@@ -297,17 +286,17 @@ public class RPViewMarkController extends RPViewController {
 
     protected void footerViewStopAction() {
         mFooterScrolled = 0;
-        if (mView.getMeasuredHeight() - mChildBody.getBottom() > mFooterSrcHeight) {
+        if (mView.getMeasuredHeight() - mChildFoot.getBottom() >= 0) {
             setLoadingMore(true);
-        } else if (mChildBody.getTop() != 0) {
+        } else {
             viewStartAnimator(mChildFoot, mFooterSrcPosition);
         }
     }
 
     protected void headerViewStopAction() {
-        if (mChildBody.getTop() > mHeaderSrcHeight) {
+        if (mChildHead.getTop() > 0) {
             setRefreshing(true);
-        } else if (mChildBody.getTop() != 0) {
+        } else {
             viewStartAnimator(mChildHead, mHeaderSrcPosition);
         }
         mHeaderScrolled = 0;
