@@ -1,7 +1,6 @@
 package com.github.linjson.exlist;
 
 import android.support.v4.view.ViewCompat;
-import android.view.MotionEvent;
 import android.view.View;
 
 /**
@@ -9,8 +8,6 @@ import android.view.View;
  */
 
 public class RPViewSwipeController extends RPViewController {
-    private int mHeaderSrcHeight;
-    private int mFooterSrcHeight;
 
     public RPViewSwipeController(RefreshPullView view) {
         super(view);
@@ -252,37 +249,15 @@ public class RPViewSwipeController extends RPViewController {
     }
 
     @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
-        final int act = ev.getAction();
-        if (act == MotionEvent.ACTION_DOWN) {
-            mFlag = -1;
-            mActionPointerId = ev.getPointerId(0);
-            mIsBeingDragged = false;
-            mChildBodyTouch = false;
-            final float y = getMotionY(ev);
-            if (Float.isNaN(y)) {
-                return false;
-            }
-            mInitialDownY = y;
-        } else if (act == MotionEvent.ACTION_MOVE) {
-            final float y = getMotionY(ev);
-            if (Float.isNaN(y)) {
-                return false;
-            }
-            final float diff = mInitialDownY - y;
-            boolean startDrag = Math.abs(diff) > mTouchSlop;
-            if (mChildHead != null && !mLoadingMore && !childBodyCanScrollUP() && ((diff < 0 && startDrag) || mChildHead.getTop() >= 0)) {
-                mFlag = ViewCompat.SCROLL_INDICATOR_TOP;
-            } else if (mChildFoot != null && !mRefreshing && !childBodyCanScrollDown() && ((diff > 0 && startDrag) || mChildFoot.getBottom() <= mFooterSrcPosition)) {
-                mFlag = ViewCompat.SCROLL_INDICATOR_BOTTOM;
-            }
-            if (mFlag != -1 && !mIsBeingDragged) {
-                mIsBeingDragged = true;
-                mInitialMoveY = y;
-            }
-        }
-        return mIsBeingDragged;
+    protected boolean checkFooterMove(float diff, boolean startDrag) {
+        return mChildFoot != null && !mRefreshing && !childBodyCanScrollDown() && ((diff > 0 && startDrag) || mChildFoot.getBottom() <= mFooterSrcPosition);
     }
+
+    @Override
+    protected boolean checkHeaderMove(float diff, boolean startDrag) {
+        return mChildHead != null && !mLoadingMore && !childBodyCanScrollUP() && ((diff < 0 && startDrag) || mChildHead.getTop() >= 0);
+    }
+
 
     protected void footerViewStopAction() {
         mFooterScrolled = 0;

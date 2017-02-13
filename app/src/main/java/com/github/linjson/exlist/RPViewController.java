@@ -39,6 +39,8 @@ public abstract class RPViewController {
     protected int mViewOffsetFooter;
     protected int mHeaderSrcPosition;
     protected int mFooterSrcPosition;
+    protected int mHeaderSrcHeight;
+    protected int mFooterSrcHeight;
 
     protected View mChildBody;
     protected View mChildHead;
@@ -176,7 +178,7 @@ public abstract class RPViewController {
     }
 
 
-    protected abstract void setTargetOffset(int offsetY);
+    protected abstract void setTargetOffset(int offsetY) ;
 
     protected WrapViewExtension getWrapViewExtension(View child) {
         if (child instanceof WrapViewExtension) {
@@ -337,8 +339,40 @@ public abstract class RPViewController {
     //
 
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        return false;
+        final int act = ev.getAction();
+        if (act == MotionEvent.ACTION_DOWN) {
+            mFlag = -1;
+            mActionPointerId = ev.getPointerId(0);
+            mIsBeingDragged = false;
+            mChildBodyTouch = false;
+            final float y = getMotionY(ev);
+            if (Float.isNaN(y)) {
+                return false;
+            }
+            mInitialDownY = y;
+        } else if (act == MotionEvent.ACTION_MOVE) {
+            final float y = getMotionY(ev);
+            if (Float.isNaN(y)) {
+                return false;
+            }
+            final float diff = mInitialDownY - y;
+            boolean startDrag = Math.abs(diff) > mTouchSlop;
+            if (checkHeaderMove(diff, startDrag)) {
+                mFlag = ViewCompat.SCROLL_INDICATOR_TOP;
+            } else if (checkFooterMove(diff,startDrag)) {
+                mFlag = ViewCompat.SCROLL_INDICATOR_BOTTOM;
+            }
+            if (mFlag != -1 && !mIsBeingDragged) {
+                mIsBeingDragged = true;
+                mInitialMoveY = y;
+            }
+        }
+        return mIsBeingDragged;
     }
+
+    protected abstract boolean checkFooterMove(float diff, boolean startDrag);
+
+    protected abstract boolean checkHeaderMove(float diff, boolean startDrag);
 
     public void dispatchTouchEvent(MotionEvent ev) {
         final int act = ev.getAction();

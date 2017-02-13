@@ -1,7 +1,6 @@
 package com.github.linjson.exlist;
 
 import android.support.v4.view.ViewCompat;
-import android.view.MotionEvent;
 import android.view.View;
 
 /**
@@ -9,8 +8,6 @@ import android.view.View;
  */
 
 public class RPViewMarkController extends RPViewController {
-    private int mHeaderSrcHeight;
-    private int mFooterSrcHeight;
 
     public RPViewMarkController(RefreshPullView view) {
         super(view);
@@ -258,41 +255,13 @@ public class RPViewMarkController extends RPViewController {
     }
 
     @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
-//        System.out.printf("==>onInterceptTouchEvent \n");
+    protected boolean checkFooterMove(float diff, boolean startDrag) {
+        return mChildFoot != null && !mRefreshing && !childBodyCanScrollDown() && ((diff > 0 && startDrag) || mChildBody.getBottom() <= mFooterSrcPosition);
+    }
 
-        if (mNestedScroll) {
-            return super.onInterceptTouchEvent(ev);
-        }
-        final int act = ev.getAction();
-        if (act == MotionEvent.ACTION_DOWN) {
-            mFlag = -1;
-            mActionPointerId = ev.getPointerId(0);
-            mIsBeingDragged = false;
-            mChildBodyTouch = false;
-            final float y = getMotionY(ev);
-            if (Float.isNaN(y)) {
-                return false;
-            }
-            mInitialDownY = y;
-        } else if (act == MotionEvent.ACTION_MOVE) {
-            final float y = getMotionY(ev);
-            if (Float.isNaN(y)) {
-                return false;
-            }
-            final float diff = mInitialDownY - y;
-            boolean startDrag = Math.abs(diff) > mTouchSlop;
-            if (mChildHead != null && !mLoadingMore && !childBodyCanScrollUP() && ((diff < 0 && startDrag) || mChildBody.getTop() > 0)) {
-                mFlag = ViewCompat.SCROLL_INDICATOR_TOP;
-            } else if (mChildFoot != null && !mRefreshing && !childBodyCanScrollDown() && ((diff > 0 && startDrag) || mChildBody.getBottom() <= mFooterSrcPosition)) {
-                mFlag = ViewCompat.SCROLL_INDICATOR_BOTTOM;
-            }
-            if (mFlag != -1 && !mIsBeingDragged) {
-                mIsBeingDragged = true;
-                mInitialMoveY = y;
-            }
-        }
-        return mIsBeingDragged;
+    @Override
+    protected boolean checkHeaderMove(float diff, boolean startDrag) {
+        return mChildHead != null && !mLoadingMore && !childBodyCanScrollUP() && ((diff < 0 && startDrag) || mChildBody.getTop() > 0);
     }
 
     protected void footerViewStopAction() {
