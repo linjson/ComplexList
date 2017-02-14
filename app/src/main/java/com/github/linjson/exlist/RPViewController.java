@@ -477,6 +477,8 @@ public abstract class RPViewController {
         this.mChildHead=controller.mChildHead;
         this.mChildBody=controller.mChildBody;
         this.mChildFoot=controller.mChildFoot;
+        this.mOnRefreshingListener=controller.mOnRefreshingListener;
+        this.mOnLoadingMoreListener=controller.mOnLoadingMoreListener;
     }
 
     private static class ViewAnimation extends Animation {
