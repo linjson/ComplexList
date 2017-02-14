@@ -17,6 +17,8 @@ import example.wrapview.RPViewHeader;
  */
 public class RefreshPullView extends ViewGroup implements NestedScrollingParent, NestedScrollingChild {
 
+    public static final int SWIPE = 1;
+    public static final int MARK = 2;
 
     private RPViewController mRPViewController;
 
@@ -44,8 +46,17 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
 
     }
 
-    public void setRPViewController(RPViewController RPViewController) {
-        mRPViewController = RPViewController;
+    public void setRPViewController(int type) {
+        if (type == SWIPE) {
+            RPViewSwipeController temp = new RPViewSwipeController(this);
+            temp.copy(mRPViewController);
+            mRPViewController = temp;
+        } else {
+            RPViewMarkController temp = new RPViewMarkController(this);
+            temp.copy(mRPViewController);
+            mRPViewController = temp;
+        }
+
         requestLayout();
     }
 

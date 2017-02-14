@@ -130,7 +130,9 @@ public abstract class RPViewController {
             }
             mChildHead = view;
             mChildHead.setVisibility(View.GONE);
-            mView.addView(view, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            if (mView.indexOfChild(mChildHead) == -1) {
+                mView.addView(view, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            }
         }
     }
 
@@ -148,7 +150,9 @@ public abstract class RPViewController {
             }
             mChildFoot = view;
             mChildFoot.setVisibility(View.GONE);
-            mView.addView(view, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            if (mView.indexOfChild(mChildFoot) == -1) {
+                mView.addView(view, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            }
         }
     }
 
@@ -178,7 +182,7 @@ public abstract class RPViewController {
     }
 
 
-    protected abstract void setTargetOffset(int offsetY) ;
+    protected abstract void setTargetOffset(int offsetY);
 
     protected WrapViewExtension getWrapViewExtension(View child) {
         if (child instanceof WrapViewExtension) {
@@ -359,7 +363,7 @@ public abstract class RPViewController {
             boolean startDrag = Math.abs(diff) > mTouchSlop;
             if (checkHeaderMove(diff, startDrag)) {
                 mFlag = ViewCompat.SCROLL_INDICATOR_TOP;
-            } else if (checkFooterMove(diff,startDrag)) {
+            } else if (checkFooterMove(diff, startDrag)) {
                 mFlag = ViewCompat.SCROLL_INDICATOR_BOTTOM;
             }
             if (mFlag != -1 && !mIsBeingDragged) {
@@ -467,6 +471,12 @@ public abstract class RPViewController {
 
     public boolean allowDispatchTouch() {
         return mChildBodyTouch && !mNestedScroll;
+    }
+
+    protected void copy(RPViewController controller){
+        this.mChildHead=controller.mChildHead;
+        this.mChildBody=controller.mChildBody;
+        this.mChildFoot=controller.mChildFoot;
     }
 
     private static class ViewAnimation extends Animation {

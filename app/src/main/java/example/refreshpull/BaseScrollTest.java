@@ -1,9 +1,12 @@
 package example.refreshpull;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,7 +21,7 @@ import example.wrapview.RPViewHeader;
  * Created by ljs on 16/9/26.
  */
 
-public class BaseScrollTest extends Activity implements RefreshPullView.OnRefreshingListener {
+public class BaseScrollTest extends AppCompatActivity implements RefreshPullView.OnRefreshingListener {
 
     private boolean refreshing = false;
     private boolean loading = false;
@@ -26,6 +29,8 @@ public class BaseScrollTest extends Activity implements RefreshPullView.OnRefres
     private LinearLayout linearLayout;
     private int count;
     private int testNumber = 2;
+    private Toolbar toolView;
+    private RefreshPullView nv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +38,11 @@ public class BaseScrollTest extends Activity implements RefreshPullView.OnRefres
 
         setContentView(R.layout.scrolltest);
 
-        final RefreshPullView nv = (RefreshPullView) findViewById(R.id.sv);
+        nv = (RefreshPullView) findViewById(R.id.sv);
+
+//        toolView = (Toolbar) findViewById(toolbar);
+//
+//        setSupportActionBar(toolView);
 
 
         linearLayout = (LinearLayout) findViewById(R.id.ll);
@@ -106,4 +115,20 @@ public class BaseScrollTest extends Activity implements RefreshPullView.OnRefres
             Toast.makeText(BaseScrollTest.this, "refreshing结束", Toast.LENGTH_SHORT).show();
         }, 2000);
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_rp, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_mark) {
+            nv.setRPViewController(RefreshPullView.MARK);
+        } else {
+            nv.setRPViewController(RefreshPullView.SWIPE);
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }
