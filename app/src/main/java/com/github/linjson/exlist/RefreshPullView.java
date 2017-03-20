@@ -19,6 +19,7 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
 
     public static final int SWIPE = 1;
     public static final int MARK = 2;
+    public static final int FIX = 3;
 
     private RPViewController mRPViewController;
 
@@ -47,15 +48,18 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
     }
 
     public void setRPViewController(int type) {
+
+        RPViewController temp = null;
         if (type == SWIPE) {
-            RPViewSwipeController temp = new RPViewSwipeController(this);
-            temp.copy(mRPViewController);
-            mRPViewController = temp;
+            temp = new RPViewSwipeController(this);
+        } else if (type == MARK) {
+            temp = new RPViewMarkController(this);
         } else {
-            RPViewMarkController temp = new RPViewMarkController(this);
-            temp.copy(mRPViewController);
-            mRPViewController = temp;
+            temp = new RPViewFixController(this);
         }
+
+        temp.copy(mRPViewController);
+        mRPViewController = temp;
 
         requestLayout();
     }

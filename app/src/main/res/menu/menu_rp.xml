@@ -10,5 +10,10 @@
         android:id="@+id/action_mark"
         android:title="mark"
         app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/action_fix"
+        android:title="fix"
+        app:showAsAction="always"/>
 </menu>
 

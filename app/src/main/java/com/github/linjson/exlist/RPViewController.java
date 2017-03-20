@@ -129,7 +129,7 @@ public abstract class RPViewController {
                 mView.removeView(mChildHead);
             }
             mChildHead = view;
-            mChildHead.setVisibility(View.GONE);
+            mChildHead.setVisibility(GONE);
             if (mView.indexOfChild(mChildHead) == -1) {
                 mView.addView(view, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             }
@@ -149,7 +149,7 @@ public abstract class RPViewController {
                 mView.removeView(mChildFoot);
             }
             mChildFoot = view;
-            mChildFoot.setVisibility(View.GONE);
+            mChildFoot.setVisibility(GONE);
             if (mView.indexOfChild(mChildFoot) == -1) {
                 mView.addView(view, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             }
@@ -167,12 +167,12 @@ public abstract class RPViewController {
         } else if (mChildHead == null) {
             assertWrapViewExtension(child);
             mChildHead = child;
-            mChildHead.setVisibility(View.GONE);
+            mChildHead.setVisibility(GONE);
             mView.addView(child, 0, params);
         } else if (mChildFoot == null) {
             assertWrapViewExtension(child);
             mChildFoot = child;
-            mChildFoot.setVisibility(View.GONE);
+            mChildFoot.setVisibility(GONE);
             mView.addView(child, 0, params);
         }
     }
