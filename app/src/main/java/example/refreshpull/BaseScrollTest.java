@@ -79,12 +79,12 @@ public class BaseScrollTest extends AppCompatActivity implements RefreshPullView
         nv.setOnRefreshingListener(this);
 
         nv.setOnLoadingMoreListener(view -> mHandler.postDelayed(() -> {
-
+            view.setLoadingMore(false);
             if (count < testNumber) {
                 TextView textView = getTextView("add" + 1);
 
                 linearLayout.addView(textView, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-                count++;
+//                count++;
 
             }
 
@@ -92,7 +92,7 @@ public class BaseScrollTest extends AppCompatActivity implements RefreshPullView
                 view.stopLoadingMore();
             }
 
-            view.setLoadingMore(false);
+
         }, 2000));
 
     }
@@ -125,8 +125,10 @@ public class BaseScrollTest extends AppCompatActivity implements RefreshPullView
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_mark) {
             nv.setRPViewController(RefreshPullView.MARK);
-        } else {
+        } else if (item.getItemId() == R.id.action_swipe) {
             nv.setRPViewController(RefreshPullView.SWIPE);
+        } else {
+            nv.setRPViewController(RefreshPullView.FIX);
         }
         return super.onOptionsItemSelected(item);
     }

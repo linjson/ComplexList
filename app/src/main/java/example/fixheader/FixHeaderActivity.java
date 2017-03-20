@@ -3,6 +3,7 @@ package example.fixheader;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.util.DiffUtil;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -45,6 +46,7 @@ public class FixHeaderActivity extends AppCompatActivity implements View.OnClick
         testDatas = createTestDatas();
         mAdapter.setDatas(ImmutableSchool.copyOf(testDatas));
         mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.addItemDecoration(new DefaultDividerDecoration(this, LinearLayoutManager.VERTICAL));
 //        mAdapter.updateData(createTestDatas());
         mCallback = new ItemTouchHelperCallback();
@@ -54,7 +56,7 @@ public class FixHeaderActivity extends AppCompatActivity implements View.OnClick
         mAdapter.setItemTouchHelper(mItemTouchHelper);
 
 
-//        findViewById(R.id.btn).setOnClickListener(this);
+        findViewById(R.id.btn).setOnClickListener(this);
     }
 
 
@@ -122,16 +124,16 @@ public class FixHeaderActivity extends AppCompatActivity implements View.OnClick
         //update
         ModifiableSchool m = ModifiableSchool.create().from(testDatas);
         ModifiableClazz c = (ModifiableClazz) m.clazz().get(0);
-        c.setName("change");
-
-        ModifiableStudent s = (ModifiableStudent) m.clazz().get(0).student().get(2);
-        s.setName("change-stu");
+//        c.setName("change");
+//
+//        ModifiableStudent s = (ModifiableStudent) m.clazz().get(0).student().get(2);
+//        s.setName("change-stu");
 
         //delete
-        m.clazz().get(0).student().remove(1);
+//        m.clazz().get(0).student().remove(1);
 
         //add
-        m.clazz().get(0).student().add(0, ImmutableStudent.builder().age(0).name("adsd").clazz(0).build());
+        m.clazz().get(0).student().add(0, ImmutableStudent.builder().age(0).name("adsd").clazz(0).hide(false).build());
 
 
         testDatas = m.toImmutable();
