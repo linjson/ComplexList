@@ -116,6 +116,7 @@ public abstract class RPViewController {
         mNestedScrollingChildHelper = new NestedScrollingChildHelper(mView);
         mTouchSlop = ViewConfiguration.get(mContext).getScaledTouchSlop();
         setNestedScrollingEnabled(true);
+
     }
 
     public abstract void onLayout();
@@ -205,6 +206,9 @@ public abstract class RPViewController {
     }
 
     protected void viewStartAnimator(View child, int to, int offset) {
+
+        child.clearAnimation();
+
         mAnimation.reset();
         mAnimation.setDuration(mDurationMillis);
         mAnimation.setAnimationListener(listener);
@@ -213,7 +217,7 @@ public abstract class RPViewController {
         mAnimation.bodyTo = mView.getPaddingTop() + offset;
         mAnimation.child = child;
         mAnimation.childTo = to;
-        child.clearAnimation();
+
 
 
         mChildBodyTouch = true;
@@ -222,12 +226,12 @@ public abstract class RPViewController {
     }
 
     private void viewStopAnimator() {
-        if (mChildHead != null) {
-            mChildHead.clearAnimation();
-        }
-        if (mChildFoot != null) {
-            mChildFoot.clearAnimation();
-        }
+//        if (mChildHead != null) {
+//            mChildHead.clearAnimation();
+//        }
+//        if (mChildFoot != null) {
+//            mChildFoot.clearAnimation();
+//        }
         mHeaderScrolled = 0;
         mFooterScrolled = 0;
 
@@ -361,6 +365,8 @@ public abstract class RPViewController {
             }
             final float diff = mInitialDownY - y;
             boolean startDrag = Math.abs(diff) > mTouchSlop;
+
+
             if (checkHeaderMove(diff, startDrag)) {
                 mFlag = ViewCompat.SCROLL_INDICATOR_TOP;
             } else if (checkFooterMove(diff, startDrag)) {
@@ -473,12 +479,12 @@ public abstract class RPViewController {
         return mChildBodyTouch && !mNestedScroll;
     }
 
-    protected void copy(RPViewController controller){
-        this.mChildHead=controller.mChildHead;
-        this.mChildBody=controller.mChildBody;
-        this.mChildFoot=controller.mChildFoot;
-        this.mOnRefreshingListener=controller.mOnRefreshingListener;
-        this.mOnLoadingMoreListener=controller.mOnLoadingMoreListener;
+    protected void copy(RPViewController controller) {
+        this.mChildHead = controller.mChildHead;
+        this.mChildBody = controller.mChildBody;
+        this.mChildFoot = controller.mChildFoot;
+        this.mOnRefreshingListener = controller.mOnRefreshingListener;
+        this.mOnLoadingMoreListener = controller.mOnLoadingMoreListener;
     }
 
     private static class ViewAnimation extends Animation {
