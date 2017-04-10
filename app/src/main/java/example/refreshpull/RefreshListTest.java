@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -49,9 +50,10 @@ public class RefreshListTest extends Activity implements RefreshPullView.OnLoadi
         recycler_main.addItemDecoration(new DefaultDividerDecoration(this));
         recycler_main.setLayoutManager(layout);
 
-        data = createStudents();
+//        data = createStudents();
 
         adapter = new T(this, data);
+        adapter.setShowEmptyView(true);
         recycler_main.setAdapter(adapter);
 
         rpview.setOnLoadingMoreListener(this);
@@ -85,13 +87,10 @@ public class RefreshListTest extends Activity implements RefreshPullView.OnLoadi
     public void doLoadingMoreData(final RefreshPullView view) {
         data = addStudents();
 
-        sHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                adapter.setData(data);
-                view.setLoadingMore(false);
-                Toast.makeText(RefreshListTest.this, "loading结束", Toast.LENGTH_SHORT).show();
-            }
+        sHandler.postDelayed(() -> {
+            adapter.setData(data);
+            view.setLoadingMore(false);
+            Toast.makeText(RefreshListTest.this, "loading结束", Toast.LENGTH_SHORT).show();
         }, 1000);
     }
 
@@ -105,7 +104,7 @@ public class RefreshListTest extends Activity implements RefreshPullView.OnLoadi
             view.setRefreshing(false);
             Toast.makeText(RefreshListTest.this, "refreshing结束", Toast.LENGTH_SHORT).show();
 
-        }, 2000);
+        }, 1000);
     }
 
 
@@ -126,7 +125,7 @@ public class RefreshListTest extends Activity implements RefreshPullView.OnLoadi
 
         @Override
         public int getChildrenCount() {
-            return clazz.student().size();
+            return clazz == null ? 0 : clazz.student().size();
         }
 
         @Override
@@ -144,7 +143,11 @@ public class RefreshListTest extends Activity implements RefreshPullView.OnLoadi
             return false;
         }
 
-
+        @NonNull
+        @Override
+        protected View onCreateEmptyView(ViewGroup parent) {
+            return layoutInflater.inflate(R.layout.emptyview, parent, false);
+        }
     }
 
     public static class M extends BaseViewHolder {

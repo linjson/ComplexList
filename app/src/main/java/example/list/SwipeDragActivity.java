@@ -68,7 +68,7 @@ public class SwipeDragActivity extends AppCompatActivity {
 
 
     private TextView createTestView(final String text) {
-        TextView a = (TextView) getLayoutInflater().inflate(android.R.layout.simple_list_item_1, null);
+        TextView a = (TextView) getLayoutInflater().inflate(R.layout.simple_text,mRecyclerView, false);
         int[] c = getRandColorCode();
         a.setBackgroundColor(c[0]);
         a.setTextColor(c[1]);

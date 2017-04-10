@@ -1,6 +1,7 @@
 package example.fixheader;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 import com.github.linjson.exlist.DefaultDividerDecoration;
 import com.github.linjson.exlist.FixedHeaderListView;
 import com.github.linjson.exlist.ItemTouchHelperExtension;
+import com.github.linjson.exlist.RefreshPullView;
 
 import java.util.Random;
 
@@ -28,23 +30,26 @@ public class FixHeaderActivity extends AppCompatActivity implements View.OnClick
     public ItemTouchHelperExtension mItemTouchHelper;
     public ItemTouchHelperExtension.Callback mCallback;
     private School testDatas;
+    private RefreshPullView rpview;
+    private static Handler sHandler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fixheader);
-
+        rpview = (RefreshPullView) findViewById(R.id.rpview);
         FixedHeaderListView view = (FixedHeaderListView) findViewById(R.id.recycler_main);
         mRecyclerView = view.getRecyclerView();
 
-        mAdapter = new GroupRecyclerAdapter(mRecyclerView,this,view);
+        mAdapter = new GroupRecyclerAdapter(mRecyclerView, this, view);
 
         mAdapter.addHeaderView(createTestView("header1"));
         mAdapter.addHeaderView(createTestView("header2"));
         mAdapter.addFooterView(createTestView("footer2"));
         mAdapter.addFooterView(createTestView("footer1"));
         testDatas = createTestDatas();
-        mAdapter.setDatas(ImmutableSchool.copyOf(testDatas));
+//        mAdapter.setDatas(ImmutableSchool.copyOf(testDatas));
+        mAdapter.setShowEmptyView(true);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.addItemDecoration(new DefaultDividerDecoration(this, LinearLayoutManager.VERTICAL));
@@ -57,11 +62,21 @@ public class FixHeaderActivity extends AppCompatActivity implements View.OnClick
 
 
         findViewById(R.id.btn).setOnClickListener(this);
+        rpview.setOnRefreshingListener(x -> {
+            testDatas = createTestDatas();
+
+            sHandler.postDelayed(() -> {
+                mAdapter.updateData(testDatas);
+                rpview.setRefreshing(false);
+                Toast.makeText(FixHeaderActivity.this, "refreshing结束", Toast.LENGTH_SHORT).show();
+
+            }, 1000);
+        });
     }
 
 
     private TextView createTestView(final String text) {
-        TextView a = (TextView) getLayoutInflater().inflate(android.R.layout.simple_list_item_1, null);
+        TextView a = (TextView) getLayoutInflater().inflate(android.R.layout.simple_list_item_1, mRecyclerView, false);
         int[] c = getRandColorCode();
         a.setBackgroundColor(c[0]);
         a.setTextColor(c[1]);
@@ -92,7 +107,7 @@ public class FixHeaderActivity extends AppCompatActivity implements View.OnClick
             ImmutableClazz.Builder classBuilder = ImmutableClazz.builder().name("class" + i).index(i).hide(false);
 
 
-            for (int j = 0; j < (i==0?3:15); j++) {
+            for (int j = 0; j < (i == 0 ? 3 : 15); j++) {
                 Student stu = ImmutableStudent.builder().name("test" + j).age(j).clazz(i).hide(false).build();
                 classBuilder.addStudent(stu);
             }
@@ -143,8 +158,6 @@ public class FixHeaderActivity extends AppCompatActivity implements View.OnClick
 
 
     }
-
-
 
 
 }

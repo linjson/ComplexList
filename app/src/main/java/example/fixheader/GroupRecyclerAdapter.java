@@ -2,6 +2,7 @@ package example.fixheader;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -205,5 +206,11 @@ public class GroupRecyclerAdapter extends BaseGroupAdapter<GroupRecyclerAdapter.
     public void onGroupChange(int toGroup) {
 
         fixedHeaderListView.refreshHeaderView(toGroup);
+    }
+
+    @NonNull
+    @Override
+    protected View onCreateEmptyView(ViewGroup parent) {
+        return getLayoutInflater().inflate(R.layout.emptyview, parent, false);
     }
 }

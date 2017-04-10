@@ -18,6 +18,9 @@ public abstract class BaseAdapter<T extends BaseViewHolder> extends RecyclerView
     private static final int FOOTERVIEW = 90000000;
     private SparseArrayCompat<View> headers = new SparseArrayCompat<>();
     private SparseArrayCompat<View> footers = new SparseArrayCompat<>();
+    private boolean noData;
+
+    private boolean mShowEmptyView;
 
     public void addHeaderView(View header) {
         headers.put(HEADERVIEW + getHeaderViewCount(), header);
@@ -32,7 +35,11 @@ public abstract class BaseAdapter<T extends BaseViewHolder> extends RecyclerView
     }
 
     private boolean isFooterView(int position) {
-        return position >= getHeaderViewCount() + getChildrenCount();
+        return position >= getHeaderViewCount() + getInnerChildrenCount();
+    }
+
+    private int getInnerChildrenCount() {
+        return noData ? 1 : getChildrenCount();
     }
 
     public abstract int getChildrenCount();
@@ -51,7 +58,7 @@ public abstract class BaseAdapter<T extends BaseViewHolder> extends RecyclerView
         if (isHeaderView(position)) {
             return headers.keyAt(position);
         } else if (isFooterView(position)) {
-            return footers.keyAt(position - getChildrenCount() - getHeaderViewCount());
+            return footers.keyAt(position - getInnerChildrenCount() - getHeaderViewCount());
         } else {
             return getChildrenViewType(position - getHeaderViewCount());
         }
@@ -63,14 +70,23 @@ public abstract class BaseAdapter<T extends BaseViewHolder> extends RecyclerView
             return createHeaderFooterVH(headers.get(viewType));
         } else if (footers.get(viewType) != null) {
             return createHeaderFooterVH(footers.get(viewType));
+        } else if (noData) {
+            BaseViewHolder vh = createHeaderFooterVH(onCreateEmptyView(parent));
+            vh.setIsRecyclable(false);
+            return vh;
         } else {
             return onCreateChildrenViewHolder(parent, viewType);
         }
     }
 
     @NonNull
-    public BaseViewHolder createHeaderFooterVH(View v) {
-        v.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+    protected View onCreateEmptyView(ViewGroup parent) {
+        return new View(parent.getContext());
+    }
+
+    @NonNull
+    private BaseViewHolder createHeaderFooterVH(View v) {
+//        v.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         BaseViewHolder vh = new BaseViewHolder(v);
         vh.setFixed(true);
         return vh;
@@ -78,9 +94,7 @@ public abstract class BaseAdapter<T extends BaseViewHolder> extends RecyclerView
 
     @Override
     public final void onBindViewHolder(BaseViewHolder holder, int position) {
-        if (isHeaderView(position)) {
-            return;
-        } else if (isFooterView(position)) {
+        if (isHeaderView(position) || isFooterView(position) || noData) {
             return;
         } else {
             onBindChildrenViewHolder((T) holder, position - getHeaderViewCount());
@@ -98,7 +112,23 @@ public abstract class BaseAdapter<T extends BaseViewHolder> extends RecyclerView
 
     @Override
     public final int getItemCount() {
-        return getChildrenCount() + getHeaderViewCount() + getFooterViewCount();
+
+
+        int childrenCount = getChildrenCount();
+
+        if (childrenCount == 0) {
+            if (mShowEmptyView) {
+                noData = true;
+                childrenCount = 1;
+            }
+        } else {
+            noData = false;
+        }
+
+        return childrenCount +
+                getHeaderViewCount() +
+                getFooterViewCount();
+
     }
 
     @Override
@@ -110,16 +140,13 @@ public abstract class BaseAdapter<T extends BaseViewHolder> extends RecyclerView
         }
 
 
-
     }
 
     public abstract boolean onDataMove(int from, int to);
 
     @Override
     public void onBindViewHolder(BaseViewHolder holder, int position, List<Object> payloads) {
-        if (isHeaderView(position)) {
-            return;
-        } else if (isFooterView(position)) {
+        if (isHeaderView(position) || isFooterView(position) || noData) {
             return;
         } else {
             if (payloads.isEmpty()) {
@@ -132,5 +159,9 @@ public abstract class BaseAdapter<T extends BaseViewHolder> extends RecyclerView
 
     public void onBindChildrenViewHolder(T holder, int position, List<Object> payloads) {
         onBindChildrenViewHolder(holder, position - getHeaderViewCount());
+    }
+
+    public void setShowEmptyView(boolean showEmptyView) {
+        this.mShowEmptyView = showEmptyView;
     }
 }
