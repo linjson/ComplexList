@@ -82,8 +82,6 @@ public class RPViewFixController extends RPViewController {
                 mChildBody.offsetTopAndBottom(offsetY);
 
 
-
-
                 if (!mLoadingMore && mLoadingMoreEnable) {
                     float rate = Math.min(1, mChildBody.getTop() * -1.0f / mChildFoot.getMeasuredHeight());
                     getWrapViewExtension(mChildFoot).setRate(rate);
@@ -174,7 +172,9 @@ public class RPViewFixController extends RPViewController {
     public void onNestedScroll(View target, int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed) {
         super.onNestedScroll(target, dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed);
         final int dy = dyUnconsumed + mParentOffsetInWindow[1];
-        if (dy < 0 && !childBodyCanScrollUP()) {
+        if (mRefreshing || mLoadingMore) {
+
+        } else if (dy < 0 && !childBodyCanScrollUP()) {
             mFlag = ViewCompat.SCROLL_INDICATOR_TOP;
             setTargetOffset(-dy);
         } else if (dy > 0 && !childBodyCanScrollDown()) {
