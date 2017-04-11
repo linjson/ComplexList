@@ -182,7 +182,7 @@ public abstract class BaseGroupAdapter<T extends BaseGroupViewHolder> extends Ba
     }
 
     public boolean onGroupSonDataMove(int from, int to, int fromGroup, int fromSon, int toGroup, int toSon) {
-        return true;
+        return false;
     }
 
     protected abstract void onBindSonViewHolder(T holder, int groupPos, int sonPos);

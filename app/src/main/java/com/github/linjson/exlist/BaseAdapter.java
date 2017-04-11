@@ -152,7 +152,9 @@ public abstract class BaseAdapter<T extends BaseViewHolder> extends RecyclerView
 
     }
 
-    public abstract boolean onDataMove(int from, int to);
+    public boolean onDataMove(int from, int to){
+        return false;
+    }
 
     @Override
     public void onBindViewHolder(BaseViewHolder holder, int position, List<Object> payloads) {

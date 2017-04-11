@@ -140,11 +140,6 @@ public class EmptyViewTest extends Activity implements RefreshPullView.OnLoading
             holder.textView.setText(clazz.student().get(position).name());
         }
 
-        @Override
-        public boolean onDataMove(int from, int to) {
-            return false;
-        }
-
         @NonNull
         @Override
         protected View onCreateEmptyView(ViewGroup parent) {
