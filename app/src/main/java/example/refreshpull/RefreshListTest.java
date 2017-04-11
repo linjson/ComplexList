@@ -44,15 +44,13 @@ public class RefreshListTest extends Activity implements RefreshPullView.OnLoadi
         recycler_main = (RecyclerView) findViewById(R.id.recycler_main);
         rpview = (RefreshPullView) findViewById(R.id.rpview);
 
-
         LinearLayoutManager layout = new LinearLayoutManager(this);
         recycler_main.addItemDecoration(new DefaultDividerDecoration(this));
         recycler_main.setLayoutManager(layout);
 
-//        data = createStudents();
+        data = createStudents();
 
         adapter = new T(this, data);
-        adapter.setShowEmptyView(true);
         recycler_main.setAdapter(adapter);
 
         rpview.setOnLoadingMoreListener(this);
