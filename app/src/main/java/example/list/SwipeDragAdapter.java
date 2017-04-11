@@ -1,7 +1,6 @@
 package example.list;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +29,7 @@ public class SwipeDragAdapter extends BaseAdapter<BaseViewHolder> {
     private ItemTouchHelperExtension mItemTouchHelper;
 
     public SwipeDragAdapter(Context context) {
+        super(context);
         mDatas = new ArrayList<>();
         mContext = context;
     }
@@ -43,11 +43,6 @@ public class SwipeDragAdapter extends BaseAdapter<BaseViewHolder> {
         setDatas(datas);
         notifyDataSetChanged();
     }
-
-    private LayoutInflater getLayoutInflater() {
-        return LayoutInflater.from(mContext);
-    }
-
 
     private void doDelete(int adapterPosition) {
         mDatas.remove(adapterPosition - getHeaderViewCount());

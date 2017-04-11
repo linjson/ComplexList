@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -111,11 +110,10 @@ public class RefreshListTest extends Activity implements RefreshPullView.OnLoadi
     public static class T extends BaseAdapter<M> {
 
         private ImmutableClazz clazz;
-        private final LayoutInflater layoutInflater;
 
         public T(Context c, ImmutableClazz clazz) {
+            super(c);
             this.clazz = clazz;
-            layoutInflater = LayoutInflater.from(c);
         }
 
         public void setData(ImmutableClazz clazz) {
@@ -130,7 +128,7 @@ public class RefreshListTest extends Activity implements RefreshPullView.OnLoadi
 
         @Override
         public M onCreateChildrenViewHolder(ViewGroup parent, int viewType) {
-            return new M(layoutInflater.inflate(android.R.layout.simple_list_item_1, parent, false));
+            return new M(getLayoutInflater().inflate(android.R.layout.simple_list_item_1, parent, false));
         }
 
         @Override
@@ -146,7 +144,7 @@ public class RefreshListTest extends Activity implements RefreshPullView.OnLoadi
         @NonNull
         @Override
         protected View onCreateEmptyView(ViewGroup parent) {
-            return layoutInflater.inflate(R.layout.emptyview, parent, false);
+            return getLayoutInflater().inflate(R.layout.emptyview, parent, false);
         }
     }
 

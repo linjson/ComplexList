@@ -1,5 +1,6 @@
 package com.github.linjson.exlist;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
@@ -13,7 +14,8 @@ public abstract class BaseGroupAdapter<T extends BaseGroupViewHolder> extends Ba
     static final int GROUP = -100000000;
     private final RecyclerView view;
 
-    public BaseGroupAdapter(RecyclerView view) {
+    public BaseGroupAdapter(Context c, RecyclerView view) {
+        super(c);
         this.view = view;
     }
 
@@ -121,8 +123,8 @@ public abstract class BaseGroupAdapter<T extends BaseGroupViewHolder> extends Ba
         return g;
     }
 
-    public int getGroupIndexToViewIndex(int groudIndex){
-        return getGroupIndexToDataIndex(groudIndex)+getHeaderViewCount();
+    public int getGroupIndexToViewIndex(int groudIndex) {
+        return getGroupIndexToDataIndex(groudIndex) + getHeaderViewCount();
     }
 
     @Override

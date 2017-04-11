@@ -1,8 +1,10 @@
 package com.github.linjson.exlist;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.util.SparseArrayCompat;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -17,11 +19,18 @@ public abstract class BaseAdapter<T extends BaseViewHolder> extends RecyclerView
     private static final int HEADERVIEW = 80000000;
     private static final int FOOTERVIEW = 90000000;
     private static final int EMPTYVIEW = 100000000;
+    private final Context mContext;
+    private final LayoutInflater mLayoutInflater;
     private SparseArrayCompat<View> headers = new SparseArrayCompat<>();
     private SparseArrayCompat<View> footers = new SparseArrayCompat<>();
     private boolean noData;
 
     private boolean mShowEmptyView;
+
+    public BaseAdapter(Context context) {
+        mContext = context;
+        mLayoutInflater = LayoutInflater.from(context);
+    }
 
     public void addHeaderView(View header) {
         headers.put(HEADERVIEW + getHeaderViewCount(), header);
@@ -164,5 +173,13 @@ public abstract class BaseAdapter<T extends BaseViewHolder> extends RecyclerView
 
     public void setShowEmptyView(boolean showEmptyView) {
         this.mShowEmptyView = showEmptyView;
+    }
+
+    public Context getContext() {
+        return mContext;
+    }
+
+    public LayoutInflater getLayoutInflater() {
+        return mLayoutInflater;
     }
 }
