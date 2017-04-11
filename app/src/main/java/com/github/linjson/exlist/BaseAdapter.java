@@ -16,6 +16,7 @@ public abstract class BaseAdapter<T extends BaseViewHolder> extends RecyclerView
 
     private static final int HEADERVIEW = 80000000;
     private static final int FOOTERVIEW = 90000000;
+    private static final int EMPTYVIEW = 100000000;
     private SparseArrayCompat<View> headers = new SparseArrayCompat<>();
     private SparseArrayCompat<View> footers = new SparseArrayCompat<>();
     private boolean noData;
@@ -59,6 +60,8 @@ public abstract class BaseAdapter<T extends BaseViewHolder> extends RecyclerView
             return headers.keyAt(position);
         } else if (isFooterView(position)) {
             return footers.keyAt(position - getInnerChildrenCount() - getHeaderViewCount());
+        } else if (noData) {
+            return EMPTYVIEW | position;
         } else {
             return getChildrenViewType(position - getHeaderViewCount());
         }
@@ -67,13 +70,11 @@ public abstract class BaseAdapter<T extends BaseViewHolder> extends RecyclerView
     @Override
     public final BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (headers.get(viewType) != null) {
-            return createHeaderFooterVH(headers.get(viewType));
+            return createBaseVH(headers.get(viewType));
         } else if (footers.get(viewType) != null) {
-            return createHeaderFooterVH(footers.get(viewType));
-        } else if (noData) {
-            BaseViewHolder vh = createHeaderFooterVH(onCreateEmptyView(parent));
-            vh.setIsRecyclable(false);
-            return vh;
+            return createBaseVH(footers.get(viewType));
+        } else if ((viewType & EMPTYVIEW) == EMPTYVIEW) {
+            return createBaseVH(onCreateEmptyView(parent));
         } else {
             return onCreateChildrenViewHolder(parent, viewType);
         }
@@ -85,7 +86,7 @@ public abstract class BaseAdapter<T extends BaseViewHolder> extends RecyclerView
     }
 
     @NonNull
-    private BaseViewHolder createHeaderFooterVH(View v) {
+    private BaseViewHolder createBaseVH(View v) {
 //        v.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         BaseViewHolder vh = new BaseViewHolder(v);
         vh.setFixed(true);

@@ -18,6 +18,7 @@ import example.fixheader.FixHeaderActivity;
 import example.list.SwipeDragActivity;
 import example.refreshpull.BaseNestScrollTest;
 import example.refreshpull.BaseScrollTest;
+import example.emptyview.EmptyViewTest;
 import example.refreshpull.RefreshListTest;
 
 /**
@@ -42,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
         list.add(new Data("refreshpull-list", RefreshListTest.class));
         list.add(new Data("swipe-drag", SwipeDragActivity.class));
         list.add(new Data("fixheader-group", FixHeaderActivity.class));
+        list.add(new Data("emptyview", EmptyViewTest.class));
 
         initView();
 

@@ -19,6 +19,7 @@
         <activity android:name="example.refreshpull.BaseScrollTest"/>
         <activity android:name="example.refreshpull.RefreshListTest"/>
         <activity android:name="example.refreshpull.BaseNestScrollTest"/>
+        <activity android:name="example.emptyview.EmptyViewTest"/>
         <activity android:name="example.fixheader.FixHeaderActivity"/>
 
 

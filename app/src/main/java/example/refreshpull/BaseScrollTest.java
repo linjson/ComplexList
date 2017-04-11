@@ -36,7 +36,7 @@ public class BaseScrollTest extends AppCompatActivity implements RefreshPullView
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.scrolltest);
+        setContentView(R.layout.list_emptyview);
 
         nv = (RefreshPullView) findViewById(R.id.sv);
 
