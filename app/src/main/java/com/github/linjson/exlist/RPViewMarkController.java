@@ -37,7 +37,7 @@ public class RPViewMarkController extends RPViewController {
         }
         if (mChildFoot != null) {
 
-            if (Math.abs(mViewOffsetFooter) > mFooterSrcHeight) {
+            if (Math.abs(mViewOffsetFooter) >= mFooterSrcHeight) {
                 offset = mViewOffsetFooter + mFooterSrcHeight;
             }
             mChildFoot.layout(0, mFooterSrcPosition + offset, mChildFoot.getMeasuredWidth(), mFooterSrcPosition + mChildFoot.getMeasuredHeight() + offset);
@@ -155,7 +155,7 @@ public class RPViewMarkController extends RPViewController {
             return;
         }
         if (open) {
-            viewStartAnimator(mChildFoot, mFooterSrcPosition, -mFooterSrcHeight);
+            openLoadingView();
         } else {
             mViewOffsetHeader = 0;
             mViewOffsetFooter = -mFooterSrcHeight + mChildBody.getBottom() - mFooterSrcPosition;
@@ -170,6 +170,11 @@ public class RPViewMarkController extends RPViewController {
         }
 
         mLoadingMore = open;
+    }
+
+    @Override
+    public void openLoadingView() {
+        viewStartAnimator(mChildFoot, mFooterSrcPosition, -mFooterSrcHeight);
     }
 
     protected int getHeaderScrollUp(int dy) {
@@ -196,7 +201,7 @@ public class RPViewMarkController extends RPViewController {
     public void onNestedScroll(View target, int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed) {
         super.onNestedScroll(target, dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed);
         final int dy = dyUnconsumed + mParentOffsetInWindow[1];
-        if (mRefreshing||mLoadingMore) {
+        if (mRefreshing || mLoadingMore) {
         } else if (dy < 0 && !childBodyCanScrollUP()) {
             mFlag = ViewCompat.SCROLL_INDICATOR_TOP;
             setTargetOffset(-dy);

@@ -6,6 +6,7 @@ import android.support.v4.view.NestedScrollingChild;
 import android.support.v4.view.NestedScrollingChildHelper;
 import android.support.v4.view.NestedScrollingParentHelper;
 import android.support.v4.view.ViewCompat;
+import android.support.v7.widget.RecyclerView;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -14,6 +15,7 @@ import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.view.animation.Transformation;
+import android.widget.AbsListView;
 
 import static android.view.View.GONE;
 
@@ -161,39 +163,7 @@ public abstract class RPViewController {
         if (mChildBody == null) {
             mChildBody = child;
 
-
-//            if (mChildBody instanceof RecyclerView) {
-//                RecyclerView list = (RecyclerView) mChildBody;
-//                list.addOnScrollListener(new RecyclerView.OnScrollListener() {
-//                    @Override
-//                    public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-//                        super.onScrollStateChanged(recyclerView, newState);
-//                        if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-//                            if (!ViewCompat.canScrollVertically(recyclerView, 1)) {
-//                                listLoadingMore();
-//                            }
-//                        }
-//                    }
-//                });
-//            } else if (mChildBody instanceof AbsListView) {
-//
-//                AbsListView list = (AbsListView) mChildBody;
-//                list.setOnScrollListener(new AbsListView.OnScrollListener() {
-//                    @Override
-//                    public void onScrollStateChanged(AbsListView view, int scrollState) {
-//                        if (scrollState == RecyclerView.SCROLL_STATE_IDLE) {
-//                            if (!ViewCompat.canScrollVertically(view, 1)) {
-//                                listLoadingMore();
-//                            }
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-//
-//                    }
-//                });
-//            }
+            supportListAutoLoading();
 
             if (child.getBackground() == null) {
                 child.setBackgroundColor(Color.WHITE);
@@ -203,33 +173,72 @@ public abstract class RPViewController {
         } else if (mChildHead == null) {
             assertWrapViewExtension(child);
             mChildHead = child;
-            mChildHead.setVisibility(GONE);
             mView.addView(child, 0, params);
         } else if (mChildFoot == null) {
             assertWrapViewExtension(child);
             mChildFoot = child;
-            mChildFoot.setVisibility(GONE);
             mView.addView(child, 0, params);
         }
     }
 
+    private void supportListAutoLoading() {
+        if (mChildBody instanceof RecyclerView) {
+            RecyclerView list = (RecyclerView) mChildBody;
+            list.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                    super.onScrollStateChanged(recyclerView, newState);
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        if (!ViewCompat.canScrollVertically(recyclerView, 1)) {
+                            listLoadingMore();
+                        }
+                    }
+                }
+            });
+        } else if (mChildBody instanceof AbsListView) {
+            AbsListView list = (AbsListView) mChildBody;
+            list.setOnScrollListener(new AbsListView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(AbsListView view, int scrollState) {
+                    if (scrollState == RecyclerView.SCROLL_STATE_IDLE) {
+                        if (!ViewCompat.canScrollVertically(view, 1)) {
+                            listLoadingMore();
+                        }
+                    }
+                }
+
+                @Override
+                public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+                }
+            });
+        }
+    }
+
     private void listLoadingMore() {
-//        if (mRefreshing || mChildFoot == null) {
-//            return;
-//        }
-//
-//        if (!mLoadingMore) {
-//            mFlag = ViewCompat.SCROLL_INDICATOR_BOTTOM;
-//            if (mOnLoadingMoreListener != null) {
-//                mOnLoadingMoreListener.doLoadingMoreData(mView);
-//            }
-//
-//            if (mLoadingMoreEnable) {
-//                getWrapViewExtension(mChildFoot).showStartView();
-//            }
-//        }
-//
-//        mLoadingMore = true;
+        if (mRefreshing || mChildFoot == null) {
+            return;
+        }
+
+        if (!mLoadingMore) {
+            if (mChildFoot.getVisibility() == View.GONE) {
+                mChildFoot.setVisibility(View.VISIBLE);
+                mViewOffsetFooter = mFooterSrcHeight;
+
+            }
+
+            openLoadingView();
+            mFlag = ViewCompat.SCROLL_INDICATOR_BOTTOM;
+            if (mOnLoadingMoreListener != null) {
+                mOnLoadingMoreListener.doLoadingMoreData(mView);
+            }
+
+            if (mLoadingMoreEnable) {
+                getWrapViewExtension(mChildFoot).showStartView();
+            }
+        }
+
+        mLoadingMore = true;
     }
 
     private void judgeChildBodyNestScroll() {
@@ -303,6 +312,8 @@ public abstract class RPViewController {
     public abstract void setRefreshing(boolean open);
 
     public abstract void setLoadingMore(boolean open);
+
+    public abstract void openLoadingView();
 
     protected abstract int getHeaderScrollUp(int dy);
 
@@ -540,6 +551,27 @@ public abstract class RPViewController {
         this.mOnLoadingMoreListener = controller.mOnLoadingMoreListener;
     }
 
+    public void onFinishInflate() {
+        if (mChildHead != null) {
+            mChildHead.post(new Runnable() {
+                @Override
+                public void run() {
+                    mChildHead.setVisibility(View.GONE);
+                }
+            });
+        }
+        if (mChildFoot != null) {
+            mChildFoot.post(new Runnable() {
+
+                @Override
+                public void run() {
+                    mChildFoot.setVisibility(View.GONE);
+                }
+            });
+
+        }
+    }
+
     private static class ViewAnimation extends Animation {
 
         private View child;
@@ -551,6 +583,7 @@ public abstract class RPViewController {
         protected void applyTransformation(float interpolatedTime, Transformation t) {
             moveView(interpolatedTime, child, childTo);
             moveView(interpolatedTime, body, bodyTo);
+
             if (hasStarted() && body.getTop() == childTo) {
                 child.clearAnimation();
             }

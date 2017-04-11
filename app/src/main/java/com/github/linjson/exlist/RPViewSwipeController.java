@@ -133,7 +133,7 @@ public class RPViewSwipeController extends RPViewController {
             return;
         }
         if (open) {
-            viewStartAnimator(mChildFoot, mFooterSrcPosition - mChildFoot.getMeasuredHeight(), -mChildFoot.getMeasuredHeight());
+            openLoadingView();
         } else {
             mViewOffsetHeader = 0;
             mViewOffsetFooter = mChildFoot.getTop() - mFooterSrcPosition;
@@ -151,6 +151,10 @@ public class RPViewSwipeController extends RPViewController {
         }
 
         mLoadingMore = open;
+    }
+
+    public void openLoadingView() {
+        viewStartAnimator(mChildFoot, mFooterSrcPosition - mChildFoot.getMeasuredHeight(), -mChildFoot.getMeasuredHeight());
     }
 
     protected int getHeaderScrollUp(int dy) {

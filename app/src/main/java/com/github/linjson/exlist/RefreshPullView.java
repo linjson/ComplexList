@@ -87,6 +87,14 @@ public class RefreshPullView extends ViewGroup implements NestedScrollingParent,
     }
 
 
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+
+        mRPViewController.onFinishInflate();
+    }
+
     public void setRefreshing(boolean open) {
         mRPViewController.setRefreshing(open);
     }

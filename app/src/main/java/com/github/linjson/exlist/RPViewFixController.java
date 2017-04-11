@@ -131,7 +131,7 @@ public class RPViewFixController extends RPViewController {
             return;
         }
         if (open) {
-            viewStartAnimator(mChildFoot, mFooterSrcPosition, -mFooterSrcHeight);
+            openLoadingView();
         } else {
             mViewOffsetHeader = 0;
             mViewOffsetFooter = -mFooterSrcHeight + mChildBody.getBottom() - mFooterSrcPosition;
@@ -146,6 +146,11 @@ public class RPViewFixController extends RPViewController {
         }
 
         mLoadingMore = open;
+    }
+
+    @Override
+    public void openLoadingView() {
+        viewStartAnimator(mChildFoot, mFooterSrcPosition, -mFooterSrcHeight);
     }
 
     protected int getHeaderScrollUp(int dy) {
