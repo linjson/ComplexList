@@ -194,7 +194,7 @@ public class RPViewMarkController extends RPViewController {
 
     @Override
     public void onNestedScroll(View target, int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed) {
-        super.onNestedScroll(target,dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed);
+        super.onNestedScroll(target, dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed);
         final int dy = dyUnconsumed + mParentOffsetInWindow[1];
         if (dy < 0 && !childBodyCanScrollUP()) {
             mFlag = ViewCompat.SCROLL_INDICATOR_TOP;

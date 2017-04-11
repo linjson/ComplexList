@@ -160,6 +160,41 @@ public abstract class RPViewController {
     public void addView(View child, ViewGroup.LayoutParams params) {
         if (mChildBody == null) {
             mChildBody = child;
+
+
+//            if (mChildBody instanceof RecyclerView) {
+//                RecyclerView list = (RecyclerView) mChildBody;
+//                list.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//                    @Override
+//                    public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+//                        super.onScrollStateChanged(recyclerView, newState);
+//                        if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+//                            if (!ViewCompat.canScrollVertically(recyclerView, 1)) {
+//                                listLoadingMore();
+//                            }
+//                        }
+//                    }
+//                });
+//            } else if (mChildBody instanceof AbsListView) {
+//
+//                AbsListView list = (AbsListView) mChildBody;
+//                list.setOnScrollListener(new AbsListView.OnScrollListener() {
+//                    @Override
+//                    public void onScrollStateChanged(AbsListView view, int scrollState) {
+//                        if (scrollState == RecyclerView.SCROLL_STATE_IDLE) {
+//                            if (!ViewCompat.canScrollVertically(view, 1)) {
+//                                listLoadingMore();
+//                            }
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+//
+//                    }
+//                });
+//            }
+
             if (child.getBackground() == null) {
                 child.setBackgroundColor(Color.WHITE);
             }
@@ -176,6 +211,25 @@ public abstract class RPViewController {
             mChildFoot.setVisibility(GONE);
             mView.addView(child, 0, params);
         }
+    }
+
+    private void listLoadingMore() {
+//        if (mRefreshing || mChildFoot == null) {
+//            return;
+//        }
+//
+//        if (!mLoadingMore) {
+//            mFlag = ViewCompat.SCROLL_INDICATOR_BOTTOM;
+//            if (mOnLoadingMoreListener != null) {
+//                mOnLoadingMoreListener.doLoadingMoreData(mView);
+//            }
+//
+//            if (mLoadingMoreEnable) {
+//                getWrapViewExtension(mChildFoot).showStartView();
+//            }
+//        }
+//
+//        mLoadingMore = true;
     }
 
     private void judgeChildBodyNestScroll() {
@@ -217,7 +271,6 @@ public abstract class RPViewController {
         mAnimation.bodyTo = mView.getPaddingTop() + offset;
         mAnimation.child = child;
         mAnimation.childTo = to;
-
 
 
         mChildBodyTouch = true;
