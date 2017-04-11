@@ -10,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.linjson.exlist.BaseAdapter;
 import com.github.linjson.exlist.BaseViewHolder;
@@ -84,11 +83,11 @@ public class RefreshListTest extends Activity implements RefreshPullView.OnLoadi
     public void doLoadingMoreData(final RefreshPullView view) {
         data = addStudents();
 
-        sHandler.postDelayed(() -> {
-            adapter.setData(data);
-            view.setLoadingMore(false);
-            Toast.makeText(RefreshListTest.this, "loading结束", Toast.LENGTH_SHORT).show();
-        }, 1000);
+//        sHandler.postDelayed(() -> {
+//            adapter.setData(data);
+//            view.setLoadingMore(false);
+//            Toast.makeText(RefreshListTest.this, "loading结束", Toast.LENGTH_SHORT).show();
+//        }, 3000);
     }
 
     @Override
@@ -96,12 +95,12 @@ public class RefreshListTest extends Activity implements RefreshPullView.OnLoadi
         data = createStudents();
 
 
-        sHandler.postDelayed(() -> {
-            adapter.setData(data);
-            view.setRefreshing(false);
-            Toast.makeText(RefreshListTest.this, "refreshing结束", Toast.LENGTH_SHORT).show();
-
-        }, 1000);
+//        sHandler.postDelayed(() -> {
+//            adapter.setData(data);
+//            view.setRefreshing(false);
+//            Toast.makeText(RefreshListTest.this, "refreshing结束", Toast.LENGTH_SHORT).show();
+//
+//        }, 1000);
     }
 
 

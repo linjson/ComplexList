@@ -68,23 +68,23 @@ public class BaseNestScrollTest extends AppCompatActivity implements RefreshPull
         });
 
 
-        nv.setOnRefreshingListener(this);
-        nv.setOnLoadingMoreListener(view -> mHandler.postDelayed(() -> {
-            view.setLoadingMore(false);
-            if (count < testNumber) {
-                TextView textView = getTextView("add" + 1);
-
-                linearLayout.addView(textView, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-//                count++;
-
-            }
-
-            if (count >= testNumber) {
-                view.stopLoadingMore();
-            }
-
-
-        }, 2000));
+//        nv.setOnRefreshingListener(this);
+//        nv.setOnLoadingMoreListener(view -> mHandler.postDelayed(() -> {
+//            view.setLoadingMore(false);
+//            if (count < testNumber) {
+//                TextView textView = getTextView("add" + 1);
+//
+//                linearLayout.addView(textView, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+////                count++;
+//
+//            }
+//
+//            if (count >= testNumber) {
+//                view.stopLoadingMore();
+//            }
+//
+//
+//        }, 2000));
 
     }
 
