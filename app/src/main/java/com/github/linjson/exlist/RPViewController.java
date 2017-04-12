@@ -216,15 +216,13 @@ public abstract class RPViewController {
     }
 
     private void listLoadingMore() {
-        if (mRefreshing || mChildFoot == null) {
+        if (mFlag == ViewCompat.SCROLL_INDICATOR_TOP || mRefreshing || mChildFoot == null) {
             return;
         }
 
         if (!mLoadingMore) {
             if (mChildFoot.getVisibility() == View.GONE) {
                 mChildFoot.setVisibility(View.VISIBLE);
-                mViewOffsetFooter = mFooterSrcHeight;
-
             }
 
             openLoadingView();
@@ -313,7 +311,7 @@ public abstract class RPViewController {
 
     public abstract void setLoadingMore(boolean open);
 
-    public abstract void openLoadingView();
+    protected abstract void openLoadingView();
 
     protected abstract int getHeaderScrollUp(int dy);
 

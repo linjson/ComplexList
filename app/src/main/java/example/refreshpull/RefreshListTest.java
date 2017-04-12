@@ -1,12 +1,14 @@
 package example.refreshpull;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -26,7 +28,7 @@ import example.fixheader.ModifiableClazz;
  * Created by ljs on 2017/1/11.
  */
 
-public class RefreshListTest extends Activity implements RefreshPullView.OnLoadingMoreListener, RefreshPullView.OnRefreshingListener {
+public class RefreshListTest extends AppCompatActivity implements RefreshPullView.OnLoadingMoreListener, RefreshPullView.OnRefreshingListener {
     private RecyclerView recycler_main;
     private RefreshPullView rpview;
     private ImmutableClazz data;
@@ -62,7 +64,7 @@ public class RefreshListTest extends Activity implements RefreshPullView.OnLoadi
         ImmutableClazz.Builder builder = ImmutableClazz.builder();
         builder.name("test").hide(false).name("one").index(0);
 
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 5; i++) {
             builder.addStudent(ImmutableStudent.builder().name("list" + i).age(i).clazz(0).hide(false).build());
         }
 
@@ -102,6 +104,23 @@ public class RefreshListTest extends Activity implements RefreshPullView.OnLoadi
             Toast.makeText(RefreshListTest.this, "refreshing结束", Toast.LENGTH_SHORT).show();
 
         }, 1000);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_rp, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_mark) {
+            rpview.setRPViewController(RefreshPullView.MARK);
+        } else if (item.getItemId() == R.id.action_swipe) {
+            rpview.setRPViewController(RefreshPullView.SWIPE);
+        } else {
+            rpview.setRPViewController(RefreshPullView.FIX);
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 
@@ -150,4 +169,6 @@ public class RefreshListTest extends Activity implements RefreshPullView.OnLoadi
             textView = (TextView) itemView;
         }
     }
+
+
 }
