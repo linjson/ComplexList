@@ -3,6 +3,9 @@ package com.github.linjson.exlist;
 import android.support.v4.view.ViewCompat;
 import android.view.View;
 
+import static com.github.linjson.exlist.WrapViewExtension.STATE_PRE;
+import static com.github.linjson.exlist.WrapViewExtension.STATE_START;
+
 /**
  * Created by ljs on 2017/2/13.
  */
@@ -78,10 +81,15 @@ public class RPViewMarkController extends RPViewController {
 
                 if (!mRefreshing) {
                     float rate = Math.min(1, mChildBody.getTop() * 1.0f / mChildHead.getMeasuredHeight());
-                    getWrapViewExtension(mChildHead).setRate(rate);
+                    WrapViewExtension wrapViewExtension = getWrapViewExtension(mChildHead);
+                    wrapViewExtension.setRate(rate);
 
-                    if (mHeaderScrolled == 0) {
-                        getWrapViewExtension(mChildHead).showPreView();
+                    if (rate < 1 && wrapViewExtension.getState() != STATE_PRE) {
+                        wrapViewExtension.setState(STATE_PRE);
+                        wrapViewExtension.showPreView();
+                    } else if (rate >= 1 && wrapViewExtension.getState() != STATE_START) {
+                        wrapViewExtension.setState(STATE_START);
+                        wrapViewExtension.showStartView();
                     }
 
                 }
@@ -108,10 +116,15 @@ public class RPViewMarkController extends RPViewController {
 
                 if (!mLoadingMore && mLoadingMoreEnable) {
                     float rate = Math.min(1, mChildBody.getTop() * -1.0f / mChildFoot.getMeasuredHeight());
-                    getWrapViewExtension(mChildFoot).setRate(rate);
+                    WrapViewExtension wrapViewExtension = getWrapViewExtension(mChildFoot);
+                    wrapViewExtension.setRate(rate);
 
-                    if (mFooterScrolled == 0) {
-                        getWrapViewExtension(mChildFoot).showPreView();
+                    if (rate < 1 && wrapViewExtension.getState() != STATE_PRE) {
+                        wrapViewExtension.setState(STATE_PRE);
+                        wrapViewExtension.showPreView();
+                    } else if (rate >= 1 && wrapViewExtension.getState() != STATE_START) {
+                        wrapViewExtension.setState(STATE_START);
+                        wrapViewExtension.showStartView();
                     }
                 }
 
@@ -141,9 +154,6 @@ public class RPViewMarkController extends RPViewController {
 
         if (mRefreshing != open && open) {
             mRefreshingDispatch = true;
-
-            getWrapViewExtension(mChildHead).showStartView();
-
         }
 
         mRefreshing = open;
@@ -164,9 +174,6 @@ public class RPViewMarkController extends RPViewController {
 
         if (mLoadingMore != open && open) {
             mLoadingMoreDispatch = true;
-            if (mLoadingMoreEnable) {
-                getWrapViewExtension(mChildFoot).showStartView();
-            }
         }
 
         mLoadingMore = open;

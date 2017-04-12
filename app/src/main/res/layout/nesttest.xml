@@ -3,7 +3,11 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical">
-
+    <Button
+        android:id="@+id/loadingmore"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="继续加载更多"/>
     <Button
         android:id="@+id/up"
         android:layout_width="match_parent"

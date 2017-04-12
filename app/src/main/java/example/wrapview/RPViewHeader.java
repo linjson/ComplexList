@@ -17,6 +17,7 @@ import example.R;
 public class RPViewHeader extends FrameLayout implements WrapViewExtension {
     private LottieAnimationView percent;
     private TextView desc;
+    private int mState;
 
     public RPViewHeader(Context context) {
         super(context);
@@ -49,10 +50,12 @@ public class RPViewHeader extends FrameLayout implements WrapViewExtension {
     @Override
     public void showPreView() {
         desc.setText("下拉刷新");
+        System.out.printf("==>%s \n","showPreView");
     }
 
     @Override
     public void showStartView() {
+        System.out.printf("==>%s \n","showStartView");
         desc.setText("开始刷新");
         percent.playAnimation();
     }
@@ -67,6 +70,16 @@ public class RPViewHeader extends FrameLayout implements WrapViewExtension {
     @Override
     public void showFinishView() {
 
+    }
+
+    @Override
+    public int getState() {
+        return mState;
+    }
+
+    @Override
+    public void setState(int state) {
+        mState=state;
     }
 
     //    @Override

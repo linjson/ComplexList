@@ -18,6 +18,7 @@ import example.R;
 public class RPViewFooter extends FrameLayout implements WrapViewExtension {
     private LottieAnimationView percent;
     private TextView desc;
+    private int mState;
 
     public RPViewFooter(Context context) {
         super(context);
@@ -75,5 +76,13 @@ public class RPViewFooter extends FrameLayout implements WrapViewExtension {
         System.out.printf("==>showFinishView \n");
     }
 
+    @Override
+    public int getState() {
+        return mState;
+    }
 
+    @Override
+    public void setState(int state) {
+        mState=state;
+    }
 }
