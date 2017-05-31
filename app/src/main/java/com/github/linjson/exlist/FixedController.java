@@ -37,7 +37,7 @@ public class FixedController extends RecyclerView.OnScrollListener {
         while (next < getAdapter().getChildrenCount()) {
             RecyclerView.ViewHolder viewHolder = mView.findViewHolderForAdapterPosition(next + getAdapter().getHeaderViewCount());
 
-            if (viewHolder.itemView.getHeight() > 0) {
+            if (viewHolder != null && viewHolder.itemView.getHeight() > 0) {
                 return next;
             }
             next++;

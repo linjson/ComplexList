@@ -52,12 +52,6 @@ public abstract class BaseAdapter<T extends BaseViewHolder> extends RecyclerView
         return noData ? 1 : getChildrenCount();
     }
 
-    public abstract int getChildrenCount();
-
-    public abstract T onCreateChildrenViewHolder(ViewGroup parent, int viewType);
-
-    public abstract void onBindChildrenViewHolder(T holder, int position);
-
     public int getChildrenViewType(int position) {
         return 0;
     }
@@ -96,7 +90,6 @@ public abstract class BaseAdapter<T extends BaseViewHolder> extends RecyclerView
 
     @NonNull
     private BaseViewHolder createBaseVH(View v) {
-//        v.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         BaseViewHolder vh = new BaseViewHolder(v);
         vh.setFixed(true);
         return vh;
@@ -152,7 +145,7 @@ public abstract class BaseAdapter<T extends BaseViewHolder> extends RecyclerView
 
     }
 
-    public boolean onDataMove(int from, int to){
+    public boolean onDataMove(int from, int to) {
         return false;
     }
 
@@ -184,4 +177,10 @@ public abstract class BaseAdapter<T extends BaseViewHolder> extends RecyclerView
     public LayoutInflater getLayoutInflater() {
         return mLayoutInflater;
     }
+
+    public abstract int getChildrenCount();
+
+    public abstract T onCreateChildrenViewHolder(ViewGroup parent, int viewType);
+
+    public abstract void onBindChildrenViewHolder(T holder, int position);
 }
