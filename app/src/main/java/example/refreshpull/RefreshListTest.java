@@ -38,11 +38,15 @@ public class RefreshListTest extends AppCompatActivity implements RefreshPullVie
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        onCreateAfter();
+    }
+
+    protected void onCreateAfter() {
         setContentView(R.layout.refreshlist);
         initView();
     }
 
-    private void initView() {
+    protected void initView() {
         recycler_main = (RecyclerView) findViewById(R.id.recycler_main);
         rpview = (RefreshPullView) findViewById(R.id.rpview);
 
