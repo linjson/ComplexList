@@ -17,18 +17,24 @@ public abstract class DiffCallBackEx extends DiffUtil.Callback {
 
     @Override
     public int getOldListSize() {
+        if (getOldDataSize() == 0) {
+            return mAdapter.getEmptyViewCount() + mAdapter.getHeaderViewCount();
+        }
         return getOldDataSize() + mAdapter.getHeaderViewCount();
     }
 
 
     @Override
     public final int getNewListSize() {
+        if (getNewDataSize() == 0) {
+            return mAdapter.getEmptyViewCount() + mAdapter.getHeaderViewCount();
+        }
         return getNewDataSize() + mAdapter.getHeaderViewCount();
     }
 
 
     private boolean isDataRange(int oldItemPosition, int newItemPosition) {
-        if (oldItemPosition < mAdapter.getHeaderViewCount() || newItemPosition < mAdapter.getHeaderViewCount()) {
+        if (oldItemPosition < (mAdapter.getHeaderViewCount() + mAdapter.getEmptyViewCount()) || newItemPosition < (mAdapter.getHeaderViewCount() + mAdapter.getEmptyViewCount())) {
             return false;
         }
         return true;

@@ -28,6 +28,7 @@ public abstract class BaseAdapter<T extends BaseViewHolder> extends RecyclerView
     private boolean mShowEmptyView;
 
     public BaseAdapter(Context context) {
+//        setHasStableIds(true);
         mContext = context;
         mLayoutInflater = LayoutInflater.from(context);
     }
@@ -55,6 +56,11 @@ public abstract class BaseAdapter<T extends BaseViewHolder> extends RecyclerView
     public int getChildrenViewType(int position) {
         return 0;
     }
+
+//    @Override
+//    public long getItemId(int position) {
+//        return position;
+//    }
 
     @Override
     public final int getItemViewType(int position) {
@@ -176,6 +182,10 @@ public abstract class BaseAdapter<T extends BaseViewHolder> extends RecyclerView
 
     public LayoutInflater getLayoutInflater() {
         return mLayoutInflater;
+    }
+
+    public int getEmptyViewCount() {
+        return mShowEmptyView ? 1 : 0;
     }
 
     public abstract int getChildrenCount();

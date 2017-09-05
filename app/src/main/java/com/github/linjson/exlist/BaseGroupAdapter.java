@@ -1,7 +1,9 @@
 package com.github.linjson.exlist;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.List;
@@ -9,7 +11,7 @@ import java.util.List;
 /**
  * Created by ljs on 16/8/31.
  */
-public abstract class BaseGroupAdapter<T extends BaseGroupViewHolder> extends BaseAdapter<BaseGroupViewHolder> implements ItemTouchCallback {
+public abstract class BaseGroupAdapter<T extends BaseGroupViewHolder> extends BaseAdapter<BaseGroupViewHolder> implements ItemTouchCallback, StickHeader {
 
     static final int GROUP = -100000000;
     private final RecyclerView view;
@@ -96,6 +98,10 @@ public abstract class BaseGroupAdapter<T extends BaseGroupViewHolder> extends Ba
         onBindSonViewHolder(holder, groupPos, sonPos);
     }
 
+    /**
+     * @param pos
+     * @return [组索引, 子项索引]
+     */
     public int[] getGroupSonPosition(int pos) {
 
         int groupSize = getGroupSize();
@@ -197,4 +203,23 @@ public abstract class BaseGroupAdapter<T extends BaseGroupViewHolder> extends Ba
 
     public abstract int getSonSize(int groupIndex);
 
+    @Override
+    public boolean isStickHeader(int pos) {
+        int[] ix = getGroupSonPosition(pos);
+        return ix[1] == -1;
+    }
+
+    @Override
+    public void showStickHeader(View view) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            view.setTranslationZ(10);
+        }
+    }
+
+    @Override
+    public void hideStickHeader(View view) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            view.setTranslationZ(0);
+        }
+    }
 }
