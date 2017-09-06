@@ -1,6 +1,6 @@
 package example.fixheader;
 
-import com.github.linjson.exlist.DiffCallBackEx;
+import com.github.linjson.exlist.AbstractDiffCallBack;
 
 import java.util.List;
 
@@ -8,7 +8,7 @@ import java.util.List;
  * Created by ljs on 2016/12/1.
  */
 
-public class Diff extends DiffCallBackEx {
+public class Diff extends AbstractDiffCallBack {
 
     private final School news;
     private final School olds;
@@ -80,7 +80,6 @@ public class Diff extends DiffCallBackEx {
 
     @Override
     public boolean areDataTheSame(int oldItemPosition, int newItemPosition) {
-
         return oldItemPosition == newItemPosition;
     }
 
@@ -89,8 +88,7 @@ public class Diff extends DiffCallBackEx {
 
         int[] oldPos = getGroupSonPosition(olds.clazz(), oldItemPosition);
         int[] newPos = getGroupSonPosition(news.clazz(), newItemPosition);
-//            String o = "", n = "";
-        Object o = null, n = null;
+        Object o, n;
         if (oldPos[1] == -1) {
             o = olds.clazz().get(oldPos[0]);
         } else {

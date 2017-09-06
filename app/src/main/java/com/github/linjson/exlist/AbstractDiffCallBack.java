@@ -7,11 +7,11 @@ import android.support.v7.util.DiffUtil;
  * Created by ljs on 2016/10/31.
  */
 
-public abstract class DiffCallBackEx extends DiffUtil.Callback {
+public abstract class AbstractDiffCallBack extends DiffUtil.Callback {
 
     private final BaseAdapter mAdapter;
 
-    public DiffCallBackEx(BaseAdapter adapter) {
+    public AbstractDiffCallBack(BaseAdapter adapter) {
         this.mAdapter = adapter;
     }
 
