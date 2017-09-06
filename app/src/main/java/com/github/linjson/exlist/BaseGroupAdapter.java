@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by ljs on 16/8/31.
  */
-public abstract class BaseGroupAdapter<T extends BaseGroupViewHolder> extends BaseAdapter<BaseGroupViewHolder> implements ItemTouchCallback, StickHeader {
+public abstract class BaseGroupAdapter<T extends BaseGroupViewHolder> extends BaseAdapter<BaseGroupViewHolder> implements ItemTouchCallback {
 
     static final int GROUP = -100000000;
     private final RecyclerView view;
@@ -204,20 +204,17 @@ public abstract class BaseGroupAdapter<T extends BaseGroupViewHolder> extends Ba
 
     public abstract int getSonSize(int groupIndex);
 
-    @Override
     public boolean isStickHeader(int pos) {
         int[] ix = getGroupSonPosition(pos - getHeaderViewCount());
         return ix[0] >= 0 && ix[1] == -1;
     }
 
-    @Override
     public void showStickHeader(View view) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             view.setTranslationZ(10);
         }
     }
 
-    @Override
     public void hideStickHeader(View view) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             view.setTranslationZ(0);

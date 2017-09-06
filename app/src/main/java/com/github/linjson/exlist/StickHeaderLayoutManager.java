@@ -11,9 +11,9 @@ import java.util.ArrayList;
  * Created by ljs on 2017/9/5.
  */
 
-public class StickHeaderLayoutManager<T extends RecyclerView.Adapter & StickHeader> extends LinearLayoutManager {
+public class StickHeaderLayoutManager extends LinearLayoutManager {
 
-    private T mAdapter;
+    private BaseGroupAdapter mAdapter;
     private HeaderListDataObserver mHeaderListDataObserver;
     private ArrayList<Integer> mHeaderPosition = new ArrayList<>(0);
     private float mTranslationY = 0f;
@@ -51,8 +51,8 @@ public class StickHeaderLayoutManager<T extends RecyclerView.Adapter & StickHead
             mAdapter.unregisterAdapterDataObserver(mHeaderListDataObserver);
         }
 
-        if (adapter instanceof StickHeader) {
-            mAdapter = (T) adapter;
+        if (adapter instanceof BaseGroupAdapter) {
+            mAdapter = (BaseGroupAdapter) adapter;
             mAdapter.registerAdapterDataObserver(mHeaderListDataObserver);
             mHeaderListDataObserver.onChanged();
 
@@ -289,13 +289,11 @@ public class StickHeaderLayoutManager<T extends RecyclerView.Adapter & StickHead
 
 
         StickHeaderLayoutManager mLayoutManager;
-        StickHeader mStickHeader;
+        BaseGroupAdapter mBaseGroupAdapter;
 
         public void setStickHeaderLayout(StickHeaderLayoutManager layoutManager) {
             mLayoutManager = layoutManager;
-            if (mLayoutManager.mAdapter instanceof StickHeader) {
-                mStickHeader = (StickHeader) mLayoutManager.mAdapter;
-            }
+            mBaseGroupAdapter = mLayoutManager.mAdapter;
         }
 
         @Override
@@ -334,9 +332,9 @@ public class StickHeaderLayoutManager<T extends RecyclerView.Adapter & StickHead
             mLayoutManager.mHeaderPosition.clear();
 
             final int count = mLayoutManager.mAdapter.getItemCount();
-            if (mStickHeader != null) {
+            if (mBaseGroupAdapter != null) {
                 for (int i = 0; i < count; i++) {
-                    if (mStickHeader.isStickHeader(i)) {
+                    if (mBaseGroupAdapter.isStickHeader(i)) {
                         mLayoutManager.mHeaderPosition.add(i);
                     }
                 }

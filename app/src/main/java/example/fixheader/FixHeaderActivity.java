@@ -40,8 +40,10 @@ public class FixHeaderActivity extends AppCompatActivity implements View.OnClick
         rpview = (RefreshPullView) findViewById(R.id.rpview);
         RecyclerView view = (RecyclerView) findViewById(R.id.recycler_main);
         mRecyclerView = view;
-        mRecyclerView.setLayoutManager(new StickHeaderLayoutManager<GroupRecyclerAdapter>(this));
+        StickHeaderLayoutManager layout = new StickHeaderLayoutManager(this);
+        mRecyclerView.setLayoutManager(layout);
         mAdapter = new GroupRecyclerAdapter(mRecyclerView, this);
+
 
         rpview.setRPViewController(RefreshPullView.FIX);
 
