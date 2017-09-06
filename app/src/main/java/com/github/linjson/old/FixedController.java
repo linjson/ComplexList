@@ -1,9 +1,12 @@
-package com.github.linjson.exlist;
+package com.github.linjson.old;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.FrameLayout;
+
+import com.github.linjson.exlist.BaseGroupAdapter;
+import com.github.linjson.exlist.BaseGroupViewHolder;
 
 /**
  * Created by ljs on 2016/11/3.

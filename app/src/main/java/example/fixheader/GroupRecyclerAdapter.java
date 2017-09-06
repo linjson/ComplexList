@@ -12,7 +12,6 @@ import android.widget.Toast;
 
 import com.github.linjson.exlist.BaseGroupAdapter;
 import com.github.linjson.exlist.BaseGroupViewHolder;
-import com.github.linjson.exlist.FixedHeaderListView;
 import com.github.linjson.exlist.ItemTouchHelperExtension;
 
 import java.util.List;
@@ -22,14 +21,11 @@ import example.R;
 
 public class GroupRecyclerAdapter extends BaseGroupAdapter<GroupRecyclerAdapter.Test> {
 
-    private final FixedHeaderListView fixedHeaderListView;
     private School mDatas;
     private ItemTouchHelperExtension mItemTouchHelper;
-    private boolean h;
 
-    public GroupRecyclerAdapter(RecyclerView view, Context context, FixedHeaderListView fixedHeaderListView) {
+    public GroupRecyclerAdapter(RecyclerView view, Context context) {
         super(context, view);
-        this.fixedHeaderListView = fixedHeaderListView;
     }
 
     public School getDatas() {
@@ -46,7 +42,7 @@ public class GroupRecyclerAdapter extends BaseGroupAdapter<GroupRecyclerAdapter.
     }
 
     @Override
-    protected void onBindSonViewHolder(final Test holder, int groupPos, int sonPos) {
+    public void onBindSonViewHolder(final Test holder, int groupPos, int sonPos) {
         holder.bind(mDatas.clazz().get(groupPos).student().get(sonPos));
         holder.mTextIndex.setOnTouchListener((v, event) -> {
             mItemTouchHelper.startDrag(holder);
@@ -55,7 +51,7 @@ public class GroupRecyclerAdapter extends BaseGroupAdapter<GroupRecyclerAdapter.
     }
 
     @Override
-    protected void onBindGroupViewHolder(final Test holder, final int position) {
+    public void onBindGroupViewHolder(final Test holder, final int position) {
         holder.bind(mDatas.clazz().get(position));
         holder.mTextTitle.setClickable(true);
         holder.mTextTitle.setOnClickListener(v -> {
@@ -83,7 +79,7 @@ public class GroupRecyclerAdapter extends BaseGroupAdapter<GroupRecyclerAdapter.
             result.dispatchUpdatesTo(GroupRecyclerAdapter.this);
             setDatas(news);
 
-            fixedHeaderListView.getRecyclerView().scrollToPosition(getGroupIndexToViewIndex(position));
+//            fixedHeaderListView.getRecyclerView().scrollToPosition(getGroupIndexToViewIndex(position));
 
             Toast.makeText(v.getContext(), "group" + position, Toast.LENGTH_SHORT).show();
         });
@@ -194,11 +190,6 @@ public class GroupRecyclerAdapter extends BaseGroupAdapter<GroupRecyclerAdapter.
         v.hideItemView(h);
     }
 
-    @Override
-    public void onGroupChange(int toGroup) {
-
-        fixedHeaderListView.refreshHeaderView(toGroup);
-    }
 
     @NonNull
     @Override

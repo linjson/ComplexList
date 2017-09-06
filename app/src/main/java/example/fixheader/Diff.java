@@ -36,6 +36,9 @@ public class Diff extends DiffCallBackEx {
     }
 
     private int getSize(School test) {
+        if (test == null) {
+            return 0;
+        }
         int size = test.clazz().size();
         int t = size;
 
@@ -78,7 +81,7 @@ public class Diff extends DiffCallBackEx {
     @Override
     public boolean areDataTheSame(int oldItemPosition, int newItemPosition) {
 
-        return oldItemPosition==newItemPosition;
+        return oldItemPosition == newItemPosition;
     }
 
     @Override

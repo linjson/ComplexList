@@ -185,7 +185,7 @@ public abstract class BaseAdapter<T extends BaseViewHolder> extends RecyclerView
     }
 
     public int getEmptyViewCount() {
-        return mShowEmptyView ? 1 : 0;
+        return noData ? 1 : 0;
     }
 
     public abstract int getChildrenCount();

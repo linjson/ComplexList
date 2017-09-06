@@ -184,16 +184,17 @@ public abstract class BaseGroupAdapter<T extends BaseGroupViewHolder> extends Ba
     }
 
     public void onGroupChange(int group) {
-
+        int v = getGroupIndexToViewIndex(group);
+        notifyItemChanged(v);
     }
 
     public boolean onGroupSonDataMove(int from, int to, int fromGroup, int fromSon, int toGroup, int toSon) {
         return false;
     }
 
-    protected abstract void onBindSonViewHolder(T holder, int groupPos, int sonPos);
+    public abstract void onBindSonViewHolder(T holder, int groupPos, int sonPos);
 
-    protected abstract void onBindGroupViewHolder(T holder, int position);
+    public abstract void onBindGroupViewHolder(T holder, int position);
 
     public abstract T onCreateSonViewHolder(ViewGroup parent, int viewType);
 
@@ -205,8 +206,8 @@ public abstract class BaseGroupAdapter<T extends BaseGroupViewHolder> extends Ba
 
     @Override
     public boolean isStickHeader(int pos) {
-        int[] ix = getGroupSonPosition(pos);
-        return ix[1] == -1;
+        int[] ix = getGroupSonPosition(pos - getHeaderViewCount());
+        return ix[0] >= 0 && ix[1] == -1;
     }
 
     @Override
@@ -222,4 +223,5 @@ public abstract class BaseGroupAdapter<T extends BaseGroupViewHolder> extends Ba
             view.setTranslationZ(0);
         }
     }
+
 }

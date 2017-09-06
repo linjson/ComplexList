@@ -14,9 +14,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.linjson.exlist.DefaultDividerDecoration;
-import com.github.linjson.exlist.FixedHeaderListView;
 import com.github.linjson.exlist.ItemTouchHelperExtension;
 import com.github.linjson.exlist.RefreshPullView;
+import com.github.linjson.exlist.StickHeaderLayoutManager;
 
 import java.util.Random;
 
@@ -38,10 +38,12 @@ public class FixHeaderActivity extends AppCompatActivity implements View.OnClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fixheader);
         rpview = (RefreshPullView) findViewById(R.id.rpview);
-        FixedHeaderListView view = (FixedHeaderListView) findViewById(R.id.recycler_main);
-        mRecyclerView = view.getRecyclerView();
+        RecyclerView view = (RecyclerView) findViewById(R.id.recycler_main);
+        mRecyclerView = view;
+        mRecyclerView.setLayoutManager(new StickHeaderLayoutManager<GroupRecyclerAdapter>(this));
+        mAdapter = new GroupRecyclerAdapter(mRecyclerView, this);
 
-        mAdapter = new GroupRecyclerAdapter(mRecyclerView, this, view);
+        rpview.setRPViewController(RefreshPullView.FIX);
 
         mAdapter.addHeaderView(createTestView("header1"));
         mAdapter.addHeaderView(createTestView("header2"));
@@ -51,7 +53,10 @@ public class FixHeaderActivity extends AppCompatActivity implements View.OnClick
 //        mAdapter.setDatas(ImmutableSchool.copyOf(testDatas));
         mAdapter.setShowEmptyView(true);
         mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        DefaultItemAnimator animator = new DefaultItemAnimator();
+        //item的改变不闪烁
+        animator.setSupportsChangeAnimations(false);
+        mRecyclerView.setItemAnimator(animator);
         mRecyclerView.addItemDecoration(new DefaultDividerDecoration(this, LinearLayoutManager.VERTICAL));
 //        mAdapter.updateData(createTestDatas());
         mCallback = new ItemTouchHelperCallback();
@@ -62,6 +67,7 @@ public class FixHeaderActivity extends AppCompatActivity implements View.OnClick
 
 
         findViewById(R.id.btn).setOnClickListener(this);
+
         rpview.setOnRefreshingListener(x -> {
             testDatas = createTestDatas();
 
@@ -126,7 +132,8 @@ public class FixHeaderActivity extends AppCompatActivity implements View.OnClick
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_refresh) {
-            mAdapter.updateData(createTestDatas());
+//            mAdapter.updateData(createTestDatas());
+//            mRecyclerView.getLayoutManager().setPendingScroll(10);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -153,9 +160,10 @@ public class FixHeaderActivity extends AppCompatActivity implements View.OnClick
 
         testDatas = m.toImmutable();
         DiffUtil.DiffResult result = DiffUtil.calculateDiff(new Diff(mAdapter, mAdapter.getDatas(), testDatas), false);
-        result.dispatchUpdatesTo(mAdapter);
         mAdapter.setDatas(testDatas);
+        result.dispatchUpdatesTo(mAdapter);
 
+//        mAdapter.notifyDataSetChanged();
 
     }
 
