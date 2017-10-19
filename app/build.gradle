@@ -3,7 +3,7 @@ apply plugin: "android-apt"
 apply plugin: 'me.tatarka.retrolambda'
 android {
     compileSdkVersion 26
-    buildToolsVersion "26.0.1"
+    buildToolsVersion "26.0.2"
     defaultConfig {
         applicationId "com.ljs.complexlist"
         minSdkVersion 21
