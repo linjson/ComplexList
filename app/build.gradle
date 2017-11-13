@@ -1,9 +1,9 @@
 apply plugin: 'com.android.application'
-apply plugin: "android-apt"
-apply plugin: 'me.tatarka.retrolambda'
+//apply plugin: "android-apt"
+//apply plugin: 'me.tatarka.retrolambda'
 android {
     compileSdkVersion 26
-    buildToolsVersion "26.0.2"
+    buildToolsVersion "26.0.3"
     defaultConfig {
         applicationId "com.ljs.complexlist"
         minSdkVersion 21
@@ -29,17 +29,17 @@ android {
     }
 }
 
-def support = "25.+"
+def support = "26.1.+"
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile "com.android.support:appcompat-v7:$support"
-    compile "com.android.support:recyclerview-v7:$support"
-    compile "com.android.support:design:$support"
-    apt "org.immutables:value:2.5.6"
-    provided 'org.immutables:value:2.5.6'
-    compile 'com.airbnb.android:lottie:2.2.0'
-    compile "com.android.support:support-v4:$support"
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "com.android.support:appcompat-v7:$support"
+    implementation "com.android.support:recyclerview-v7:$support"
+    implementation "com.android.support:design:$support"
+    annotationProcessor "org.immutables:value:2.5.6"
+    compileOnly 'org.immutables:value:2.5.6'
+    implementation 'com.airbnb.android:lottie:2.2.0'
+//    implementation "com.android.support:support-v4:$support"
 }
 
 
